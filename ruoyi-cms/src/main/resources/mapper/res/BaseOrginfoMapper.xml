@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.res.mapper.BaseOrginfoMapper">
+    
+    <resultMap type="BaseOrginfo" id="BaseOrginfoResult">
+        <result property="orgid"    column="orgid"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="orgCode"    column="org_code"    />
+        <result property="orgName"    column="org_name"    />
+        <result property="orgContent"    column="org_content"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectBaseOrginfoVo">
+        select orgid, order_num, org_code, org_name, org_content, status, del_flag, create_by, create_time, update_by, update_time, remark from res_orginfo
+    </sql>
+
+    <select id="selectBaseOrginfoList" parameterType="BaseOrginfo" resultMap="BaseOrginfoResult">
+        <include refid="selectBaseOrginfoVo"/>
+        <where>  
+            <if test="orgCode != null  and orgCode != ''"> and org_code = #{orgCode}</if>
+            <if test="orgName != null  and orgName != ''"> and org_name like concat('%', #{orgName}, '%')</if>
+            <if test="orgContent != null  and orgContent != ''"> and org_content = #{orgContent}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectBaseOrginfoByOrgid" parameterType="Long" resultMap="BaseOrginfoResult">
+        <include refid="selectBaseOrginfoVo"/>
+        where orgid = #{orgid}
+    </select>
+        
+    <insert id="insertBaseOrginfo" parameterType="BaseOrginfo" useGeneratedKeys="true" keyProperty="orgid">
+        insert into res_orginfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNum != null">order_num,</if>
+            <if test="orgCode != null">org_code,</if>
+            <if test="orgName != null">org_name,</if>
+            <if test="orgContent != null">org_content,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="orgCode != null">#{orgCode},</if>
+            <if test="orgName != null">#{orgName},</if>
+            <if test="orgContent != null">#{orgContent},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBaseOrginfo" parameterType="BaseOrginfo">
+        update res_orginfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="orgCode != null">org_code = #{orgCode},</if>
+            <if test="orgName != null">org_name = #{orgName},</if>
+            <if test="orgContent != null">org_content = #{orgContent},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where orgid = #{orgid}
+    </update>
+
+    <delete id="deleteBaseOrginfoByOrgid" parameterType="Long">
+        delete from res_orginfo where orgid = #{orgid}
+    </delete>
+
+    <delete id="deleteBaseOrginfoByOrgids" parameterType="String">
+        delete from res_orginfo where orgid in
+        <foreach item="orgid" collection="array" open="(" separator="," close=")">
+            #{orgid}
+        </foreach>
+    </delete>
+</mapper>

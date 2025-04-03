@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.offline.mapper.ActivitiesMapper">
+    
+    <resultMap type="Activities" id="ActivitiesResult">
+        <result property="activityId"    column="activity_id"    />
+        <result property="activityName"    column="activity_name"    />
+        <result property="img"    column="img"    />
+        <result property="address"    column="address"    />
+        <result property="orgName"    column="org_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="tel"    column="tel"    />
+        <result property="remark"    column="remark"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectActivitiesVo">
+        select activity_id, activity_name, img, address, org_name, dept_id, tel, remark, start_time, end_time, status, del_flag, create_by, create_time, update_by, update_time from tb_activities
+    </sql>
+
+    <select id="selectActivitiesList" parameterType="Activities" resultMap="ActivitiesResult">
+        <include refid="selectActivitiesVo"/>
+        <where>  
+            <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
+            <if test="img != null  and img != ''"> and img = #{img}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="orgName != null  and orgName != ''"> and org_name like concat('%', #{orgName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="tel != null  and tel != ''"> and tel = #{tel}</if>
+            <if test="startTime != null "> and start_time &gt;= #{startTime}</if>
+            <if test="endTime != null "> and end_time &lt;= #{endTime}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectActivitiesByActivityId" parameterType="Long" resultMap="ActivitiesResult">
+        <include refid="selectActivitiesVo"/>
+        where activity_id = #{activityId}
+    </select>
+        
+    <insert id="insertActivities" parameterType="Activities">
+        insert into tb_activities
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="activityId != null">activity_id,</if>
+            <if test="activityName != null">activity_name,</if>
+            <if test="img != null">img,</if>
+            <if test="address != null">address,</if>
+            <if test="orgName != null">org_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="tel != null">tel,</if>
+            <if test="remark != null">remark,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="activityId != null">#{activityId},</if>
+            <if test="activityName != null">#{activityName},</if>
+            <if test="img != null">#{img},</if>
+            <if test="address != null">#{address},</if>
+            <if test="orgName != null">#{orgName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActivities" parameterType="Activities">
+        update tb_activities
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="activityName != null">activity_name = #{activityName},</if>
+            <if test="img != null">img = #{img},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="orgName != null">org_name = #{orgName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="tel != null">tel = #{tel},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where activity_id = #{activityId}
+    </update>
+
+    <delete id="deleteActivitiesByActivityId" parameterType="Long">
+        delete from tb_activities where activity_id = #{activityId}
+    </delete>
+
+    <delete id="deleteActivitiesByActivityIds" parameterType="String">
+        delete from tb_activities where activity_id in 
+        <foreach item="activityId" collection="array" open="(" separator="," close=")">
+            #{activityId}
+        </foreach>
+    </delete>
+</mapper>

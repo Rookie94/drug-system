@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.job.mapper.ResJobMapper">
+    
+    <resultMap type="ResJob" id="ResJobResult">
+        <result property="jobId"    column="job_id"    />
+        <result property="jobName"    column="job_name"    />
+        <result property="corpName"    column="corp_name"    />
+        <result property="workAddr"    column="work_addr"    />
+        <result property="number"    column="number"    />
+        <result property="xzLevel"    column="xz_level"    />
+        <result property="corpLevel"    column="corp_level"    />
+        <result property="eduLevel"    column="edu_level"    />
+        <result property="contact"    column="contact"    />
+        <result property="tel"    column="tel"    />
+        <result property="email"    column="email"    />
+        <result property="voidDate"    column="void_date"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectResJobVo">
+        select job_id, job_name, corp_name, work_addr, number, xz_level, corp_level, edu_level, contact, tel, email, void_date, del_flag, create_by, create_time, update_by, update_time, remark from res_job
+    </sql>
+
+    <select id="selectResJobList" parameterType="ResJob" resultMap="ResJobResult">
+        <include refid="selectResJobVo"/>
+        <where>  
+            <if test="jobName != null  and jobName != ''"> and job_name like concat('%', #{jobName}, '%')</if>
+            <if test="corpName != null  and corpName != ''"> and corp_name like concat('%', #{corpName}, '%')</if>
+            <if test="workAddr != null  and workAddr != ''"> and work_addr like concat('%', #{workAddr}, '%')</if>
+            <if test="number != null "> and number like concat('%', #{number}, '%')</if>
+            <if test="xzLevel != null  and xzLevel != ''"> and xz_level = #{xzLevel}</if>
+            <if test="corpLevel != null  and corpLevel != ''"> and corp_level = #{corpLevel}</if>
+            <if test="eduLevel != null  and eduLevel != ''"> and edu_level = #{eduLevel}</if>
+            <if test="contact != null  and contact != ''"> and contact like concat('%', #{contact}, '%')</if>
+            <if test="tel != null  and tel != ''"> and tel like concat('%', #{tel}, '%')</if>
+            <if test="email != null  and email != ''"> and email like concat('%', #{email}, '%')</if>
+            <if test="voidDate != null  and voidDate != ''"> and void_date like concat('%', #{voidDate}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectResJobByJobId" parameterType="Integer" resultMap="ResJobResult">
+        <include refid="selectResJobVo"/>
+        where job_id = #{jobId}
+    </select>
+        
+    <insert id="insertResJob" parameterType="ResJob" useGeneratedKeys="true" keyProperty="jobId">
+        insert into res_job
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="jobName != null">job_name,</if>
+            <if test="corpName != null">corp_name,</if>
+            <if test="workAddr != null">work_addr,</if>
+            <if test="number != null">number,</if>
+            <if test="xzLevel != null">xz_level,</if>
+            <if test="corpLevel != null">corp_level,</if>
+            <if test="eduLevel != null">edu_level,</if>
+            <if test="contact != null">contact,</if>
+            <if test="tel != null">tel,</if>
+            <if test="email != null">email,</if>
+            <if test="voidDate != null">void_date,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="jobName != null">#{jobName},</if>
+            <if test="corpName != null">#{corpName},</if>
+            <if test="workAddr != null">#{workAddr},</if>
+            <if test="number != null">#{number},</if>
+            <if test="xzLevel != null">#{xzLevel},</if>
+            <if test="corpLevel != null">#{corpLevel},</if>
+            <if test="eduLevel != null">#{eduLevel},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="email != null">#{email},</if>
+            <if test="voidDate != null">#{voidDate},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateResJob" parameterType="ResJob">
+        update res_job
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="jobName != null">job_name = #{jobName},</if>
+            <if test="corpName != null">corp_name = #{corpName},</if>
+            <if test="workAddr != null">work_addr = #{workAddr},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="xzLevel != null">xz_level = #{xzLevel},</if>
+            <if test="corpLevel != null">corp_level = #{corpLevel},</if>
+            <if test="eduLevel != null">edu_level = #{eduLevel},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="tel != null">tel = #{tel},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="voidDate != null">void_date = #{voidDate},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where job_id = #{jobId}
+    </update>
+
+    <delete id="deleteResJobByJobId" parameterType="Integer">
+        delete from res_job where job_id = #{jobId}
+    </delete>
+
+    <delete id="deleteResJobByJobIds" parameterType="String">
+        delete from res_job where job_id in 
+        <foreach item="jobId" collection="array" open="(" separator="," close=")">
+            #{jobId}
+        </foreach>
+    </delete>
+</mapper>

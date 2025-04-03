@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.wxsys.mapper.MiniAppMapper">
+    
+    <resultMap type="com.ruoyi.common.core.domain.entity.MiniApp" id="MiniAppResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="appid"    column="appid"    />
+        <result property="secret"    column="secret"    />
+        <result property="token"    column="token"    />
+        <result property="aesKey"    column="aes_key"    />
+        <result property="msgDataFormat"    column="msg_data_format"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="themeColor"    column="theme_color"    />
+    </resultMap>
+
+    <sql id="selectMiniAppVo">
+        select id, name, appid, secret, token, aes_key, msg_data_format, remark, create_time, update_time,theme_color from sys_app
+    </sql>
+
+    <select id="selectMiniAppList" parameterType="MiniApp" resultMap="MiniAppResult">
+        <include refid="selectMiniAppVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="appid != null  and appid != ''"> and appid = #{appid}</if>
+            <if test="secret != null  and secret != ''"> and secret = #{secret}</if>
+            <if test="token != null  and token != ''"> and token = #{token}</if>
+            <if test="aesKey != null  and aesKey != ''"> and aes_key = #{aesKey}</if>
+            <if test="msgDataFormat != null  and msgDataFormat != ''"> and msg_data_format = #{msgDataFormat}</if>
+            <if test="themeColor != null  and themeColor != ''"> and theme_color = #{themeColor}</if>
+        </where>
+    </select>
+    
+    <select id="selectMiniAppById" parameterType="Long" resultMap="MiniAppResult">
+        <include refid="selectMiniAppVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMiniApp" parameterType="MiniApp" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_app
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="appid != null">appid,</if>
+            <if test="secret != null">secret,</if>
+            <if test="token != null">token,</if>
+            <if test="aesKey != null">aes_key,</if>
+            <if test="msgDataFormat != null">msg_data_format,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="themeColor != null">theme_color,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="appid != null">#{appid},</if>
+            <if test="secret != null">#{secret},</if>
+            <if test="token != null">#{token},</if>
+            <if test="aesKey != null">#{aesKey},</if>
+            <if test="msgDataFormat != null">#{msgDataFormat},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="themeColor != null">#{themeColor},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMiniApp" parameterType="MiniApp">
+        update sys_app
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="appid != null">appid = #{appid},</if>
+            <if test="secret != null">secret = #{secret},</if>
+            <if test="token != null">token = #{token},</if>
+            <if test="aesKey != null">aes_key = #{aesKey},</if>
+            <if test="msgDataFormat != null">msg_data_format = #{msgDataFormat},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="themeColor != null">theme_color = #{themeColor},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMiniAppById" parameterType="Long">
+        delete from sys_app where id = #{id}
+    </delete>
+
+    <delete id="deleteMiniAppByIds" parameterType="String">
+        delete from sys_app where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectMiniAppByAppid" parameterType="String" resultMap="MiniAppResult">
+        <include refid="selectMiniAppVo"/>
+        where appid = #{appid}
+    </select>
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.job.mapper.ResSkillMapper">
+    
+    <resultMap type="ResSkill" id="ResSkillResult">
+        <result property="skillId"    column="skill_id"    />
+        <result property="skillTitle"    column="skill_title"    />
+        <result property="skillPic"    column="skill_pic"    />
+        <result property="skillType"    column="skill_type"    />
+        <result property="skillContent"    column="skill_content"    />
+        <result property="status"    column="status"    />
+        <result property="apporStatus"    column="appor_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="apporBy"    column="appor_by"    />
+        <result property="apporTime"    column="appor_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectResSkillVo">
+        select skill_id, skill_title, skill_pic, skill_type, skill_content, status, appor_status, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_skill
+    </sql>
+
+    <select id="selectResSkillList" parameterType="ResSkill" resultMap="ResSkillResult">
+        <include refid="selectResSkillVo"/>
+        <where>  
+            <if test="skillTitle != null  and skillTitle != ''"> and skill_title = #{skillTitle}</if>
+            <if test="skillPic != null  and skillPic != ''"> and skill_pic = #{skillPic}</if>
+            <if test="skillType != null  and skillType != ''"> and skill_type = #{skillType}</if>
+            <if test="skillContent != null  and skillContent != ''"> and skill_content = #{skillContent}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="apporStatus != null  and apporStatus != ''"> and appor_status = #{apporStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectResSkillBySkillId" parameterType="Integer" resultMap="ResSkillResult">
+        <include refid="selectResSkillVo"/>
+        where skill_id = #{skillId}
+    </select>
+        
+    <insert id="insertResSkill" parameterType="ResSkill" useGeneratedKeys="true" keyProperty="skillId">
+        insert into res_skill
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="skillTitle != null and skillTitle != ''">skill_title,</if>
+            <if test="skillPic != null">skill_pic,</if>
+            <if test="skillType != null and skillType != ''">skill_type,</if>
+            <if test="skillContent != null">skill_content,</if>
+            <if test="status != null">status,</if>
+            <if test="apporStatus != null">appor_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="apporBy != null">appor_by,</if>
+            <if test="apporTime != null">appor_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="skillTitle != null and skillTitle != ''">#{skillTitle},</if>
+            <if test="skillPic != null">#{skillPic},</if>
+            <if test="skillType != null and skillType != ''">#{skillType},</if>
+            <if test="skillContent != null">#{skillContent},</if>
+            <if test="status != null">#{status},</if>
+            <if test="apporStatus != null">#{apporStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="apporBy != null">#{apporBy},</if>
+            <if test="apporTime != null">#{apporTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateResSkill" parameterType="ResSkill">
+        update res_skill
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="skillTitle != null and skillTitle != ''">skill_title = #{skillTitle},</if>
+            <if test="skillPic != null">skill_pic = #{skillPic},</if>
+            <if test="skillType != null and skillType != ''">skill_type = #{skillType},</if>
+            <if test="skillContent != null">skill_content = #{skillContent},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="apporStatus != null">appor_status = #{apporStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where skill_id = #{skillId}
+    </update>
+
+    <delete id="deleteResSkillBySkillId" parameterType="Integer">
+        delete from res_skill where skill_id = #{skillId}
+    </delete>
+
+    <delete id="deleteResSkillBySkillIds" parameterType="String">
+        delete from res_skill where skill_id in 
+        <foreach item="skillId" collection="array" open="(" separator="," close=")">
+            #{skillId}
+        </foreach>
+    </delete>
+</mapper>

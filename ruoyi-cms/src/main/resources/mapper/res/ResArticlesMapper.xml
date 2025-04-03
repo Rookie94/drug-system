@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.res.mapper.ResArticlesMapper">
+    
+    <resultMap type="ResArticles" id="ResArticlesResult">
+        <result property="articleId"    column="article_id"    />
+        <result property="title"    column="title"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="type"    column="type"    />
+        <result property="desc"    column="desc"    />
+        <result property="contentType"    column="content_type"    />
+        <result property="content"    column="content"    />
+        <result property="contentMarkdown"    column="content_markdown"    />
+        <result property="top"    column="top"    />
+        <result property="views"    column="views"    />
+        <result property="status"    column="status"    />
+        <result property="picType"    column="pic_type"    />
+        <result property="pic"    column="pic"    />
+        <result property="picLink"    column="pic_link"    />
+        <result property="files"    column="files"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectResArticlesVo">
+        select article_id, title, category_id, type, desc, content_type, content, content_markdown, top, views, status, pic_type, pic, pic_link, files, create_by, create_time, update_by, update_time, remark from res_articles
+    </sql>
+
+    <select id="selectResArticlesList" parameterType="ResArticles" resultMap="ResArticlesResult">
+        <include refid="selectResArticlesVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="categoryId != null "> and category_id = #{categoryId}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="desc != null  and desc != ''"> and desc = #{desc}</if>
+            <if test="contentType != null  and contentType != ''"> and content_type = #{contentType}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="contentMarkdown != null  and contentMarkdown != ''"> and content_markdown = #{contentMarkdown}</if>
+            <if test="top != null  and top != ''"> and top = #{top}</if>
+            <if test="views != null "> and views = #{views}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="picType != null  and picType != ''"> and pic_type = #{picType}</if>
+            <if test="pic != null  and pic != ''"> and pic = #{pic}</if>
+            <if test="picLink != null  and picLink != ''"> and pic_link = #{picLink}</if>
+            <if test="files != null  and files != ''"> and files = #{files}</if>
+        </where>
+    </select>
+    
+    <select id="selectResArticlesByArticleId" parameterType="Long" resultMap="ResArticlesResult">
+        <include refid="selectResArticlesVo"/>
+        where article_id = #{articleId}
+    </select>
+        
+    <insert id="insertResArticles" parameterType="ResArticles" useGeneratedKeys="true" keyProperty="articleId">
+        insert into res_articles
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="type != null">type,</if>
+            <if test="desc != null">desc,</if>
+            <if test="contentType != null and contentType != ''">content_type,</if>
+            <if test="content != null">content,</if>
+            <if test="contentMarkdown != null">content_markdown,</if>
+            <if test="top != null">top,</if>
+            <if test="views != null">views,</if>
+            <if test="status != null">status,</if>
+            <if test="picType != null">pic_type,</if>
+            <if test="pic != null">pic,</if>
+            <if test="picLink != null">pic_link,</if>
+            <if test="files != null">files,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="desc != null">#{desc},</if>
+            <if test="contentType != null and contentType != ''">#{contentType},</if>
+            <if test="content != null">#{content},</if>
+            <if test="contentMarkdown != null">#{contentMarkdown},</if>
+            <if test="top != null">#{top},</if>
+            <if test="views != null">#{views},</if>
+            <if test="status != null">#{status},</if>
+            <if test="picType != null">#{picType},</if>
+            <if test="pic != null">#{pic},</if>
+            <if test="picLink != null">#{picLink},</if>
+            <if test="files != null">#{files},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateResArticles" parameterType="ResArticles">
+        update res_articles
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="desc != null">desc = #{desc},</if>
+            <if test="contentType != null and contentType != ''">content_type = #{contentType},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="contentMarkdown != null">content_markdown = #{contentMarkdown},</if>
+            <if test="top != null">top = #{top},</if>
+            <if test="views != null">views = #{views},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="picType != null">pic_type = #{picType},</if>
+            <if test="pic != null">pic = #{pic},</if>
+            <if test="picLink != null">pic_link = #{picLink},</if>
+            <if test="files != null">files = #{files},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where article_id = #{articleId}
+    </update>
+
+    <delete id="deleteResArticlesByArticleId" parameterType="Long">
+        delete from res_articles where article_id = #{articleId}
+    </delete>
+
+    <delete id="deleteResArticlesByArticleIds" parameterType="String">
+        delete from res_articles where article_id in 
+        <foreach item="articleId" collection="array" open="(" separator="," close=")">
+            #{articleId}
+        </foreach>
+    </delete>
+</mapper>

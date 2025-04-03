@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.job.mapper.ResJobinfoMapper">
+    
+    <resultMap type="ResJobinfo" id="ResJobinfoResult">
+        <result property="jobId"    column="job_id"    />
+        <result property="jobTitle"    column="job_title"    />
+        <result property="jobPic"    column="job_pic"    />
+        <result property="jobContent"    column="job_content"    />
+        <result property="status"    column="status"    />
+        <result property="apporStatus"    column="appor_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="apporBy"    column="appor_by"    />
+        <result property="apporTime"    column="appor_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectResJobinfoVo">
+        select job_id, job_title, job_pic, job_content, status, appor_status, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_jobinfo
+    </sql>
+
+    <select id="selectResJobinfoList" parameterType="ResJobinfo" resultMap="ResJobinfoResult">
+        <include refid="selectResJobinfoVo"/>
+        <where>  
+            <if test="jobTitle != null  and jobTitle != ''"> and job_title = #{jobTitle}</if>
+            <if test="jobPic != null  and jobPic != ''"> and job_pic = #{jobPic}</if>
+            <if test="jobContent != null  and jobContent != ''"> and job_content = #{jobContent}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="apporStatus != null  and apporStatus != ''"> and appor_status = #{apporStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectResJobinfoByJobId" parameterType="Integer" resultMap="ResJobinfoResult">
+        <include refid="selectResJobinfoVo"/>
+        where job_id = #{jobId}
+    </select>
+        
+    <insert id="insertResJobinfo" parameterType="ResJobinfo" useGeneratedKeys="true" keyProperty="jobId">
+        insert into res_jobinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="jobTitle != null and jobTitle != ''">job_title,</if>
+            <if test="jobPic != null and jobPic != ''">job_pic,</if>
+            <if test="jobContent != null">job_content,</if>
+            <if test="status != null">status,</if>
+            <if test="apporStatus != null">appor_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="apporBy != null">appor_by,</if>
+            <if test="apporTime != null">appor_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="jobTitle != null and jobTitle != ''">#{jobTitle},</if>
+            <if test="jobPic != null and jobPic != ''">#{jobPic},</if>
+            <if test="jobContent != null">#{jobContent},</if>
+            <if test="status != null">#{status},</if>
+            <if test="apporStatus != null">#{apporStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="apporBy != null">#{apporBy},</if>
+            <if test="apporTime != null">#{apporTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateResJobinfo" parameterType="ResJobinfo">
+        update res_jobinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="jobTitle != null and jobTitle != ''">job_title = #{jobTitle},</if>
+            <if test="jobPic != null and jobPic != ''">job_pic = #{jobPic},</if>
+            <if test="jobContent != null">job_content = #{jobContent},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="apporStatus != null">appor_status = #{apporStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where job_id = #{jobId}
+    </update>
+
+    <delete id="deleteResJobinfoByJobId" parameterType="Integer">
+        delete from res_jobinfo where job_id = #{jobId}
+    </delete>
+
+    <delete id="deleteResJobinfoByJobIds" parameterType="String">
+        delete from res_jobinfo where job_id in 
+        <foreach item="jobId" collection="array" open="(" separator="," close=")">
+            #{jobId}
+        </foreach>
+    </delete>
+</mapper>

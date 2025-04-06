@@ -197,6 +197,13 @@
                 <version>${ruoyi.version}</version>
             </dependency>
 
+            <!-- 前端接口-->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-api</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
             <!--      小程序需要的      -->
             <dependency>
                 <groupId>com.github.binarywang</groupId>
@@ -240,6 +247,7 @@
         <module>ruoyi-common</module>
         <module>ruoyi-wxsys</module>
         <module>ruoyi-cms</module>
+        <module>ruoyi-api</module>
     </modules>
     <packaging>pom</packaging>
 

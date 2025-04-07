@@ -2,8 +2,13 @@ package com.ruoyi.ruoyiapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan("com.ruoyi.framework")
+@ComponentScan("com.ruoyi.common")
+@ComponentScan("com.ruoyi.system")
+@ComponentScan("com.ruoyi.wxsys")
 public class RuoyiApiApplication {
 
     public static void main(String[] args) {

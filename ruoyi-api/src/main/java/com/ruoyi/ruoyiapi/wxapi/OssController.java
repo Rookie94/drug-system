@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.wxsys.api;
+package com.ruoyi.ruoyiapi.wxapi;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

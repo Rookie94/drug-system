@@ -1,22 +1,18 @@
-package com.ruoyi.web.controller.wxsys.api;
+package com.ruoyi.ruoyiapi.wxapi;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ruoyi.wxsys.entity.R;
-import com.ruoyi.wxsys.service.IMiniAppUserService;
-import com.ruoyi.common.config.MiniappConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.MiniAppUser;
 import com.ruoyi.common.core.domain.entity.MiniAppUserDTO;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.exception.MiniAppException;
-import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.common.utils.file.FileUploadUtils;
-import com.ruoyi.common.utils.file.MimeTypeUtils;
 import com.ruoyi.framework.web.service.TokenService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import com.ruoyi.wxsys.entity.R;
+import com.ruoyi.wxsys.service.IMiniAppUserService;
 
 @RestController
 @RequestMapping("/miniapp")

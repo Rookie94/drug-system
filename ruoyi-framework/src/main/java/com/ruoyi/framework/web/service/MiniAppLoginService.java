@@ -3,6 +3,15 @@ package com.ruoyi.framework.web.service;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
 import com.ruoyi.wxsys.manager.WxMaServiceManager;
 import com.ruoyi.wxsys.service.IMiniAppService;
 import com.ruoyi.wxsys.service.IMiniAppUserService;
@@ -14,13 +23,6 @@ import com.ruoyi.common.core.domain.model.WxLoginUser;
 import com.ruoyi.common.exception.MiniAppException;
 import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import com.ruoyi.framework.security.wxsys.MiniAppByOpenIdAuthenticationToken;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 

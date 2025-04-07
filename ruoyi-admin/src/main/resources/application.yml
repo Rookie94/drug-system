@@ -129,3 +129,21 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+  #微信小程序配置
+  wx:
+    miniapp:
+      useRedis: true
+      jedisConfig:
+        host: 127.0.0.1
+        port: 6379
+        password:
+        timeout: 5000
+        database: 0
+
+  #阿里oss配置
+  oss:
+    endpoint: 1
+    bucket: 1
+    accessKeyId: 1
+    accessKeySecret: 1

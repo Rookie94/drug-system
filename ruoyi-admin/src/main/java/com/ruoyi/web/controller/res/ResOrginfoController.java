@@ -16,33 +16,33 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.cms.res.domain.BaseOrginfo;
-import com.ruoyi.cms.res.service.IBaseOrginfoService;
+import com.ruoyi.cms.res.domain.ResOrginfo;
+import com.ruoyi.cms.res.service.IResOrginfoService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 戒治机构Controller
  * 
- * @author admin
- * @date 2025-03-28
+ * @author ruoyi
+ * @date 2025-04-08
  */
 @RestController
 @RequestMapping("/res/orginfo")
-public class BaseOrginfoController extends BaseController
+public class ResOrginfoController extends BaseController
 {
     @Autowired
-    private IBaseOrginfoService baseOrginfoService;
+    private IResOrginfoService resOrginfoService;
 
     /**
      * 查询戒治机构列表
      */
     @PreAuthorize("@ss.hasPermi('res:orginfo:list')")
     @GetMapping("/list")
-    public TableDataInfo list(BaseOrginfo baseOrginfo)
+    public TableDataInfo list(ResOrginfo resOrginfo)
     {
         startPage();
-        List<BaseOrginfo> list = baseOrginfoService.selectBaseOrginfoList(baseOrginfo);
+        List<ResOrginfo> list = resOrginfoService.selectResOrginfoList(resOrginfo);
         return getDataTable(list);
     }
 
@@ -52,10 +52,10 @@ public class BaseOrginfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('res:orginfo:export')")
     @Log(title = "戒治机构", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, BaseOrginfo baseOrginfo)
+    public void export(HttpServletResponse response, ResOrginfo resOrginfo)
     {
-        List<BaseOrginfo> list = baseOrginfoService.selectBaseOrginfoList(baseOrginfo);
-        ExcelUtil<BaseOrginfo> util = new ExcelUtil<BaseOrginfo>(BaseOrginfo.class);
+        List<ResOrginfo> list = resOrginfoService.selectResOrginfoList(resOrginfo);
+        ExcelUtil<ResOrginfo> util = new ExcelUtil<ResOrginfo>(ResOrginfo.class);
         util.exportExcel(response, list, "戒治机构数据");
     }
 
@@ -66,7 +66,7 @@ public class BaseOrginfoController extends BaseController
     @GetMapping(value = "/{orgid}")
     public AjaxResult getInfo(@PathVariable("orgid") Long orgid)
     {
-        return success(baseOrginfoService.selectBaseOrginfoByOrgid(orgid));
+        return success(resOrginfoService.selectResOrginfoByOrgid(orgid));
     }
 
     /**
@@ -75,9 +75,9 @@ public class BaseOrginfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('res:orginfo:add')")
     @Log(title = "戒治机构", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody BaseOrginfo baseOrginfo)
+    public AjaxResult add(@RequestBody ResOrginfo resOrginfo)
     {
-        return toAjax(baseOrginfoService.insertBaseOrginfo(baseOrginfo));
+        return toAjax(resOrginfoService.insertResOrginfo(resOrginfo));
     }
 
     /**
@@ -86,9 +86,9 @@ public class BaseOrginfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('res:orginfo:edit')")
     @Log(title = "戒治机构", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody BaseOrginfo baseOrginfo)
+    public AjaxResult edit(@RequestBody ResOrginfo resOrginfo)
     {
-        return toAjax(baseOrginfoService.updateBaseOrginfo(baseOrginfo));
+        return toAjax(resOrginfoService.updateResOrginfo(resOrginfo));
     }
 
     /**
@@ -99,6 +99,18 @@ public class BaseOrginfoController extends BaseController
 	@DeleteMapping("/{orgids}")
     public AjaxResult remove(@PathVariable Long[] orgids)
     {
-        return toAjax(baseOrginfoService.deleteBaseOrginfoByOrgids(orgids));
+        return toAjax(resOrginfoService.deleteResOrginfoByOrgids(orgids));
     }
+
+    /**
+     * 审批戒治机构
+     */
+    @PreAuthorize("@ss.hasPermi('res:orginfo:appor')")
+    @Log(title = "戒治机构", businessType = BusinessType.UPDATE)
+    @PostMapping("/{orgids}")
+    public AjaxResult appor(@PathVariable Long[] orgids)
+    {
+        return toAjax(resOrginfoService.apporResOrginfoByOrgids(orgids));
+    }
+
 }

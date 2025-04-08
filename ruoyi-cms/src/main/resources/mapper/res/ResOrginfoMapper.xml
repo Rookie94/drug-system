@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.res.mapper.ResOrginfoMapper">
+    
+    <resultMap type="ResOrginfo" id="ResOrginfoResult">
+        <result property="orgid"    column="orgid"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="orgName"    column="org_name"    />
+        <result property="pic"    column="pic"    />
+        <result property="orgContent"    column="org_content"    />
+        <result property="status"    column="status"    />
+        <result property="appored"    column="appored"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="apporBy"    column="appor_by"    />
+        <result property="apporTime"    column="appor_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectResOrginfoVo">
+        select orgid, order_num, org_name, pic, org_content, status,appored, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_orginfo
+    </sql>
+
+    <select id="selectResOrginfoList" parameterType="ResOrginfo" resultMap="ResOrginfoResult">
+        <include refid="selectResOrginfoVo"/>
+        <where>  
+            <if test="orgName != null  and orgName != ''"> and org_name like concat('%', #{orgName}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
+        </where>
+    </select>
+    
+    <select id="selectResOrginfoByOrgid" parameterType="Long" resultMap="ResOrginfoResult">
+        <include refid="selectResOrginfoVo"/>
+        where orgid = #{orgid}
+    </select>
+        
+    <insert id="insertResOrginfo" parameterType="ResOrginfo" useGeneratedKeys="true" keyProperty="orgid">
+        insert into res_orginfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNum != null">order_num,</if>
+            <if test="orgName != null">org_name,</if>
+            <if test="pic != null">pic,</if>
+            <if test="orgContent != null">org_content,</if>
+            <if test="status != null">status,</if>
+            <if test="appored != null">appored,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="apporBy != null">appor_by,</if>
+            <if test="apporTime != null">appor_time,</if>
+            <if test="userId != null">user_Id,</if>
+            <if test="deptId != null">dept_Id,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="orgName != null">#{orgName},</if>
+            <if test="pic != null">#{pic},</if>
+            <if test="orgContent != null">#{orgContent},</if>
+            <if test="status != null">#{status},</if>
+            <if test="appored != null">#{appored},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="apporBy != null">#{apporBy},</if>
+            <if test="apporTime != null">#{apporTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateResOrginfo" parameterType="ResOrginfo">
+        update res_orginfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="orgName != null">org_name = #{orgName},</if>
+            <if test="pic != null">pic = #{pic},</if>
+            <if test="orgContent != null">org_content = #{orgContent},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="appored != null">status = #{appored},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            <if test="userId != null">user_Id = #{userId},</if>
+            <if test="deptId != null">dept_Id = #{deptId},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where orgid = #{orgid}
+    </update>
+
+    <delete id="deleteResOrginfoByOrgid" parameterType="Long">
+        delete from res_orginfo where orgid = #{orgid}
+    </delete>
+
+    <delete id="deleteResOrginfoByOrgids" parameterType="String">
+        delete from res_orginfo where orgid in 
+        <foreach item="orgid" collection="array" open="(" separator="," close=")">
+            #{orgid}
+        </foreach>
+    </delete>
+
+    <update id="apporResOrginfoByOrgid" parameterType="Long">
+        update res_orginfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appored != null">appored = #{appored},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+        </trim>
+        where orgid = #{orgid}
+    </update>
+
+    <update id="unApporResOrginfoByOrgid" parameterType="Long">
+        update res_orginfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appored != null">appored = #{appored},</if>
+            appor_by=NULL,
+            appor_time = NULL,
+        </trim>
+        where orgid = #{orgid}
+    </update>
+
+    <update id="apporResOrginfoByOrgids" parameterType="String">
+        update res_orginfo
+        <foreach item="orgid" collection="array" separator=",">
+            <if test="appored != null">appored = #{appored},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            where orgid = #{orgid}
+        </foreach>
+    </update>
+
+    <update id="unApporResOrginfoByOrgids" parameterType="String">
+        update res_orginfo
+        <foreach item="orgid" collection="array" separator=",">
+            <if test="appored != null">appored = #{appored},</if>
+            appor_by=NULL,
+            appor_time = NULL,
+            where orgid = #{orgid}
+        </foreach>
+    </update>
+
+</mapper>

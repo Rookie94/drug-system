@@ -1,6 +1,9 @@
 package com.ruoyi.cms.res.service.impl;
 
+import java.util.Date;
 import java.util.List;
+
+import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,7 @@ public class ResOrginfoServiceImpl implements IResOrginfoService
      * @return 戒治机构
      */
     @Override
+    @DataScope(deptAlias = "d", userAlias = "u")
     public List<ResOrginfo> selectResOrginfoList(ResOrginfo resOrginfo)
     {
         return resOrginfoMapper.selectResOrginfoList(resOrginfo);
@@ -77,6 +81,25 @@ public class ResOrginfoServiceImpl implements IResOrginfoService
     }
 
     /**
+     * 修改戒治机构状态
+     *
+     * @param resOrginfo 戒治机构
+     * @return 结果
+     */
+    public int updateStatus(ResOrginfo resOrginfo)
+    {
+        if(resOrginfo.getStatus()=="0"){
+            resOrginfo.setStatus("1");
+        }
+        else{
+            resOrginfo.setStatus("0");
+        }
+        resOrginfo.setUpdateBy(getUsername());
+        resOrginfo.setUpdateTime(DateUtils.getNowDate());
+        return resOrginfoMapper.updateStatus(resOrginfo);
+    }
+
+    /**
      * 批量删除戒治机构
      * 
      * @param orgids 需要删除的戒治机构主键
@@ -109,25 +132,9 @@ public class ResOrginfoServiceImpl implements IResOrginfoService
     @Override
     public int apporResOrginfoByOrgid(Long orgid)
     {
-        ResOrginfo resOrginfo=resOrginfoMapper.selectResOrginfoByOrgid(orgid);
-        resOrginfo.setAppored("1");
-        resOrginfo.setApporBy(getUsername());
-        resOrginfo.setApporTime(DateUtils.getNowDate());
-        return resOrginfoMapper.apporResOrginfoByOrgid(orgid);
-    }
-
-    /**
-     * 反审批戒治机构信息
-     *
-     * @param orgid 戒治机构主键
-     * @return 结果
-     */
-    @Override
-    public int unApporResOrginfoByOrgid(Long orgid)
-    {
-        ResOrginfo resOrginfo=resOrginfoMapper.selectResOrginfoByOrgid(orgid);
-        resOrginfo.setAppored("0");
-        return resOrginfoMapper.apporResOrginfoByOrgid(orgid);
+        String userName=getUsername();
+        Date apporDate=DateUtils.getNowDate();
+        return resOrginfoMapper.apporResOrginfoByOrgid(orgid,userName,apporDate);
     }
 
     /**
@@ -139,7 +146,21 @@ public class ResOrginfoServiceImpl implements IResOrginfoService
     @Override
     public int apporResOrginfoByOrgids(Long[] orgids)
     {
-        return resOrginfoMapper.apporResOrginfoByOrgids(orgids);
+        String userName=getUsername();
+        Date apporDate=DateUtils.getNowDate();
+        return resOrginfoMapper.apporResOrginfoByOrgids(orgids,userName,apporDate);
+    }
+
+    /**
+     * 反审批戒治机构信息
+     *
+     * @param orgid 戒治机构主键
+     * @return 结果
+     */
+    @Override
+    public int unApporResOrginfoByOrgid(Long orgid)
+    {
+        return resOrginfoMapper.unApporResOrginfoByOrgid(orgid);
     }
 
     /**
@@ -151,9 +172,17 @@ public class ResOrginfoServiceImpl implements IResOrginfoService
     @Override
     public int unApporResOrginfoByOrgids(Long[] orgids)
     {
-        return resOrginfoMapper.apporResOrginfoByOrgids(orgids);
+        return resOrginfoMapper.unApporResOrginfoByOrgids(orgids);
     }
 
-
+    /**
+     * 查询已审核的单据清单
+     *
+     * @param orgids 戒治机构主键
+     * @return 结果
+     */
+    public List<Integer> selectApporedOrgByOrgids(Long[] orgids){
+        return resOrginfoMapper.selectApporedOrgByOrgids(orgids);
+    }
 
 }

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.res.ResExpertMapper">
+    
+    <resultMap type="ResExpert" id="ResExpertResult">
+        <result property="expertid"    column="expertid"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="title"    column="title"    />
+        <result property="pic"    column="pic"    />
+        <result property="expertType"    column="expert_type"    />
+        <result property="content"    column="content"    />
+        <result property="status"    column="status"    />
+        <result property="appored"    column="appored"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="apporBy"    column="appor_by"    />
+        <result property="apporTime"    column="appor_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectResExpertVo">
+        select expertid, order_num, title, pic, expert_type, content, status, appored, user_id, dept_id, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_expert
+    </sql>
+
+    <select id="selectResExpertList" parameterType="ResExpert" resultMap="ResExpertResult">
+        <include refid="selectResExpertVo"/>
+        <where>  
+            <if test="orderNum != null "> and order_num = #{orderNum}</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="pic != null  and pic != ''"> and pic = #{pic}</if>
+            <if test="expertType != null  and expertType != ''"> and expert_type = #{expertType}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="apporBy != null  and apporBy != ''"> and appor_by = #{apporBy}</if>
+            <if test="apporTime != null "> and appor_time = #{apporTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectResExpertByExpertid" parameterType="Long" resultMap="ResExpertResult">
+        <include refid="selectResExpertVo"/>
+        where expertid = #{expertid}
+    </select>
+        
+    <insert id="insertResExpert" parameterType="ResExpert" useGeneratedKeys="true" keyProperty="expertid">
+        insert into res_expert
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNum != null">order_num,</if>
+            <if test="title != null">title,</if>
+            <if test="pic != null">pic,</if>
+            <if test="expertType != null">expert_type,</if>
+            <if test="content != null">content,</if>
+            <if test="status != null">status,</if>
+            <if test="appored != null">appored,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="apporBy != null">appor_by,</if>
+            <if test="apporTime != null">appor_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="title != null">#{title},</if>
+            <if test="pic != null">#{pic},</if>
+            <if test="expertType != null">#{expertType},</if>
+            <if test="content != null">#{content},</if>
+            <if test="status != null">#{status},</if>
+            <if test="appored != null">#{appored},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="apporBy != null">#{apporBy},</if>
+            <if test="apporTime != null">#{apporTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateResExpert" parameterType="ResExpert">
+        update res_expert
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="pic != null">pic = #{pic},</if>
+            <if test="expertType != null">expert_type = #{expertType},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="appored != null">appored = #{appored},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where expertid = #{expertid}
+    </update>
+
+    <delete id="deleteResExpertByExpertid" parameterType="Long">
+        delete from res_expert where expertid = #{expertid}
+    </delete>
+
+    <delete id="deleteResExpertByExpertids" parameterType="String">
+        delete from res_expert where expertid in 
+        <foreach item="expertid" collection="array" open="(" separator="," close=")">
+            #{expertid}
+        </foreach>
+    </delete>
+</mapper>

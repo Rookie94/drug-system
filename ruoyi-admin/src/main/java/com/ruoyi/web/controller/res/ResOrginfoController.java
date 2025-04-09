@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.res;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.core.domain.entity.SysUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +46,18 @@ public class ResOrginfoController extends BaseController
         startPage();
         List<ResOrginfo> list = resOrginfoService.selectResOrginfoList(resOrginfo);
         return getDataTable(list);
+    }
+
+    /**
+     * 查询戒治机构列表
+     */
+    @PreAuthorize("@ss.hasPermi('res:orginfo:list')")
+    @GetMapping("/list/{orgids}")
+    public List<Integer> list(@PathVariable Long[] orgids)
+    {
+        startPage();
+        List<Integer> list = resOrginfoService.selectApporedOrgByOrgids(orgids);
+        return list;
     }
 
     /**
@@ -92,6 +106,17 @@ public class ResOrginfoController extends BaseController
     }
 
     /**
+     * 状态修改
+     */
+    @PreAuthorize("@ss.hasPermi('res:orginfo:edit')")
+    @Log(title = "戒治机构", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody ResOrginfo resOrginfo)
+    {
+        return toAjax(resOrginfoService.updateStatus(resOrginfo));
+    }
+
+    /**
      * 删除戒治机构
      */
     @PreAuthorize("@ss.hasPermi('res:orginfo:remove')")
@@ -107,10 +132,21 @@ public class ResOrginfoController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('res:orginfo:appor')")
     @Log(title = "戒治机构", businessType = BusinessType.UPDATE)
-    @PostMapping("/{orgids}")
+    @PostMapping("/appor/{orgids}")
     public AjaxResult appor(@PathVariable Long[] orgids)
     {
         return toAjax(resOrginfoService.apporResOrginfoByOrgids(orgids));
+    }
+
+    /**
+     * 审批戒治机构
+     */
+    @PreAuthorize("@ss.hasPermi('res:orginfo:unappor')")
+    @Log(title = "戒治机构", businessType = BusinessType.UPDATE)
+    @PostMapping("/unappor/{orgids}")
+    public AjaxResult unappor(@PathVariable Long[] orgids)
+    {
+        return toAjax(resOrginfoService.unApporResOrginfoByOrgids(orgids));
     }
 
 }

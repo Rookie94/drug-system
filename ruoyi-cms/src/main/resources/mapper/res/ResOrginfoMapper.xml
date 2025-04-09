@@ -32,11 +32,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
         </where>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
     </select>
     
     <select id="selectResOrginfoByOrgid" parameterType="Long" resultMap="ResOrginfoResult">
         <include refid="selectResOrginfoVo"/>
         where orgid = #{orgid}
+    </select>
+
+    <select id="selectApporedOrgByOrgids" parameterType="String" resultType="java.lang.Integer">
+        select orgid from res_orginfo where appored='1' and orgid in
+        <foreach item="orgid" collection="array" open="(" separator="," close=")">
+            #{orgid}
+        </foreach>
     </select>
         
     <insert id="insertResOrginfo" parameterType="ResOrginfo" useGeneratedKeys="true" keyProperty="orgid">
@@ -99,6 +108,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where orgid = #{orgid}
     </update>
 
+    <update id="updateStatus" parameterType="ResOrginfo">
+        update res_orginfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where orgid = #{orgid}
+    </update>
+
     <delete id="deleteResOrginfoByOrgid" parameterType="Long">
         delete from res_orginfo where orgid = #{orgid}
     </delete>
@@ -110,44 +129,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
-    <update id="apporResOrginfoByOrgid" parameterType="Long">
+    <update id="apporResOrginfoByOrgid">
         update res_orginfo
         <trim prefix="SET" suffixOverrides=",">
-            <if test="appored != null">appored = #{appored},</if>
+            appored='1',
             <if test="apporBy != null">appor_by = #{apporBy},</if>
             <if test="apporTime != null">appor_time = #{apporTime},</if>
         </trim>
         where orgid = #{orgid}
+    </update>
+
+    <update id="apporResOrginfoByOrgids">
+        update res_orginfo
+        <trim prefix="SET" suffixOverrides=",">
+            appored='1',
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime}</if>
+            where orgid in
+            <foreach item="orgid" collection="orgids" open="(" separator="," close=")">
+                #{orgid}
+            </foreach>
+        </trim>
     </update>
 
     <update id="unApporResOrginfoByOrgid" parameterType="Long">
         update res_orginfo
         <trim prefix="SET" suffixOverrides=",">
-            <if test="appored != null">appored = #{appored},</if>
+            appored='0',
             appor_by=NULL,
             appor_time = NULL,
         </trim>
         where orgid = #{orgid}
     </update>
 
-    <update id="apporResOrginfoByOrgids" parameterType="String">
-        update res_orginfo
-        <foreach item="orgid" collection="array" separator=",">
-            <if test="appored != null">appored = #{appored},</if>
-            <if test="apporBy != null">appor_by = #{apporBy},</if>
-            <if test="apporTime != null">appor_time = #{apporTime},</if>
-            where orgid = #{orgid}
-        </foreach>
-    </update>
-
     <update id="unApporResOrginfoByOrgids" parameterType="String">
         update res_orginfo
-        <foreach item="orgid" collection="array" separator=",">
-            <if test="appored != null">appored = #{appored},</if>
+        <trim prefix="SET" suffixOverrides=",">
+            appored='0',
             appor_by=NULL,
-            appor_time = NULL,
-            where orgid = #{orgid}
-        </foreach>
+            appor_time=NULL
+            where orgid in
+            <foreach item="orgid" collection="array" open="(" separator="," close=")">
+                #{orgid}
+            </foreach>
+        </trim>
     </update>
 
 </mapper>

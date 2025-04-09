@@ -44,6 +44,14 @@ public interface IResOrginfoService
     public int updateResOrginfo(ResOrginfo resOrginfo);
 
     /**
+     * 修改戒治机构状态
+     *
+     * @param resOrginfo 戒治机构
+     * @return 结果
+     */
+    public int updateStatus(ResOrginfo resOrginfo);
+
+    /**
      * 批量删除戒治机构
      * 
      * @param orgids 需要删除的戒治机构主键集合
@@ -90,5 +98,13 @@ public interface IResOrginfoService
      * @return 结果
      */
     public int unApporResOrginfoByOrgid(Long orgid);
+
+    /**
+     * 查询已审核的单据清单
+     *
+     * @param orgids 戒治机构主键
+     * @return 结果
+     */
+    public List<Integer> selectApporedOrgByOrgids(Long[] orgids);
 
 }

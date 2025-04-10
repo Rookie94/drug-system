@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.job;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.cms.res.domain.ResCase;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +25,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 招聘信息Controller
- * 
+ *
  * @author admin
- * @date 2025-04-03
+ * @date 2025-04-10
  */
 @RestController
 @RequestMapping("/job/jobinfo")
@@ -63,10 +65,10 @@ public class ResJobinfoController extends BaseController
      * 获取招聘信息详细信息
      */
     @PreAuthorize("@ss.hasPermi('job:jobinfo:query')")
-    @GetMapping(value = "/{jobId}")
-    public AjaxResult getInfo(@PathVariable("jobId") Integer jobId)
+    @GetMapping(value = "/{jobid}")
+    public AjaxResult getInfo(@PathVariable("jobid") Long jobid)
     {
-        return success(resJobinfoService.selectResJobinfoByJobId(jobId));
+        return success(resJobinfoService.selectResJobinfoByJobid(jobid));
     }
 
     /**
@@ -96,9 +98,56 @@ public class ResJobinfoController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('job:jobinfo:remove')")
     @Log(title = "招聘信息", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{jobIds}")
-    public AjaxResult remove(@PathVariable Integer[] jobIds)
+    @DeleteMapping("/{jobids}")
+    public AjaxResult remove(@PathVariable Long[] jobids)
     {
-        return toAjax(resJobinfoService.deleteResJobinfoByJobIds(jobIds));
+        return toAjax(resJobinfoService.deleteResJobinfoByJobids(jobids));
     }
+
+    /**
+     * 查询已审核工作列表
+     */
+    @PreAuthorize("@ss.hasPermi('job:jobinfo:list')")
+    @GetMapping("/list/{jobids}")
+    public List<Integer> list(@PathVariable Long[] jobids)
+    {
+        startPage();
+        List<Integer> list = resJobinfoService.selectApporedByIds(jobids);
+        return list;
+    }
+
+    /**
+     * 状态修改
+     */
+    @PreAuthorize("@ss.hasPermi('job:jobinfo:edit')")
+    @Log(title = "招聘信息", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody ResJobinfo resJobInfo)
+    {
+        return toAjax(resJobinfoService.updateStatus(resJobInfo));
+    }
+
+    /**
+     * 审批专家
+     */
+    @PreAuthorize("@ss.hasPermi('job:jobinfo:appor')")
+    @Log(title = "招聘信息", businessType = BusinessType.UPDATE)
+    @PostMapping("/appor/{ids}")
+    public AjaxResult appor(@PathVariable Long[] ids)
+    {
+        return toAjax(resJobinfoService.apporByIds(ids));
+    }
+
+    /**
+     * 反审批专家
+     */
+    @PreAuthorize("@ss.hasPermi('job:jobinfo:unappor')")
+    @Log(title = "招聘信息", businessType = BusinessType.UPDATE)
+    @PostMapping("/unappor/{ids}")
+    public AjaxResult unappor(@PathVariable Long[] ids)
+    {
+        return toAjax(resJobinfoService.unApporByIds(ids));
+    }
+
+
 }

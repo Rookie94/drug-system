@@ -23,9 +23,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 技能信息Controller
- * 
+ *
  * @author admin
- * @date 2025-04-03
+ * @date 2025-04-10
  */
 @RestController
 @RequestMapping("/job/skill")
@@ -63,10 +63,10 @@ public class ResSkillController extends BaseController
      * 获取技能信息详细信息
      */
     @PreAuthorize("@ss.hasPermi('job:skill:query')")
-    @GetMapping(value = "/{skillId}")
-    public AjaxResult getInfo(@PathVariable("skillId") Integer skillId)
+    @GetMapping(value = "/{skillid}")
+    public AjaxResult getInfo(@PathVariable("skillid") Long skillid)
     {
-        return success(resSkillService.selectResSkillBySkillId(skillId));
+        return success(resSkillService.selectResSkillBySkillid(skillid));
     }
 
     /**
@@ -96,9 +96,55 @@ public class ResSkillController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('job:skill:remove')")
     @Log(title = "技能信息", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{skillIds}")
-    public AjaxResult remove(@PathVariable Integer[] skillIds)
+    @DeleteMapping("/{skillids}")
+    public AjaxResult remove(@PathVariable Long[] skillids)
     {
-        return toAjax(resSkillService.deleteResSkillBySkillIds(skillIds));
+        return toAjax(resSkillService.deleteResSkillBySkillids(skillids));
     }
+
+    /**
+     * 查询已审核工作列表
+     */
+    @PreAuthorize("@ss.hasPermi('job:skill:list')")
+    @GetMapping("/list/{skillids}")
+    public List<Integer> list(@PathVariable Long[] skillids)
+    {
+        startPage();
+        List<Integer> list = resSkillService.selectApporedByIds(skillids);
+        return list;
+    }
+
+    /**
+     * 状态修改
+     */
+    @PreAuthorize("@ss.hasPermi('job:skill:edit')")
+    @Log(title = "技能信息", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody ResSkill resSkill)
+    {
+        return toAjax(resSkillService.updateStatus(resSkill));
+    }
+
+    /**
+     * 审批专家
+     */
+    @PreAuthorize("@ss.hasPermi('job:skill:appor')")
+    @Log(title = "技能信息", businessType = BusinessType.UPDATE)
+    @PostMapping("/appor/{ids}")
+    public AjaxResult appor(@PathVariable Long[] ids)
+    {
+        return toAjax(resSkillService.apporByIds(ids));
+    }
+
+    /**
+     * 反审批专家
+     */
+    @PreAuthorize("@ss.hasPermi('job:skill:unappor')")
+    @Log(title = "技能信息", businessType = BusinessType.UPDATE)
+    @PostMapping("/unappor/{ids}")
+    public AjaxResult unappor(@PathVariable Long[] ids)
+    {
+        return toAjax(resSkillService.unApporByIds(ids));
+    }
+
 }

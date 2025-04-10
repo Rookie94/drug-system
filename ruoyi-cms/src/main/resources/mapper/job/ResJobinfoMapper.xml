@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.cms.job.mapper.ResJobinfoMapper">
-    
+
     <resultMap type="ResJobinfo" id="ResJobinfoResult">
-        <result property="jobId"    column="job_id"    />
-        <result property="jobTitle"    column="job_title"    />
-        <result property="jobPic"    column="job_pic"    />
-        <result property="jobContent"    column="job_content"    />
+        <result property="jobid"    column="jobid"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="title"    column="title"    />
+        <result property="pic"    column="pic"    />
+        <result property="content"    column="content"    />
         <result property="status"    column="status"    />
-        <result property="apporStatus"    column="appor_status"    />
+        <result property="appored"    column="appored"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -21,33 +24,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectResJobinfoVo">
-        select job_id, job_title, job_pic, job_content, status, appor_status, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_jobinfo
+        select jobid, order_num, title, pic, content, status, appored, create_by, create_time,
+               update_by, update_time, appor_by, appor_time, remark from res_jobinfo t
     </sql>
 
     <select id="selectResJobinfoList" parameterType="ResJobinfo" resultMap="ResJobinfoResult">
         <include refid="selectResJobinfoVo"/>
-        <where>  
-            <if test="jobTitle != null  and jobTitle != ''"> and job_title = #{jobTitle}</if>
-            <if test="jobPic != null  and jobPic != ''"> and job_pic = #{jobPic}</if>
-            <if test="jobContent != null  and jobContent != ''"> and job_content = #{jobContent}</if>
+        <where>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="apporStatus != null  and apporStatus != ''"> and appor_status = #{apporStatus}</if>
+            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
         </where>
     </select>
-    
-    <select id="selectResJobinfoByJobId" parameterType="Integer" resultMap="ResJobinfoResult">
+
+    <select id="selectResJobinfoByJobid" parameterType="Long" resultMap="ResJobinfoResult">
         <include refid="selectResJobinfoVo"/>
-        where job_id = #{jobId}
+        where jobid = #{jobid}
     </select>
-        
-    <insert id="insertResJobinfo" parameterType="ResJobinfo" useGeneratedKeys="true" keyProperty="jobId">
+
+    <insert id="insertResJobinfo" parameterType="ResJobinfo" useGeneratedKeys="true" keyProperty="jobid">
         insert into res_jobinfo
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="jobTitle != null and jobTitle != ''">job_title,</if>
-            <if test="jobPic != null and jobPic != ''">job_pic,</if>
-            <if test="jobContent != null">job_content,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="pic != null">pic,</if>
+            <if test="content != null and content != ''">content,</if>
             <if test="status != null">status,</if>
-            <if test="apporStatus != null">appor_status,</if>
+            <if test="appored != null">appored,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -55,13 +62,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="apporBy != null">appor_by,</if>
             <if test="apporTime != null">appor_time,</if>
             <if test="remark != null">remark,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="jobTitle != null and jobTitle != ''">#{jobTitle},</if>
-            <if test="jobPic != null and jobPic != ''">#{jobPic},</if>
-            <if test="jobContent != null">#{jobContent},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="pic != null">#{pic},</if>
+            <if test="content != null and content != ''">#{content},</if>
             <if test="status != null">#{status},</if>
-            <if test="apporStatus != null">#{apporStatus},</if>
+            <if test="appored != null">#{appored},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
@@ -69,17 +79,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="apporBy != null">#{apporBy},</if>
             <if test="apporTime != null">#{apporTime},</if>
             <if test="remark != null">#{remark},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateResJobinfo" parameterType="ResJobinfo">
         update res_jobinfo
         <trim prefix="SET" suffixOverrides=",">
-            <if test="jobTitle != null and jobTitle != ''">job_title = #{jobTitle},</if>
-            <if test="jobPic != null and jobPic != ''">job_pic = #{jobPic},</if>
-            <if test="jobContent != null">job_content = #{jobContent},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="pic != null">pic = #{pic},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="apporStatus != null">appor_status = #{apporStatus},</if>
+            <if test="appored != null">appored = #{appored},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
@@ -88,17 +101,81 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="apporTime != null">appor_time = #{apporTime},</if>
             <if test="remark != null">remark = #{remark},</if>
         </trim>
-        where job_id = #{jobId}
+        where jobid = #{jobid}
     </update>
 
-    <delete id="deleteResJobinfoByJobId" parameterType="Integer">
-        delete from res_jobinfo where job_id = #{jobId}
+    <delete id="deleteResJobinfoByJobid" parameterType="Long">
+        delete from res_jobinfo where jobid = #{jobid}
     </delete>
 
-    <delete id="deleteResJobinfoByJobIds" parameterType="String">
-        delete from res_jobinfo where job_id in 
-        <foreach item="jobId" collection="array" open="(" separator="," close=")">
-            #{jobId}
+    <delete id="deleteResJobinfoByJobids" parameterType="String">
+        delete from res_jobinfo where jobid in
+        <foreach item="jobid" collection="array" open="(" separator="," close=")">
+            #{jobid}
         </foreach>
     </delete>
+
+    <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
+        select jobid from res_jobinfo where appored='1' and jobid in
+        <foreach item="jobid" collection="array" open="(" separator="," close=")">
+            #{jobid}
+        </foreach>
+    </select>
+
+    <update id="updateStatus" parameterType="ResJobinfo">
+        update res_jobinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where jobid = #{jobid}
+    </update>
+
+    <update id="apporById">
+        update res_jobinfo
+        <trim prefix="SET" suffixOverrides=",">
+            appored='1',
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+        </trim>
+        where jobid = #{Id}
+    </update>
+
+    <update id="apporByIds">
+        update res_jobinfo
+        <trim prefix="SET" suffixOverrides=",">
+            appored='1',
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime}</if>
+            where jobid in
+            <foreach item="id" collection="Ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </trim>
+    </update>
+
+    <update id="unApporById" parameterType="Long">
+        update res_jobinfo
+        <trim prefix="SET" suffixOverrides=",">
+            appored='0',
+            appor_by=NULL,
+            appor_time = NULL,
+        </trim>
+        where jobid = #{Id}
+    </update>
+
+    <update id="unApporByIds" parameterType="String">
+        update res_jobinfo
+        <trim prefix="SET" suffixOverrides=",">
+            appored='0',
+            appor_by=NULL,
+            appor_time=NULL
+            where jobid in
+            <foreach item="id" collection="array" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </trim>
+    </update>
+
 </mapper>

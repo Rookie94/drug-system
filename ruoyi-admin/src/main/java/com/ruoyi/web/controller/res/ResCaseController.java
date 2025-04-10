@@ -105,7 +105,7 @@ public class ResCaseController extends BaseController
     }
 
     /**
-     * 查询已审核专家列表
+     * 查询已审核案例列表
      */
     @PreAuthorize("@ss.hasPermi('res:case:list')")
     @GetMapping("/list/{caseids}")

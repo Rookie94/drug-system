@@ -9,28 +9,32 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 招聘信息对象 res_jobinfo
- * 
+ *
  * @author admin
- * @date 2025-04-03
+ * @date 2025-04-10
  */
 public class ResJobinfo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 工作ID */
-    private Integer jobId;
+    private Long jobid;
+
+    /** 序号 */
+    @Excel(name = "序号")
+    private Long orderNum;
 
     /** 工作标题 */
     @Excel(name = "工作标题")
-    private String jobTitle;
+    private String title;
 
     /** 封面图片 */
     @Excel(name = "封面图片")
-    private String jobPic;
+    private String pic;
 
     /** 工作内容 */
     @Excel(name = "工作内容")
-    private String jobContent;
+    private String content;
 
     /** 工作状态 */
     @Excel(name = "工作状态")
@@ -38,83 +42,119 @@ public class ResJobinfo extends BaseEntity
 
     /** 审批状态 */
     @Excel(name = "审批状态")
-    private String apporStatus;
+    private String appored;
+
+    /** 用户ID */
+    private Long userId;
+
+    /** 部门ID */
+    private Long deptId;
 
     /** 审批者 */
+    @Excel(name = "审批者")
     private String apporBy;
 
     /** 审批时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "审批时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date apporTime;
 
-    public void setJobId(Integer jobId) 
+    public void setJobid(Long jobid)
     {
-        this.jobId = jobId;
+        this.jobid = jobid;
     }
 
-    public Integer getJobId() 
+    public Long getJobid()
     {
-        return jobId;
+        return jobid;
     }
-    public void setJobTitle(String jobTitle) 
+    public void setOrderNum(Long orderNum)
     {
-        this.jobTitle = jobTitle;
-    }
-
-    public String getJobTitle() 
-    {
-        return jobTitle;
-    }
-    public void setJobPic(String jobPic) 
-    {
-        this.jobPic = jobPic;
+        this.orderNum = orderNum;
     }
 
-    public String getJobPic() 
+    public Long getOrderNum()
     {
-        return jobPic;
+        return orderNum;
     }
-    public void setJobContent(String jobContent) 
+    public void setTitle(String title)
     {
-        this.jobContent = jobContent;
+        this.title = title;
     }
 
-    public String getJobContent() 
+    public String getTitle()
     {
-        return jobContent;
+        return title;
     }
-    public void setStatus(String status) 
+    public void setPic(String pic)
+    {
+        this.pic = pic;
+    }
+
+    public String getPic()
+    {
+        return pic;
+    }
+    public void setContent(String content)
+    {
+        this.content = content;
+    }
+
+    public String getContent()
+    {
+        return content;
+    }
+    public void setStatus(String status)
     {
         this.status = status;
     }
 
-    public String getStatus() 
+    public String getStatus()
     {
         return status;
     }
-    public void setApporStatus(String apporStatus) 
+    public void setAppored(String appored)
     {
-        this.apporStatus = apporStatus;
+        this.appored = appored;
     }
 
-    public String getApporStatus() 
+    public String getAppored()
     {
-        return apporStatus;
+        return appored;
     }
-    public void setApporBy(String apporBy) 
+    public void setUserId(Long userId)
+    {
+        this.userId = userId;
+    }
+
+    public Long getUserId()
+    {
+        return userId;
+    }
+    public void setDeptId(Long deptId)
+    {
+        this.deptId = deptId;
+    }
+
+    public Long getDeptId()
+    {
+        return deptId;
+    }
+    public void setApporBy(String apporBy)
     {
         this.apporBy = apporBy;
     }
 
-    public String getApporBy() 
+    public String getApporBy()
     {
         return apporBy;
     }
-    public void setApporTime(Date apporTime) 
+    public void setApporTime(Date apporTime)
     {
         this.apporTime = apporTime;
     }
 
-    public Date getApporTime() 
+    public Date getApporTime()
     {
         return apporTime;
     }
@@ -122,19 +162,22 @@ public class ResJobinfo extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("jobId", getJobId())
-            .append("jobTitle", getJobTitle())
-            .append("jobPic", getJobPic())
-            .append("jobContent", getJobContent())
-            .append("status", getStatus())
-            .append("apporStatus", getApporStatus())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("apporBy", getApporBy())
-            .append("apporTime", getApporTime())
-            .append("remark", getRemark())
-            .toString();
+                .append("jobid", getJobid())
+                .append("orderNum", getOrderNum())
+                .append("title", getTitle())
+                .append("pic", getPic())
+                .append("content", getContent())
+                .append("status", getStatus())
+                .append("appored", getAppored())
+                .append("userId", getUserId())
+                .append("deptId", getDeptId())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("apporBy", getApporBy())
+                .append("apporTime", getApporTime())
+                .append("remark", getRemark())
+                .toString();
     }
 }

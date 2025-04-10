@@ -152,7 +152,7 @@ public class ResCaseServiceImpl implements IResCaseService
     }
 
     /**
-     * 反审批戒治戒治案例
+     * 反审批戒治案例
      *
      * @param id 戒治案例主键
      * @return 结果

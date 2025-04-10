@@ -8,40 +8,39 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 戒治案例对象 res_case
+ * 戒毒资讯对象 res_news
  * 
  * @author admin
  * @date 2025-04-10
  */
-public class ResCase extends BaseEntity
+public class ResNews extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 案例ID */
-    private Long caseid;
+    /** 资讯ID */
+    private Long newsid;
 
     /** 序号 */
     @Excel(name = "序号")
     private Long orderNum;
 
-    /** 标题 */
-    @Excel(name = "标题")
+    /** 资讯标题 */
+    @Excel(name = "资讯标题")
     private String title;
 
     /** 封面图片 */
     @Excel(name = "封面图片")
     private String pic;
 
-    /** 案例类型 */
-    @Excel(name = "案例类型")
-    private String caseType;
+    /** 资讯类型 */
+    @Excel(name = "资讯类型")
+    private String newsType;
 
-    /** 案例详情 */
-    @Excel(name = "案例详情")
+    /** 资讯详情 */
+    @Excel(name = "资讯详情")
     private String content;
 
-    /** 专家状态（0正常 1停用） */
-    @Excel(name = "案例状态", readConverterExp = "0=正常,1=停用")
+    /** 资讯状态（0正常 1停用） */
     private String status;
 
     /** 审批状态（0待审批 1已发布） */
@@ -58,19 +57,19 @@ public class ResCase extends BaseEntity
     @Excel(name = "更新者")
     private String apporBy;
 
-    /** 更新时间 */
+    /** 审批时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "审批时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date apporTime;
 
-    public void setCaseid(Long caseid) 
+    public void setNewsid(Long newsid) 
     {
-        this.caseid = caseid;
+        this.newsid = newsid;
     }
 
-    public Long getCaseid() 
+    public Long getNewsid() 
     {
-        return caseid;
+        return newsid;
     }
     public void setOrderNum(Long orderNum) 
     {
@@ -99,14 +98,14 @@ public class ResCase extends BaseEntity
     {
         return pic;
     }
-    public void setCaseType(String caseType) 
+    public void setNewsType(String newsType) 
     {
-        this.caseType = caseType;
+        this.newsType = newsType;
     }
 
-    public String getCaseType() 
+    public String getNewsType() 
     {
-        return caseType;
+        return newsType;
     }
     public void setContent(String content) 
     {
@@ -162,7 +161,6 @@ public class ResCase extends BaseEntity
     {
         return apporBy;
     }
-
     public void setApporTime(Date apporTime) 
     {
         this.apporTime = apporTime;
@@ -176,11 +174,11 @@ public class ResCase extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("caseid", getCaseid())
+            .append("newsid", getNewsid())
             .append("orderNum", getOrderNum())
             .append("title", getTitle())
             .append("pic", getPic())
-            .append("caseType", getCaseType())
+            .append("newsType", getNewsType())
             .append("content", getContent())
             .append("status", getStatus())
             .append("appored", getAppored())

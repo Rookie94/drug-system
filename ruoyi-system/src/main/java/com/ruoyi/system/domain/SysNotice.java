@@ -1,16 +1,17 @@
 package com.ruoyi.system.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
-import com.ruoyi.common.xss.Xss;
 
 /**
- * 通知公告表 sys_notice
- * 
- * @author ruoyi
+ * 通知公告对象 sys_notice
+ *
+ * @author admin
+ * @date 2025-04-10
  */
 public class SysNotice extends BaseEntity
 {
@@ -20,40 +21,70 @@ public class SysNotice extends BaseEntity
     private Long noticeId;
 
     /** 公告标题 */
+    @Excel(name = "公告标题")
     private String noticeTitle;
 
+    /** 封面图片 */
+    @Excel(name = "封面图片")
+    private String pic;
+
     /** 公告类型（1通知 2公告） */
+    @Excel(name = "公告类型", readConverterExp = "1=通知,2=公告")
     private String noticeType;
 
     /** 公告内容 */
-    private String noticeContent;
+    @Excel(name = "公告内容")
+    private String content;
 
     /** 公告状态（0正常 1关闭） */
+    @Excel(name = "公告状态", readConverterExp = "0=正常,1=关闭")
     private String status;
 
-    public Long getNoticeId()
-    {
-        return noticeId;
-    }
+    /** 审批状态 */
+    @Excel(name = "审批状态")
+    private String appored;
+
+    /** 用户ID */
+    private Long userId;
+
+    /** 部门ID */
+    private Long deptId;
+
+    /** 审批者 */
+    private String apporBy;
+
+    /** 审批时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "审批时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date apporTime;
 
     public void setNoticeId(Long noticeId)
     {
         this.noticeId = noticeId;
     }
 
+    public Long getNoticeId()
+    {
+        return noticeId;
+    }
     public void setNoticeTitle(String noticeTitle)
     {
         this.noticeTitle = noticeTitle;
     }
 
-    @Xss(message = "公告标题不能包含脚本字符")
-    @NotBlank(message = "公告标题不能为空")
-    @Size(min = 0, max = 50, message = "公告标题不能超过50个字符")
     public String getNoticeTitle()
     {
         return noticeTitle;
     }
+    public void setPic(String pic)
+    {
+        this.pic = pic;
+    }
 
+    public String getPic()
+    {
+        return pic;
+    }
     public void setNoticeType(String noticeType)
     {
         this.noticeType = noticeType;
@@ -63,17 +94,15 @@ public class SysNotice extends BaseEntity
     {
         return noticeType;
     }
-
-    public void setNoticeContent(String noticeContent)
+    public void setContent(String content)
     {
-        this.noticeContent = noticeContent;
+        this.content = content;
     }
 
-    public String getNoticeContent()
+    public String getContent()
     {
-        return noticeContent;
+        return content;
     }
-
     public void setStatus(String status)
     {
         this.status = status;
@@ -83,20 +112,71 @@ public class SysNotice extends BaseEntity
     {
         return status;
     }
+    public void setAppored(String appored)
+    {
+        this.appored = appored;
+    }
+
+    public String getAppored()
+    {
+        return appored;
+    }
+    public void setUserId(Long userId)
+    {
+        this.userId = userId;
+    }
+
+    public Long getUserId()
+    {
+        return userId;
+    }
+    public void setDeptId(Long deptId)
+    {
+        this.deptId = deptId;
+    }
+
+    public Long getDeptId()
+    {
+        return deptId;
+    }
+    public void setApporBy(String apporBy)
+    {
+        this.apporBy = apporBy;
+    }
+
+    public String getApporBy()
+    {
+        return apporBy;
+    }
+    public void setApporTime(Date apporTime)
+    {
+        this.apporTime = apporTime;
+    }
+
+    public Date getApporTime()
+    {
+        return apporTime;
+    }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("noticeId", getNoticeId())
-            .append("noticeTitle", getNoticeTitle())
-            .append("noticeType", getNoticeType())
-            .append("noticeContent", getNoticeContent())
-            .append("status", getStatus())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("remark", getRemark())
-            .toString();
+                .append("noticeId", getNoticeId())
+                .append("noticeTitle", getNoticeTitle())
+                .append("pic", getPic())
+                .append("noticeType", getNoticeType())
+                .append("content", getContent())
+                .append("status", getStatus())
+                .append("appored", getAppored())
+                .append("userId", getUserId())
+                .append("deptId", getDeptId())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("remark", getRemark())
+                .append("apporBy", getApporBy())
+                .append("apporTime", getApporTime())
+                .toString();
     }
 }

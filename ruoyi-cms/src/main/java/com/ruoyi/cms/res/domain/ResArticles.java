@@ -1,5 +1,7 @@
 package com.ruoyi.cms.res.domain;
 
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -7,9 +9,9 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 资讯发布对象 res_articles
- * 
+ *
  * @author admin
- * @date 2025-04-02
+ * @date 2025-04-11
  */
 public class ResArticles extends BaseEntity
 {
@@ -18,221 +20,206 @@ public class ResArticles extends BaseEntity
     /** 文章ID */
     private Long articleId;
 
+    /** 序号 */
+    @Excel(name = "序号")
+    private Long orderNum;
+
     /** 文章标题 */
     @Excel(name = "文章标题")
     private String title;
 
     /** 栏目 */
     @Excel(name = "栏目")
-    private Integer categoryId;
+    private Long categoryId;
 
     /** 分类 */
     @Excel(name = "分类")
-    private Long type;
-
-    /** 简介 */
-    @Excel(name = "简介")
-    private String desc;
-
-    /** 文本编辑器类型 */
-    @Excel(name = "文本编辑器类型")
-    private String contentType;
+    private Long typeId;
 
     /** 内容 */
     @Excel(name = "内容")
     private String content;
 
-    /** Markdown格式内容 */
-    @Excel(name = "Markdown格式内容")
-    private String contentMarkdown;
-
-    /** 置顶（0否 1是） */
-    @Excel(name = "置顶", readConverterExp = "0=否,1=是")
-    private String top;
-
-    /** 阅读 */
-    @Excel(name = "阅读")
+    /** 阅读量 */
+    @Excel(name = "阅读量")
     private Long views;
 
     /** 状态（0编辑中 1已发布） */
     @Excel(name = "状态", readConverterExp = "0=编辑中,1=已发布")
     private String status;
 
-    /** 首页图片类型（0地址 1上传） */
-    @Excel(name = "首页图片类型", readConverterExp = "0=地址,1=上传")
-    private String picType;
+    /** 审批状态（0待审批 1已发布） */
+    @Excel(name = "审批状态", readConverterExp = "0=待审批,1=已发布")
+    private String appored;
 
     /** 首页图片（ 1上传） */
     @Excel(name = "首页图片", readConverterExp = "1=上传")
     private String pic;
 
-    /** 首页图片（ 0地址） */
-    @Excel(name = "首页图片", readConverterExp = "0=地址")
-    private String picLink;
+    /** 用户ID */
+    private Long userId;
 
-    /** 附件列表 */
-    @Excel(name = "附件列表")
-    private String files;
+    /** 部门ID */
+    private Long deptId;
 
-    public void setArticleId(Long articleId) 
+    /** 更新者 */
+    @Excel(name = "更新者")
+    private String apporBy;
+
+    /** 更新时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date apporTime;
+
+    public void setArticleId(Long articleId)
     {
         this.articleId = articleId;
     }
 
-    public Long getArticleId() 
+    public Long getArticleId()
     {
         return articleId;
     }
-    public void setTitle(String title) 
+    public void setOrderNum(Long orderNum)
+    {
+        this.orderNum = orderNum;
+    }
+
+    public Long getOrderNum()
+    {
+        return orderNum;
+    }
+    public void setTitle(String title)
     {
         this.title = title;
     }
 
-    public String getTitle() 
+    public String getTitle()
     {
         return title;
     }
-    public void setCategoryId(Integer categoryId) 
+    public void setCategoryId(Long categoryId)
     {
         this.categoryId = categoryId;
     }
 
-    public Integer getCategoryId() 
+    public Long getCategoryId()
     {
         return categoryId;
     }
-    public void setType(Long type) 
+    public void setTypeId(Long typeId)
     {
-        this.type = type;
+        this.typeId = typeId;
     }
 
-    public Long getType() 
+    public Long getTypeId()
     {
-        return type;
+        return typeId;
     }
-    public void setDesc(String desc) 
-    {
-        this.desc = desc;
-    }
-
-    public String getDesc() 
-    {
-        return desc;
-    }
-    public void setContentType(String contentType) 
-    {
-        this.contentType = contentType;
-    }
-
-    public String getContentType() 
-    {
-        return contentType;
-    }
-    public void setContent(String content) 
+    public void setContent(String content)
     {
         this.content = content;
     }
 
-    public String getContent() 
+    public String getContent()
     {
         return content;
     }
-    public void setContentMarkdown(String contentMarkdown) 
-    {
-        this.contentMarkdown = contentMarkdown;
-    }
-
-    public String getContentMarkdown() 
-    {
-        return contentMarkdown;
-    }
-    public void setTop(String top) 
-    {
-        this.top = top;
-    }
-
-    public String getTop() 
-    {
-        return top;
-    }
-    public void setViews(Long views) 
+    public void setViews(Long views)
     {
         this.views = views;
     }
 
-    public Long getViews() 
+    public Long getViews()
     {
         return views;
     }
-    public void setStatus(String status) 
+    public void setStatus(String status)
     {
         this.status = status;
     }
 
-    public String getStatus() 
+    public String getStatus()
     {
         return status;
     }
-    public void setPicType(String picType) 
+    public void setAppored(String appored)
     {
-        this.picType = picType;
+        this.appored = appored;
     }
 
-    public String getPicType() 
+    public String getAppored()
     {
-        return picType;
+        return appored;
     }
-    public void setPic(String pic) 
+    public void setPic(String pic)
     {
         this.pic = pic;
     }
 
-    public String getPic() 
+    public String getPic()
     {
         return pic;
     }
-    public void setPicLink(String picLink) 
+    public void setUserId(Long userId)
     {
-        this.picLink = picLink;
+        this.userId = userId;
     }
 
-    public String getPicLink() 
+    public Long getUserId()
     {
-        return picLink;
+        return userId;
     }
-    public void setFiles(String files) 
+    public void setDeptId(Long deptId)
     {
-        this.files = files;
+        this.deptId = deptId;
     }
 
-    public String getFiles() 
+    public Long getDeptId()
     {
-        return files;
+        return deptId;
+    }
+    public void setApporBy(String apporBy)
+    {
+        this.apporBy = apporBy;
+    }
+
+    public String getApporBy()
+    {
+        return apporBy;
+    }
+    public void setApporTime(Date apporTime)
+    {
+        this.apporTime = apporTime;
+    }
+
+    public Date getApporTime()
+    {
+        return apporTime;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("articleId", getArticleId())
-            .append("title", getTitle())
-            .append("categoryId", getCategoryId())
-            .append("type", getType())
-            .append("desc", getDesc())
-            .append("contentType", getContentType())
-            .append("content", getContent())
-            .append("contentMarkdown", getContentMarkdown())
-            .append("top", getTop())
-            .append("views", getViews())
-            .append("status", getStatus())
-            .append("picType", getPicType())
-            .append("pic", getPic())
-            .append("picLink", getPicLink())
-            .append("files", getFiles())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("remark", getRemark())
-            .toString();
+                .append("articleId", getArticleId())
+                .append("orderNum", getOrderNum())
+                .append("title", getTitle())
+                .append("categoryId", getCategoryId())
+                .append("typeId", getTypeId())
+                .append("content", getContent())
+                .append("views", getViews())
+                .append("status", getStatus())
+                .append("appored", getAppored())
+                .append("pic", getPic())
+                .append("userId", getUserId())
+                .append("deptId", getDeptId())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("apporBy", getApporBy())
+                .append("apporTime", getApporTime())
+                .append("remark", getRemark())
+                .toString();
     }
 }

@@ -1,60 +1,112 @@
 package com.ruoyi.system.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.system.domain.SysNotice;
+import org.apache.ibatis.annotations.Param;
 
 /**
- * 通知公告表 数据层
- * 
- * @author ruoyi
+ * 通知公告Mapper接口
+ *
+ * @author admin
+ * @date 2025-04-10
  */
 public interface SysNoticeMapper
 {
     /**
-     * 查询公告信息
-     * 
-     * @param noticeId 公告ID
-     * @return 公告信息
+     * 查询通知公告
+     *
+     * @param noticeId 通知公告主键
+     * @return 通知公告
      */
-    public SysNotice selectNoticeById(Long noticeId);
+    public SysNotice selectSysNoticeByNoticeId(Long noticeId);
 
     /**
-     * 查询公告列表
-     * 
-     * @param notice 公告信息
-     * @return 公告集合
+     * 查询通知公告列表
+     *
+     * @param sysNotice 通知公告
+     * @return 通知公告集合
      */
-    public List<SysNotice> selectNoticeList(SysNotice notice);
+    public List<SysNotice> selectSysNoticeList(SysNotice sysNotice);
 
     /**
-     * 新增公告
-     * 
-     * @param notice 公告信息
+     * 新增通知公告
+     *
+     * @param sysNotice 通知公告
      * @return 结果
      */
-    public int insertNotice(SysNotice notice);
+    public int insertSysNotice(SysNotice sysNotice);
 
     /**
-     * 修改公告
-     * 
-     * @param notice 公告信息
+     * 修改通知公告
+     *
+     * @param sysNotice 通知公告
      * @return 结果
      */
-    public int updateNotice(SysNotice notice);
+    public int updateSysNotice(SysNotice sysNotice);
 
     /**
-     * 批量删除公告
-     * 
-     * @param noticeId 公告ID
+     * 删除通知公告
+     *
+     * @param noticeId 通知公告主键
      * @return 结果
      */
-    public int deleteNoticeById(Long noticeId);
+    public int deleteSysNoticeByNoticeId(Long noticeId);
 
     /**
-     * 批量删除公告信息
-     * 
-     * @param noticeIds 需要删除的公告ID
+     * 批量删除通知公告
+     *
+     * @param noticeIds 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteNoticeByIds(Long[] noticeIds);
+    public int deleteSysNoticeByNoticeIds(Long[] noticeIds);
+
+    /**
+     * 修改状态
+     *
+     * @param sysNotice 通知公告
+     * @return 结果
+     */
+    public int updateStatus(SysNotice sysNotice);
+
+    /**
+     * 审批通知公告
+     *
+     * @param Id 通知公告主键
+     * @return 结果
+     */
+    public int apporById(@Param("Id") Long Id, @Param("apporBy") String apporBy, @Param("apporTime") Date apporTime);
+
+    /**
+     * 批量审批通知公告
+     *
+     * @param Ids 需要删除的数据主键集合
+     * @return 结果
+     */
+    public int apporByIds(@Param("Ids") Long[] Ids,@Param("apporBy") String apporBy,@Param("apporTime") Date apporTime);
+
+    /**
+     * 反审批通知公告
+     *
+     * @param Id 通知公告主键
+     * @return 结果
+     */
+    public int unApporById(Long Id);
+
+    /**
+     * 批量反审批通知公告
+     *
+     * @param Ids 需要删除的数据主键集合
+     * @return 结果
+     */
+    public int unApporByIds(Long[] Ids);
+
+    /**
+     * 查询已审核的单据清单
+     *
+     * @param Ids 通知公告主键
+     * @return 结果
+     */
+    public List<Integer> selectApporedByIds(Long[] Ids);
+
 }

@@ -10,19 +10,19 @@ import com.ruoyi.cms.res.service.IResArticlesService;
 
 /**
  * 资讯发布Service业务层处理
- * 
+ *
  * @author admin
- * @date 2025-04-02
+ * @date 2025-04-11
  */
 @Service
-public class ResArticlesServiceImpl implements IResArticlesService 
+public class ResArticlesServiceImpl implements IResArticlesService
 {
     @Autowired
     private ResArticlesMapper resArticlesMapper;
 
     /**
      * 查询资讯发布
-     * 
+     *
      * @param articleId 资讯发布主键
      * @return 资讯发布
      */
@@ -34,7 +34,7 @@ public class ResArticlesServiceImpl implements IResArticlesService
 
     /**
      * 查询资讯发布列表
-     * 
+     *
      * @param resArticles 资讯发布
      * @return 资讯发布
      */
@@ -46,7 +46,7 @@ public class ResArticlesServiceImpl implements IResArticlesService
 
     /**
      * 新增资讯发布
-     * 
+     *
      * @param resArticles 资讯发布
      * @return 结果
      */
@@ -59,7 +59,7 @@ public class ResArticlesServiceImpl implements IResArticlesService
 
     /**
      * 修改资讯发布
-     * 
+     *
      * @param resArticles 资讯发布
      * @return 结果
      */
@@ -72,7 +72,7 @@ public class ResArticlesServiceImpl implements IResArticlesService
 
     /**
      * 批量删除资讯发布
-     * 
+     *
      * @param articleIds 需要删除的资讯发布主键
      * @return 结果
      */
@@ -84,7 +84,7 @@ public class ResArticlesServiceImpl implements IResArticlesService
 
     /**
      * 删除资讯发布信息
-     * 
+     *
      * @param articleId 资讯发布主键
      * @return 结果
      */

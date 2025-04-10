@@ -5,15 +5,15 @@ import com.ruoyi.cms.res.domain.ResArticles;
 
 /**
  * 资讯发布Service接口
- * 
+ *
  * @author admin
- * @date 2025-04-02
+ * @date 2025-04-11
  */
-public interface IResArticlesService 
+public interface IResArticlesService
 {
     /**
      * 查询资讯发布
-     * 
+     *
      * @param articleId 资讯发布主键
      * @return 资讯发布
      */
@@ -21,7 +21,7 @@ public interface IResArticlesService
 
     /**
      * 查询资讯发布列表
-     * 
+     *
      * @param resArticles 资讯发布
      * @return 资讯发布集合
      */
@@ -29,7 +29,7 @@ public interface IResArticlesService
 
     /**
      * 新增资讯发布
-     * 
+     *
      * @param resArticles 资讯发布
      * @return 结果
      */
@@ -37,7 +37,7 @@ public interface IResArticlesService
 
     /**
      * 修改资讯发布
-     * 
+     *
      * @param resArticles 资讯发布
      * @return 结果
      */
@@ -45,7 +45,7 @@ public interface IResArticlesService
 
     /**
      * 批量删除资讯发布
-     * 
+     *
      * @param articleIds 需要删除的资讯发布主键集合
      * @return 结果
      */
@@ -53,7 +53,7 @@ public interface IResArticlesService
 
     /**
      * 删除资讯发布信息
-     * 
+     *
      * @param articleId 资讯发布主键
      * @return 结果
      */

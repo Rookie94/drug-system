@@ -23,9 +23,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 资讯发布Controller
- * 
+ *
  * @author admin
- * @date 2025-04-02
+ * @date 2025-04-11
  */
 @RestController
 @RequestMapping("/res/articles")
@@ -96,7 +96,7 @@ public class ResArticlesController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('res:articles:remove')")
     @Log(title = "资讯发布", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{articleIds}")
+    @DeleteMapping("/{articleIds}")
     public AjaxResult remove(@PathVariable Long[] articleIds)
     {
         return toAjax(resArticlesService.deleteResArticlesByArticleIds(articleIds));

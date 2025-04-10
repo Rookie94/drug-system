@@ -1,7 +1,9 @@
 package com.ruoyi.cms.res.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.cms.res.domain.ResExpert;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 戒治专家Mapper接口
@@ -58,4 +60,53 @@ public interface ResExpertMapper
      * @return 结果
      */
     public int deleteResExpertByExpertids(Long[] expertids);
+
+    /**
+     * 修改专家状态
+     *
+     * @param resExpert 戒治机构
+     * @return 结果
+     */
+    public int updateStatus(ResExpert resExpert);
+
+    /**
+     * 审批专家
+     *
+     * @param Id 专家主键
+     * @return 结果
+     */
+    public int apporById(@Param("Id") Long Id,@Param("apporBy") String apporBy,@Param("apporTime") Date apporTime);
+
+    /**
+     * 批量审批专家
+     *
+     * @param Ids 需要删除的数据主键集合
+     * @return 结果
+     */
+    public int apporByIds(@Param("Ids") Long[] Ids,@Param("apporBy") String apporBy,@Param("apporTime") Date apporTime);
+
+    /**
+     * 反审批专家
+     *
+     * @param Id 专家主键
+     * @return 结果
+     */
+    public int unApporById(Long Id);
+
+    /**
+     * 批量反审批专家
+     *
+     * @param Ids 需要删除的数据主键集合
+     * @return 结果
+     */
+    public int unApporByIds(Long[] Ids);
+
+    /**
+     * 查询已审核的单据清单
+     *
+     * @param Ids 专家主键
+     * @return 结果
+     */
+    public List<Integer> selectApporedByIds(Long[] Ids);
+
 }

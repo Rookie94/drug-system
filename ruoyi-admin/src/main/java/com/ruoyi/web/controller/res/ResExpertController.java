@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.res;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.cms.res.domain.ResOrginfo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,4 +103,51 @@ public class ResExpertController extends BaseController
     {
         return toAjax(resExpertService.deleteResExpertByExpertids(expertids));
     }
+
+    /**
+     * 查询已审核专家列表
+     */
+    @PreAuthorize("@ss.hasPermi('res:expert:list')")
+    @GetMapping("/list/{expertids}")
+    public List<Integer> list(@PathVariable Long[] expertids)
+    {
+        startPage();
+        List<Integer> list = resExpertService.selectApporedByIds(expertids);
+        return list;
+    }
+
+    /**
+     * 状态修改
+     */
+    @PreAuthorize("@ss.hasPermi('res:expert:edit')")
+    @Log(title = "戒治专家", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody ResExpert resExpert)
+    {
+        return toAjax(resExpertService.updateStatus(resExpert));
+    }
+
+    /**
+     * 审批专家
+     */
+    @PreAuthorize("@ss.hasPermi('res:expert:appor')")
+    @Log(title = "戒治专家", businessType = BusinessType.UPDATE)
+    @PostMapping("/appor/{ids}")
+    public AjaxResult appor(@PathVariable Long[] ids)
+    {
+        return toAjax(resExpertService.apporByIds(ids));
+    }
+
+    /**
+     * 反审批专家
+     */
+    @PreAuthorize("@ss.hasPermi('res:expert:unappor')")
+    @Log(title = "戒治专家", businessType = BusinessType.UPDATE)
+    @PostMapping("/unappor/{ids}")
+    public AjaxResult unappor(@PathVariable Long[] ids)
+    {
+        return toAjax(resExpertService.unApporByIds(ids));
+    }
+
+
 }

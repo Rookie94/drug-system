@@ -58,4 +58,55 @@ public interface IResExpertService
      * @return 结果
      */
     public int deleteResExpertByExpertid(Long expertid);
+
+
+    /**
+     * 修改专家状态
+     *
+     * @param resExpert 戒治机构
+     * @return 结果
+     */
+    public int updateStatus(ResExpert resExpert);
+
+    /**
+     * 批量审批专家
+     *
+     * @param ids 需要删除的专家主键集合
+     * @return 结果
+     */
+    public int apporByIds(Long[] ids);
+
+    /**
+     * 审批专家信息
+     *
+     * @param id 专家主键
+     * @return 结果
+     */
+    public int apporById(Long id);
+
+    /**
+     * 批量反审批专家
+     *
+     * @param ids 需要删除的专家主键集合
+     * @return 结果
+     */
+    public int unApporByIds(Long[] ids);
+
+    /**
+     * 反审批专家信息
+     *
+     * @param ids 专家主键
+     * @return 结果
+     */
+    public int unApporById(Long ids);
+
+    /**
+     * 查询已审核的单据清单
+     *
+     * @param ids 专家主键
+     * @return 结果
+     */
+    public List<Integer> selectApporedByIds(Long[] ids);
+
+
 }

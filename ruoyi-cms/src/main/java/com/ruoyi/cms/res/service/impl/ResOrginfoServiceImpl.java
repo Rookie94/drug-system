@@ -44,7 +44,7 @@ public class ResOrginfoServiceImpl implements IResOrginfoService
      * @return 戒治机构
      */
     @Override
-    @DataScope(deptAlias = "d", userAlias = "u")
+    @DataScope(deptAlias = "t", userAlias = "t")
     public List<ResOrginfo> selectResOrginfoList(ResOrginfo resOrginfo)
     {
         return resOrginfoMapper.selectResOrginfoList(resOrginfo);

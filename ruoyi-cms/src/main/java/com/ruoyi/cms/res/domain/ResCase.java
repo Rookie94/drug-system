@@ -8,17 +8,17 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 戒治专家对象 res_expert
+ * 戒治案例对象 res_case
  * 
  * @author admin
- * @date 2025-04-09
+ * @date 2025-04-10
  */
-public class ResExpert extends BaseEntity
+public class ResCase extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 专家ID */
-    private Long expertid;
+    /** 案例ID */
+    private Long caseid;
 
     /** 序号 */
     @Excel(name = "序号")
@@ -32,12 +32,12 @@ public class ResExpert extends BaseEntity
     @Excel(name = "封面图片")
     private String pic;
 
-    /** 专家类型 */
-    @Excel(name = "专家类型")
-    private String expertType;
+    /** 案例类型 */
+    @Excel(name = "案例类型")
+    private String caseType;
 
-    /** 专家简介 */
-    @Excel(name = "专家简介")
+    /** 案例详情 */
+    @Excel(name = "案例详情")
     private String content;
 
     /** 专家状态（0正常 1停用） */
@@ -55,20 +55,22 @@ public class ResExpert extends BaseEntity
     private Long deptId;
 
     /** 更新者 */
+    @Excel(name = "更新者")
     private String apporBy;
 
     /** 更新时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date apporTime;
 
-    public void setExpertid(Long expertid) 
+    public void setCaseid(Long caseid) 
     {
-        this.expertid = expertid;
+        this.caseid = caseid;
     }
 
-    public Long getExpertid() 
+    public Long getCaseid() 
     {
-        return expertid;
+        return caseid;
     }
     public void setOrderNum(Long orderNum) 
     {
@@ -97,14 +99,14 @@ public class ResExpert extends BaseEntity
     {
         return pic;
     }
-    public void setExpertType(String expertType) 
+    public void setCaseType(String caseType) 
     {
-        this.expertType = expertType;
+        this.caseType = caseType;
     }
 
-    public String getExpertType() 
+    public String getCaseType() 
     {
-        return expertType;
+        return caseType;
     }
     public void setContent(String content) 
     {
@@ -160,12 +162,13 @@ public class ResExpert extends BaseEntity
     {
         return apporBy;
     }
-    public void setApporTime(Date apporTime)
+
+    public void setApporTime(Date apporTime) 
     {
         this.apporTime = apporTime;
     }
 
-    public Date getApporTime()
+    public Date getApporTime() 
     {
         return apporTime;
     }
@@ -173,11 +176,11 @@ public class ResExpert extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("expertid", getExpertid())
+            .append("caseid", getCaseid())
             .append("orderNum", getOrderNum())
             .append("title", getTitle())
             .append("pic", getPic())
-            .append("expertType", getExpertType())
+            .append("caseType", getCaseType())
             .append("content", getContent())
             .append("status", getStatus())
             .append("appored", getAppored())

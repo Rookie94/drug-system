@@ -2,16 +2,12 @@ package com.ruoyi.web.controller.res;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.cms.res.domain.ResCase;
+import com.ruoyi.cms.res.domain.ResCategoryInfo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -36,6 +32,28 @@ public class ResArticlesController extends BaseController
 
     /**
      * 查询资讯发布列表
+     */
+    @PreAuthorize("@ss.hasPermi('res:articles:list')")
+    @GetMapping("/category")
+    public TableDataInfo listCategory()
+    {
+        List<ResCategoryInfo> list = resArticlesService.selectCategoryList();
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询资讯发布列表
+     */
+    @PreAuthorize("@ss.hasPermi('res:articles:list')")
+    @GetMapping("/subcategory")
+    public TableDataInfo listSubCategory(@RequestParam(name="categoryId") Long categoryId)
+    {
+        List<ResCategoryInfo> list = resArticlesService.selectSubCategoryList(categoryId);
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询戒治案例列表
      */
     @PreAuthorize("@ss.hasPermi('res:articles:list')")
     @GetMapping("/list")
@@ -101,4 +119,50 @@ public class ResArticlesController extends BaseController
     {
         return toAjax(resArticlesService.deleteResArticlesByArticleIds(articleIds));
     }
+
+    /**
+     * 查询已审核案例列表
+     */
+    @PreAuthorize("@ss.hasPermi('res:case:list')")
+    @GetMapping("/list/{articleIds}")
+    public List<Integer> list(@PathVariable Long[] articleIds)
+    {
+        startPage();
+        List<Integer> list = resArticlesService.selectApporedByIds(articleIds);
+        return list;
+    }
+
+    /**
+     * 状态修改
+     */
+    @PreAuthorize("@ss.hasPermi('res:case:edit')")
+    @Log(title = "戒治案例", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody ResArticles resArticles)
+    {
+        return toAjax(resArticlesService.updateStatus(resArticles));
+    }
+
+    /**
+     * 审批专家
+     */
+    @PreAuthorize("@ss.hasPermi('res:case:appor')")
+    @Log(title = "戒治案例", businessType = BusinessType.UPDATE)
+    @PostMapping("/appor/{ids}")
+    public AjaxResult appor(@PathVariable Long[] ids)
+    {
+        return toAjax(resArticlesService.apporByIds(ids));
+    }
+
+    /**
+     * 反审批专家
+     */
+    @PreAuthorize("@ss.hasPermi('res:case:unappor')")
+    @Log(title = "戒治案例", businessType = BusinessType.UPDATE)
+    @PostMapping("/unappor/{ids}")
+    public AjaxResult unappor(@PathVariable Long[] ids)
+    {
+        return toAjax(resArticlesService.unApporByIds(ids));
+    }
+
 }

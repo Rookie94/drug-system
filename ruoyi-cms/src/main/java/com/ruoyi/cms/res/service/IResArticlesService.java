@@ -2,6 +2,9 @@ package com.ruoyi.cms.res.service;
 
 import java.util.List;
 import com.ruoyi.cms.res.domain.ResArticles;
+import com.ruoyi.cms.res.domain.ResArticlesVo;
+import com.ruoyi.cms.res.domain.ResCase;
+import com.ruoyi.cms.res.domain.ResCategoryInfo;
 
 /**
  * 资讯发布Service接口
@@ -17,7 +20,21 @@ public interface IResArticlesService
      * @param articleId 资讯发布主键
      * @return 资讯发布
      */
-    public ResArticles selectResArticlesByArticleId(Long articleId);
+    public ResArticlesVo selectResArticlesByArticleId(Long articleId);
+
+    /**
+     * 查询资讯栏目
+     *
+     * @return 栏目集合
+     */
+    public List<ResCategoryInfo> selectCategoryList();
+
+    /**
+     * 查询资讯分类
+     *
+     * @return 分类集合
+     */
+    public List<ResCategoryInfo> selectSubCategoryList(Long categoryId);
 
     /**
      * 查询资讯发布列表
@@ -58,4 +75,53 @@ public interface IResArticlesService
      * @return 结果
      */
     public int deleteResArticlesByArticleId(Long articleId);
+
+    /**
+     * 修改状态
+     *
+     * @param resArticles 戒治机构
+     * @return 结果
+     */
+    public int updateStatus(ResArticles resArticles);
+
+    /**
+     * 批量审批
+     *
+     * @param ids 需要删除的戒治案例主键集合
+     * @return 结果
+     */
+    public int apporByIds(Long[] ids);
+
+    /**
+     * 审批
+     *
+     * @param id 戒治案例主键
+     * @return 结果
+     */
+    public int apporById(Long id);
+
+    /**
+     * 批量反审批
+     *
+     * @param ids 需要删除的戒治案例主键集合
+     * @return 结果
+     */
+    public int unApporByIds(Long[] ids);
+
+    /**
+     * 反审批
+     *
+     * @param ids 戒治案例主键
+     * @return 结果
+     */
+    public int unApporById(Long ids);
+
+    /**
+     * 查询已审核的单据清单
+     *
+     * @param ids 戒治案例主键
+     * @return 结果
+     */
+    public List<Integer> selectApporedByIds(Long[] ids);
+
 }

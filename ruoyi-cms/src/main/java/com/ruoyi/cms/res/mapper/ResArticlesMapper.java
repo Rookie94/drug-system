@@ -1,7 +1,12 @@
 package com.ruoyi.cms.res.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.cms.res.domain.ResArticles;
+import com.ruoyi.cms.res.domain.ResArticlesVo;
+import com.ruoyi.cms.res.domain.ResCase;
+import com.ruoyi.cms.res.domain.ResCategoryInfo;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 资讯发布Mapper接口
@@ -17,7 +22,21 @@ public interface ResArticlesMapper
      * @param articleId 资讯发布主键
      * @return 资讯发布
      */
-    public ResArticles selectResArticlesByArticleId(Long articleId);
+    public ResArticlesVo selectResArticlesByArticleId(Long articleId);
+
+    /**
+     * 查询资讯栏目
+     *
+     * @return 栏目集合
+     */
+    public List<ResCategoryInfo> selectCategoryList();
+
+    /**
+     * 查询资讯分类
+     *
+     * @return 分类集合
+     */
+    public List<ResCategoryInfo> selectSubCategoryList(Long categoryId);
 
     /**
      * 查询资讯发布列表
@@ -58,4 +77,53 @@ public interface ResArticlesMapper
      * @return 结果
      */
     public int deleteResArticlesByArticleIds(Long[] articleIds);
+
+    /**
+     * 修改状态
+     *
+     * @param resArticles 戒治机构
+     * @return 结果
+     */
+    public int updateStatus(ResArticles resArticles);
+
+    /**
+     * 审批戒治案例
+     *
+     * @param Id 戒治案例主键
+     * @return 结果
+     */
+    public int apporById(@Param("Id") Long Id, @Param("apporBy") String apporBy, @Param("apporTime") Date apporTime);
+
+    /**
+     * 批量审批
+     *
+     * @param Ids 需要删除的数据主键集合
+     * @return 结果
+     */
+    public int apporByIds(@Param("Ids") Long[] Ids,@Param("apporBy") String apporBy,@Param("apporTime") Date apporTime);
+
+    /**
+     * 反审批
+     *
+     * @param Id 主键
+     * @return 结果
+     */
+    public int unApporById(Long Id);
+
+    /**
+     * 批量反审批
+     *
+     * @param Ids 需要删除的数据主键集合
+     * @return 结果
+     */
+    public int unApporByIds(Long[] Ids);
+
+    /**
+     * 查询已审核的单据清单
+     *
+     * @param Ids 戒治案例主键
+     * @return 结果
+     */
+    public List<Integer> selectApporedByIds(Long[] Ids);
+
 }

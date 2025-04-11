@@ -4,12 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.cms.res.mapper.ResArticlesMapper">
 
-    <resultMap type="ResArticles" id="ResArticlesResult">
+    <resultMap type="ResArticlesVo" id="ResArticlesResult">
         <result property="articleId"    column="article_id"    />
         <result property="orderNum"    column="order_num"    />
         <result property="title"    column="title"    />
         <result property="categoryId"    column="category_id"    />
         <result property="typeId"    column="type_id"    />
+        <result property="categoryName"    column="category_name"    />
+        <result property="typeName"    column="type_name"    />
         <result property="content"    column="content"    />
         <result property="views"    column="views"    />
         <result property="status"    column="status"    />
@@ -26,9 +28,28 @@
         <result property="remark"    column="remark"    />
     </resultMap>
 
+    <resultMap type="ResCategoryInfo" id="ResCategoryInfoResult">
+        <result property="categoryId"    column="category_id"    />
+        <result property="categoryName"    column="category_name"    />
+    </resultMap>
+
     <sql id="selectResArticlesVo">
-        select article_id, order_num, title, category_id, type_id, content, views, status, appored, pic, user_id, dept_id, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_articles
+        select t.article_id, t.order_num, t.title, t.category_id,c.category_name, t.type_id,s.category_name type_name,
+         content, views, t.status, appored, pic,t.create_by, t.create_time, t.update_by, t.update_time, t.appor_by,
+         t.appor_time, t.remark
+        from res_articles t
+        left join res_category c on t.category_id=c.id
+        left join res_category s on t.type_id=s.id
     </sql>
+
+    <select id="selectCategoryList" resultMap="ResCategoryInfoResult">
+        select id,category_name from res_category where
+        parent_id in (select id from res_category where category_name='戒治资源' ) order by sort_order
+    </select>
+
+    <select id="selectSubCategoryList"  parameterType="Long" resultMap="ResCategoryInfoResult">
+        select id,category_name from res_category where parent_id=#{categoryId} order by sort_order
+    </select>
 
     <select id="selectResArticlesList" parameterType="ResArticles" resultMap="ResArticlesResult">
         <include refid="selectResArticlesVo"/>
@@ -38,6 +59,8 @@
             <if test="typeId != null "> and type_id = #{typeId}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
         </where>
     </select>
 
@@ -125,4 +148,68 @@
             #{articleId}
         </foreach>
     </delete>
+
+    <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
+        select article_id from res_articles where appored='1' and article_id in
+        <foreach item="articleId" collection="array" open="(" separator="," close=")">
+            #{articleId}
+        </foreach>
+    </select>
+
+    <update id="updateStatus" parameterType="ResArticles">
+        update res_articles
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where article_id = #{articleId}
+    </update>
+
+    <update id="apporById">
+        update res_articles
+        <trim prefix="SET" suffixOverrides=",">
+            appored='1',
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+        </trim>
+        where article_id = #{Id}
+    </update>
+
+    <update id="apporByIds">
+        update res_articles
+        <trim prefix="SET" suffixOverrides=",">
+            appored='1',
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime}</if>
+            where article_id in
+            <foreach item="id" collection="Ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </trim>
+    </update>
+
+    <update id="unApporById" parameterType="Long">
+        update res_articles
+        <trim prefix="SET" suffixOverrides=",">
+            appored='0',
+            appor_by=NULL,
+            appor_time = NULL,
+        </trim>
+        where article_id = #{Id}
+    </update>
+
+    <update id="unApporByIds" parameterType="String">
+        update res_articles
+        <trim prefix="SET" suffixOverrides=",">
+            appored='0',
+            appor_by=NULL,
+            appor_time=NULL
+            where article_id in
+            <foreach item="id" collection="array" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </trim>
+    </update>
+
 </mapper>

@@ -13,7 +13,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @author admin
  * @date 2025-04-11
  */
-public class ResArticles extends BaseEntity
+public class ResArticlesVo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -33,6 +33,14 @@ public class ResArticles extends BaseEntity
 
     /** 分类 */
     private Long typeId;
+
+    /** 栏目 */
+    @Excel(name = "栏目")
+    private String categoryName;
+
+    /** 分类 */
+    @Excel(name = "分类")
+    private String typeName;
 
     /** 内容 */
     @Excel(name = "内容")
@@ -105,6 +113,15 @@ public class ResArticles extends BaseEntity
     {
         return categoryId;
     }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     public void setTypeId(Long typeId)
     {
         this.typeId = typeId;
@@ -114,6 +131,15 @@ public class ResArticles extends BaseEntity
     {
         return typeId;
     }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
     public void setContent(String content)
     {
         this.content = content;
@@ -204,6 +230,8 @@ public class ResArticles extends BaseEntity
                 .append("title", getTitle())
                 .append("categoryId", getCategoryId())
                 .append("typeId", getTypeId())
+                .append("categoryName", getCategoryId())
+                .append("typeName", getTypeId())
                 .append("content", getContent())
                 .append("views", getViews())
                 .append("status", getStatus())

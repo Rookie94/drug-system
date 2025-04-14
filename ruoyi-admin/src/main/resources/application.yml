@@ -135,7 +135,7 @@ minio:
   # 是否启用Minio
   useEnable: true
   # oss地址
-  url: http://36.133.150.28:9000
+  url: https://yiti.shunxuan.net.cn:9000
   # osskey
   accessKey: utOGh5X1fv7d7Kiwbzm5
   # oss秘钥

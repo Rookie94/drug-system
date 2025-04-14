@@ -2,16 +2,19 @@ package com.ruoyi.cms.res.service.impl;
 
 import java.util.List;
 
-import com.ruoyi.common.config.RuoYiConfig;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.file.FileUtils;
+import com.ruoyi.common.utils.file.MinioUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.cms.res.mapper.SysFileInfoMapper;
 import com.ruoyi.cms.res.domain.SysFileInfo;
 import com.ruoyi.cms.res.service.ISysFileInfoService;
+
+import com.ruoyi.common.config.MinioConfig;
+import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.file.FileUtils;
 
 /**
  * 文件管理Service业务层处理
@@ -92,8 +95,19 @@ public class SysFileInfoServiceImpl implements ISysFileInfoService
         for (int i = 0; i<fileIds.length; i++){
             Long fileId = fileIds[i];
             SysFileInfo sysFileInfo = sysFileInfoMapper.selectSysFileInfoByFileId(fileId);
-            String filePath = RuoYiConfig.getProfile() + StringUtils.substringAfter(sysFileInfo.getFilePath(), Constants.RESOURCE_PREFIX);
-            FileUtils.deleteFile(filePath);
+            if(sysFileInfo.getFilePath().indexOf("http")>-1){
+                String baseUrl = MinioConfig.getUrl() + "/" + MinioConfig.getBucketName();
+                String objectName = sysFileInfo.getFilePath().replace(baseUrl, "");
+                try {
+                    MinioUtil.removeObject(MinioConfig.getBucketName(),objectName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                String filePath = RuoYiConfig.getProfile() + StringUtils.substringAfter(sysFileInfo.getFilePath(), Constants.RESOURCE_PREFIX);
+                FileUtils.deleteFile(filePath);
+            }
         }
         return sysFileInfoMapper.deleteSysFileInfoByFileIds(fileIds);
     }

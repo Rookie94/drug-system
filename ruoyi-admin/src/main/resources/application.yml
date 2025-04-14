@@ -130,6 +130,19 @@ xss:
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
 
+# oss配置
+minio:
+  # 是否启用Minio
+  useEnable: true
+  # oss地址
+  url: http://36.133.150.28:9000
+  # osskey
+  accessKey: utOGh5X1fv7d7Kiwbzm5
+  # oss秘钥
+  secretKey: 8KhucwRkd8f8QiimshP3Uz7SNBlaaIB895GDeBjS
+  # 默认bucket
+  bucketName: public
+
   #微信小程序配置
   wx:
     miniapp:
@@ -141,9 +154,4 @@ xss:
         timeout: 5000
         database: 0
 
-  #阿里oss配置
-  oss:
-    endpoint: 1
-    bucket: 1
-    accessKeyId: 1
-    accessKeySecret: 1
+

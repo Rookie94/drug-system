@@ -28,13 +28,15 @@ public class MimeTypeUtils
 
     public static final String[] DEFAULT_ALLOWED_EXTENSION = {
             // 图片
-            "bmp", "gif", "jpg", "jpeg", "png",
+            "bmp", "gif", "jpg", "jpeg", "png","gif",
             // word excel powerpoint
             "doc", "docx", "xls", "xlsx", "ppt", "pptx", "html", "htm", "txt",
             // 压缩文件
             "rar", "zip", "gz", "bz2",
+            //音频
+            "mp3", "wav", "wma", "ape","flac","ogg",
             // 视频格式
-            "mp4", "avi", "rmvb",
+            "mp4", "avi", "wmv", "mpg", "mpeg","rm","rmvb","webm",
             // pdf
             "pdf" };
 

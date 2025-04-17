@@ -2,6 +2,8 @@ package com.ruoyi.cms.res.mapper;
 
 import java.util.Date;
 import java.util.List;
+
+import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.cms.res.domain.ResOrginfo;
 import org.apache.ibatis.annotations.Param;
 
@@ -70,20 +72,12 @@ public interface ResOrginfoMapper
     public int deleteResOrginfoByOrgids(Long[] orgids);
 
     /**
-     * 审批戒治机构
+     * 批量审批
      *
-     * @param orgid 戒治机构主键
+     * @param apporParams 批量审批参数
      * @return 结果
      */
-    public int apporResOrginfoByOrgid(@Param("orgid") Long orgid,@Param("apporBy") String apporBy,@Param("apporTime") Date apporTime);
-
-    /**
-     * 批量审批戒治机构
-     *
-     * @param orgids 需要删除的数据主键集合
-     * @return 结果
-     */
-    public int apporResOrginfoByOrgids(@Param("orgids") Long[] orgids,@Param("apporBy") String apporBy,@Param("apporTime") Date apporTime);
+    public int apporByIds(ResApporParam apporParams);
 
     /**
      * 反审批戒治机构

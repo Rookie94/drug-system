@@ -5,6 +5,7 @@ import java.util.List;
 
 import java.util.List;
 import com.ruoyi.cms.job.domain.ResSkill;
+import com.ruoyi.system.domain.ResApporParam;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -72,21 +73,12 @@ public interface ResSkillMapper
     public int updateStatus(ResSkill resSkill);
 
     /**
-     * 审批技能
+     * 批量审批
      *
-     * @param Id 技能主键
+     * @param apporParams 批量审批参数
      * @return 结果
      */
-    public int apporById(@Param("Id") Long Id, @Param("apporBy") String apporBy, @Param("apporTime") Date apporTime);
-
-    /**
-     * 批量审批技能
-     *
-     * @param Ids 需要删除的数据主键集合
-     * @return 结果
-     */
-    public int apporByIds(@Param("Ids") Long[] Ids,@Param("apporBy") String apporBy,@Param("apporTime") Date apporTime);
-
+    public int apporByIds(ResApporParam apporParams);
     /**
      * 反审批技能
      *

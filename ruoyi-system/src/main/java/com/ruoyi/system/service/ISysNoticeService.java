@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.system.domain.SysNotice;
 
 /**
@@ -70,18 +72,10 @@ public interface ISysNoticeService
     /**
      * 批量审批
      *
-     * @param ids 需要删除的主键集合
+     * @param apporParams 批量审批参数
      * @return 结果
      */
-    public int apporByIds(Long[] ids);
-
-    /**
-     * 审批信息
-     *
-     * @param id 主键
-     * @return 结果
-     */
-    public int apporById(Long id);
+    public int apporByIds(ResApporParam apporParams);
 
     /**
      * 批量反审批

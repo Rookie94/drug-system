@@ -2,6 +2,7 @@ package com.ruoyi.cms.job.service;
 
 import java.util.List;
 import com.ruoyi.cms.job.domain.ResJobinfo;
+import com.ruoyi.system.domain.ResApporParam;
 
 /**
  * 招聘信息Service接口
@@ -68,21 +69,12 @@ public interface IResJobinfoService
     public int updateStatus(ResJobinfo resJobInfo);
 
     /**
-     * 批量审批工作
+     * 批量审批
      *
-     * @param ids 需要删除的工作主键集合
+     * @param apporParams 主键集合
      * @return 结果
      */
-    public int apporByIds(Long[] ids);
-
-    /**
-     * 审批工作信息
-     *
-     * @param id 工作主键
-     * @return 结果
-     */
-    public int apporById(Long id);
-
+    public int apporByIds(ResApporParam apporParams);
     /**
      * 批量反审批工作
      *

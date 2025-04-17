@@ -1,8 +1,10 @@
 package com.ruoyi.cms.res.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.cms.res.domain.ResOrginfo;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
@@ -126,31 +128,21 @@ public class ResExpertServiceImpl implements IResExpertService
     }
 
     /**
-     * 审批专家信息
+     * 批量审批
      *
-     * @param id 专家主键
+     * @param apporParams 审批参数
      * @return 结果
      */
     @Override
-    public int apporById(Long id)
+    public int apporByIds(ResApporParam apporParams)
     {
-        String userName=getUsername();
-        Date apporDate=DateUtils.getNowDate();
-        return resExpertMapper.apporById(id,userName,apporDate);
-    }
-
-    /**
-     * 批量审批戒治机构
-     *
-     * @param ids 需要删除的专家主键
-     * @return 结果
-     */
-    @Override
-    public int apporByIds(Long[] ids)
-    {
-        String userName=getUsername();
-        Date apporDate=DateUtils.getNowDate();
-        return resExpertMapper.apporByIds(ids,userName,apporDate);
+        apporParams.setApporBy(getUsername());
+        apporParams.setApporTime(DateUtils.getNowDate());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(apporParams.flag==2){
+            apporParams.setPublishTime(dateFormat.format(DateUtils.getNowDate()));
+        }
+        return resExpertMapper.apporByIds(apporParams);
     }
 
     /**

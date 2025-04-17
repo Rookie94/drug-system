@@ -2,6 +2,8 @@ package com.ruoyi.cms.res.mapper;
 
 import java.util.Date;
 import java.util.List;
+
+import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.cms.res.domain.ResExpert;
 import org.apache.ibatis.annotations.Param;
 
@@ -70,21 +72,12 @@ public interface ResExpertMapper
     public int updateStatus(ResExpert resExpert);
 
     /**
-     * 审批专家
+     * 批量审批
      *
-     * @param Id 专家主键
+     * @param apporParams 批量审批参数
      * @return 结果
      */
-    public int apporById(@Param("Id") Long Id,@Param("apporBy") String apporBy,@Param("apporTime") Date apporTime);
-
-    /**
-     * 批量审批专家
-     *
-     * @param Ids 需要删除的数据主键集合
-     * @return 结果
-     */
-    public int apporByIds(@Param("Ids") Long[] Ids,@Param("apporBy") String apporBy,@Param("apporTime") Date apporTime);
-
+    public int apporByIds(ResApporParam apporParams);
     /**
      * 反审批专家
      *

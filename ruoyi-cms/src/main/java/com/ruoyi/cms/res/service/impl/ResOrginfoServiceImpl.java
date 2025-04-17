@@ -1,8 +1,10 @@
 package com.ruoyi.cms.res.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,31 +126,21 @@ public class ResOrginfoServiceImpl implements IResOrginfoService
     }
 
     /**
-     * 审批戒治机构信息
+     * 批量审批
      *
-     * @param orgid 戒治机构主键
+     * @param apporParams 审批参数
      * @return 结果
      */
     @Override
-    public int apporResOrginfoByOrgid(Long orgid)
+    public int apporByIds(ResApporParam apporParams)
     {
-        String userName=getUsername();
-        Date apporDate=DateUtils.getNowDate();
-        return resOrginfoMapper.apporResOrginfoByOrgid(orgid,userName,apporDate);
-    }
-
-    /**
-     * 批量审批戒治机构
-     *
-     * @param orgids 需要删除的戒治机构主键
-     * @return 结果
-     */
-    @Override
-    public int apporResOrginfoByOrgids(Long[] orgids)
-    {
-        String userName=getUsername();
-        Date apporDate=DateUtils.getNowDate();
-        return resOrginfoMapper.apporResOrginfoByOrgids(orgids,userName,apporDate);
+        apporParams.setApporBy(getUsername());
+        apporParams.setApporTime(DateUtils.getNowDate());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(apporParams.flag==2){
+            apporParams.setPublishTime(dateFormat.format(DateUtils.getNowDate()));
+        }
+        return resOrginfoMapper.apporByIds(apporParams);
     }
 
     /**

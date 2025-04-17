@@ -2,6 +2,7 @@ package com.ruoyi.cms.job.service;
 
 import java.util.List;
 import com.ruoyi.cms.job.domain.ResSkill;
+import com.ruoyi.system.domain.ResApporParam;
 
 /**
  * 技能信息Service接口
@@ -68,20 +69,12 @@ public interface IResSkillService
     public int updateStatus(ResSkill resSkill);
 
     /**
-     * 批量审批技能
+     * 批量审批
      *
-     * @param ids 需要删除的技能主键集合
+     * @param apporParams 主键集合
      * @return 结果
      */
-    public int apporByIds(Long[] ids);
-
-    /**
-     * 审批技能信息
-     *
-     * @param id 技能主键
-     * @return 结果
-     */
-    public int apporById(Long id);
+    public int apporByIds(ResApporParam apporParams);
 
     /**
      * 批量反审批技能

@@ -2,6 +2,7 @@ package com.ruoyi.cms.res.service;
 
 import java.util.List;
 
+import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.cms.res.domain.ResCase;
 import com.ruoyi.cms.res.domain.ResNews;
 
@@ -70,20 +71,12 @@ public interface IResNewsService
     public int updateStatus(ResNews resNews);
 
     /**
-     * 批量审批戒毒资讯
+     * 批量审批
      *
-     * @param ids 需要删除的戒治案例主键集合
+     * @param apporParams 批量审批参数
      * @return 结果
      */
-    public int apporByIds(Long[] ids);
-
-    /**
-     * 审批戒毒资讯
-     *
-     * @param id 戒治案例主键
-     * @return 结果
-     */
-    public int apporById(Long id);
+    public int apporByIds(ResApporParam apporParams);
 
     /**
      * 批量反审批戒毒资讯

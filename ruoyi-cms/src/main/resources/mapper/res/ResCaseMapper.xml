@@ -13,6 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="content"    column="content"    />
         <result property="status"    column="status"    />
         <result property="appored"    column="appored"    />
+        <result property="publishTime"    column="publish_time"    />
         <result property="userId"    column="user_id"    />
         <result property="deptId"    column="dept_id"    />
         <result property="createBy"    column="create_by"    />
@@ -25,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectResCaseVo">
-        select caseid, order_num, title, pic, case_type, content, status, appored, user_id, dept_id,
+        select caseid, order_num, title, pic, case_type, content, status, appored,publish_time, user_id, dept_id,
                create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_case t
     </sql>
 
@@ -56,6 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="content != null">content,</if>
             <if test="status != null">status,</if>
             <if test="appored != null">appored,</if>
+            <if test="publishTime != null">publish_time,</if>
             <if test="userId != null">user_id,</if>
             <if test="deptId != null">dept_id,</if>
             <if test="createBy != null">create_by,</if>
@@ -74,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="content != null">#{content},</if>
             <if test="status != null">#{status},</if>
             <if test="appored != null">#{appored},</if>
+            <if test="publishTime != null">#{publishTime},</if>
             <if test="userId != null">#{userId},</if>
             <if test="deptId != null">#{deptId},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -96,6 +99,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="content != null">content = #{content},</if>
             <if test="status != null">status = #{status},</if>
             <if test="appored != null">appored = #{appored},</if>
+            <if test="publishTime != null">publish_time=#{publishTime},</if>
             <if test="userId != null">user_id = #{userId},</if>
             <if test="deptId != null">dept_id = #{deptId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
@@ -121,7 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
-        select caseid from res_case where appored='1' and caseid in
+        select caseid from res_case where appored in ('1','2') and caseid in
         <foreach item="caseid" collection="array" open="(" separator="," close=")">
             #{caseid}
         </foreach>
@@ -137,24 +141,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where caseid = #{caseid}
     </update>
 
-    <update id="apporById">
+    <update id="apporByIds"  parameterType="ResApporParam">
         update res_case
         <trim prefix="SET" suffixOverrides=",">
-            appored='1',
+            <if test="flag != null">appored = #{flag},</if>
             <if test="apporBy != null">appor_by = #{apporBy},</if>
             <if test="apporTime != null">appor_time = #{apporTime},</if>
-        </trim>
-        where caseid = #{Id}
-    </update>
-
-    <update id="apporByIds">
-        update res_case
-        <trim prefix="SET" suffixOverrides=",">
-            appored='1',
-            <if test="apporBy != null">appor_by = #{apporBy},</if>
-            <if test="apporTime != null">appor_time = #{apporTime}</if>
+            <if test="apporTime != null">publish_time = #{publishTime}</if>
             where caseid in
-            <foreach item="id" collection="Ids" open="(" separator="," close=")">
+            <foreach item="id" collection="ids" open="(" separator="," close=")">
                 #{id}
             </foreach>
         </trim>
@@ -164,6 +159,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update res_case
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
+            publish_time=NULL,
             appor_by=NULL,
             appor_time = NULL,
         </trim>
@@ -174,6 +170,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update res_case
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
+            publish_time=NULL,
             appor_by=NULL,
             appor_time=NULL
             where caseid in

@@ -1,20 +1,21 @@
 package com.ruoyi.cms.res.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.cms.res.domain.*;
 import com.ruoyi.cms.res.domain.ResArticlesVo;
-import com.ruoyi.cms.res.domain.ResCase;
-import com.ruoyi.cms.res.domain.ResCategoryInfo;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.cms.res.mapper.ResArticlesMapper;
-import com.ruoyi.cms.res.domain.ResArticles;
 import com.ruoyi.cms.res.service.IResArticlesService;
 
 import static com.ruoyi.common.utils.SecurityUtils.*;
+
+import com.ruoyi.system.domain.ResApporParam;
 
 /**
  * 资讯发布Service业务层处理
@@ -148,31 +149,21 @@ public class ResArticlesServiceImpl implements IResArticlesService
     }
 
     /**
-     * 审批戒治案例信息
+     * 批量审批
      *
-     * @param id 戒治案例主键
+     * @param apporParams 审批参数
      * @return 结果
      */
     @Override
-    public int apporById(Long id)
+    public int apporByIds(ResApporParam apporParams)
     {
-        String userName=getUsername();
-        Date apporDate=DateUtils.getNowDate();
-        return resArticlesMapper.apporById(id,userName,apporDate);
-    }
-
-    /**
-     * 批量审批戒治机构
-     *
-     * @param ids 需要删除的戒治案例主键
-     * @return 结果
-     */
-    @Override
-    public int apporByIds(Long[] ids)
-    {
-        String userName=getUsername();
-        Date apporDate=DateUtils.getNowDate();
-        return resArticlesMapper.apporByIds(ids,userName,apporDate);
+        apporParams.setApporBy(getUsername());
+        apporParams.setApporTime(DateUtils.getNowDate());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(apporParams.flag==2){
+            apporParams.setPublishTime(dateFormat.format(DateUtils.getNowDate()));
+        }
+        return resArticlesMapper.apporByIds(apporParams);
     }
 
     /**

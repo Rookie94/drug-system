@@ -16,6 +16,7 @@
         <result property="views"    column="views"    />
         <result property="status"    column="status"    />
         <result property="appored"    column="appored"    />
+        <result property="publishTime"    column="publish_time"    />
         <result property="pic"    column="pic"    />
         <result property="userId"    column="user_id"    />
         <result property="deptId"    column="dept_id"    />
@@ -35,7 +36,7 @@
 
     <sql id="selectResArticlesVo">
         select t.article_id, t.order_num, t.title, t.category_id,c.category_name, t.type_id,s.category_name type_name,
-         content, views, t.status, appored, pic,t.create_by, t.create_time, t.update_by, t.update_time, t.appor_by,
+         content, views, t.status, appored,publish_time, pic,t.create_by, t.create_time, t.update_by, t.update_time, t.appor_by,
          t.appor_time, t.remark
         from res_articles t
         left join res_category c on t.category_id=c.id
@@ -80,6 +81,7 @@
             <if test="views != null">views,</if>
             <if test="status != null">status,</if>
             <if test="appored != null">appored,</if>
+            <if test="publishTime != null">publish_time,</if>
             <if test="pic != null">pic,</if>
             <if test="userId != null">user_id,</if>
             <if test="deptId != null">dept_id,</if>
@@ -100,6 +102,7 @@
             <if test="views != null">#{views},</if>
             <if test="status != null">#{status},</if>
             <if test="appored != null">#{appored},</if>
+            <if test="publishTime != null">#{publishTime},</if>
             <if test="pic != null">#{pic},</if>
             <if test="userId != null">#{userId},</if>
             <if test="deptId != null">#{deptId},</if>
@@ -124,6 +127,7 @@
             <if test="views != null">views = #{views},</if>
             <if test="status != null">status = #{status},</if>
             <if test="appored != null">appored = #{appored},</if>
+            <if test="publishTime != null">publish_time=#{publishTime},</if>
             <if test="pic != null">pic = #{pic},</if>
             <if test="userId != null">user_id = #{userId},</if>
             <if test="deptId != null">dept_id = #{deptId},</if>
@@ -150,7 +154,7 @@
     </delete>
 
     <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
-        select article_id from res_articles where appored='1' and article_id in
+        select article_id from res_articles where appored in ('1','2') and article_id in
         <foreach item="articleId" collection="array" open="(" separator="," close=")">
             #{articleId}
         </foreach>
@@ -161,29 +165,20 @@
         <trim prefix="SET" suffixOverrides=",">
             <if test="status != null">status = #{status},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime}</if>
         </trim>
         where article_id = #{articleId}
     </update>
 
-    <update id="apporById">
+    <update id="apporByIds"  parameterType="ResApporParam">
         update res_articles
         <trim prefix="SET" suffixOverrides=",">
-            appored='1',
+            <if test="flag != null">appored = #{flag},</if>
             <if test="apporBy != null">appor_by = #{apporBy},</if>
             <if test="apporTime != null">appor_time = #{apporTime},</if>
-        </trim>
-        where article_id = #{Id}
-    </update>
-
-    <update id="apporByIds">
-        update res_articles
-        <trim prefix="SET" suffixOverrides=",">
-            appored='1',
-            <if test="apporBy != null">appor_by = #{apporBy},</if>
-            <if test="apporTime != null">appor_time = #{apporTime}</if>
+            <if test="apporTime != null">publish_time = #{publishTime}</if>
             where article_id in
-            <foreach item="id" collection="Ids" open="(" separator="," close=")">
+            <foreach item="id" collection="ids" open="(" separator="," close=")">
                 #{id}
             </foreach>
         </trim>
@@ -193,8 +188,9 @@
         update res_articles
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
+            publish_time=NULL,
             appor_by=NULL,
-            appor_time = NULL,
+            appor_time = NULL
         </trim>
         where article_id = #{Id}
     </update>
@@ -203,6 +199,7 @@
         update res_articles
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
+            publish_time=NULL,
             appor_by=NULL,
             appor_time=NULL
             where article_id in

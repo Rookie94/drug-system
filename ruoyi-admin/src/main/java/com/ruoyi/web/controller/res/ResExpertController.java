@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.res;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.cms.res.domain.ResOrginfo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,14 +129,14 @@ public class ResExpertController extends BaseController
     }
 
     /**
-     * 审批专家
+     * 批量审批
      */
     @PreAuthorize("@ss.hasPermi('res:expert:appor')")
     @Log(title = "戒治专家", businessType = BusinessType.UPDATE)
-    @PostMapping("/appor/{ids}")
-    public AjaxResult appor(@PathVariable Long[] ids)
+    @PostMapping("/appor")
+    public AjaxResult appor(@RequestBody ResApporParam apporParams)
     {
-        return toAjax(resExpertService.apporByIds(ids));
+        return toAjax(resExpertService.apporByIds(apporParams));
     }
 
     /**

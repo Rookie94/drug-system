@@ -22,6 +22,8 @@ import com.ruoyi.cms.job.service.IResJobinfoService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
+import com.ruoyi.system.domain.ResApporParam;
+
 /**
  * 招聘信息Controller
  *
@@ -127,14 +129,14 @@ public class ResJobinfoController extends BaseController
     }
 
     /**
-     * 审批专家
+     * 批量审批
      */
     @PreAuthorize("@ss.hasPermi('job:jobinfo:appor')")
     @Log(title = "招聘信息", businessType = BusinessType.UPDATE)
-    @PostMapping("/appor/{ids}")
-    public AjaxResult appor(@PathVariable Long[] ids)
+    @PostMapping("/appor")
+    public AjaxResult appor(@RequestBody ResApporParam apporParams)
     {
-        return toAjax(resJobinfoService.apporByIds(ids));
+        return toAjax(resJobinfoService.apporByIds(apporParams));
     }
 
     /**

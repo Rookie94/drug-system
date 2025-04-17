@@ -12,6 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="orgContent"    column="org_content"    />
         <result property="status"    column="status"    />
         <result property="appored"    column="appored"    />
+        <result property="publishTime"    column="publish_time"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -22,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectResOrginfoVo">
-        select orgid, order_num, org_name, pic, org_content, status,appored, create_by, create_time, update_by,update_time, appor_by, appor_time, remark
+        select orgid, order_num, org_name, pic, org_content, status,appored,publish_time, create_by, create_time, update_by,update_time, appor_by, appor_time, remark
             from res_orginfo t
     </sql>
 
@@ -43,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectApporedOrgByOrgids" parameterType="String" resultType="java.lang.Integer">
-        select orgid from res_orginfo where appored='1' and orgid in
+        select orgid from res_orginfo where appored in ('1','2') and orgid in
         <foreach item="orgid" collection="array" open="(" separator="," close=")">
             #{orgid}
         </foreach>
@@ -58,6 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orgContent != null">org_content,</if>
             <if test="status != null">status,</if>
             <if test="appored != null">appored,</if>
+            <if test="publishTime != null">publish_time,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -75,6 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orgContent != null">#{orgContent},</if>
             <if test="status != null">#{status},</if>
             <if test="appored != null">#{appored},</if>
+            <if test="publishTime != null">#{publishTime},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
@@ -95,7 +98,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pic != null">pic = #{pic},</if>
             <if test="orgContent != null">org_content = #{orgContent},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="appored != null">status = #{appored},</if>
+            <if test="appored != null">appored = #{appored},</if>
+            <if test="publishTime != null">publish_time=#{publishTime},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
@@ -130,25 +134,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
-    <update id="apporResOrginfoByOrgid">
+    <update id="apporByIds"  parameterType="ResApporParam">
         update res_orginfo
         <trim prefix="SET" suffixOverrides=",">
-            appored='1',
+            <if test="flag != null">appored = #{flag},</if>
             <if test="apporBy != null">appor_by = #{apporBy},</if>
             <if test="apporTime != null">appor_time = #{apporTime},</if>
-        </trim>
-        where orgid = #{orgid}
-    </update>
-
-    <update id="apporResOrginfoByOrgids">
-        update res_orginfo
-        <trim prefix="SET" suffixOverrides=",">
-            appored='1',
-            <if test="apporBy != null">appor_by = #{apporBy},</if>
-            <if test="apporTime != null">appor_time = #{apporTime}</if>
+            <if test="apporTime != null">publish_time = #{publishTime}</if>
             where orgid in
-            <foreach item="orgid" collection="orgids" open="(" separator="," close=")">
-                #{orgid}
+            <foreach item="id" collection="ids" open="(" separator="," close=")">
+                #{id}
             </foreach>
         </trim>
     </update>
@@ -157,6 +152,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update res_orginfo
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
+            publish_time=NULL,
             appor_by=NULL,
             appor_time = NULL,
         </trim>
@@ -167,6 +163,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update res_orginfo
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
+            publish_time=NULL,
             appor_by=NULL,
             appor_time=NULL
             where orgid in

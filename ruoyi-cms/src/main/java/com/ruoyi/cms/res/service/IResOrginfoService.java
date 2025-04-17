@@ -1,6 +1,8 @@
 package com.ruoyi.cms.res.service;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.cms.res.domain.ResOrginfo;
 
 /**
@@ -59,21 +61,6 @@ public interface IResOrginfoService
      */
     public int deleteResOrginfoByOrgids(Long[] orgids);
 
-    /**
-     * 删除戒治机构信息
-     * 
-     * @param orgid 戒治机构主键
-     * @return 结果
-     */
-    public int deleteResOrginfoByOrgid(Long orgid);
-
-    /**
-     * 批量审批戒治机构
-     *
-     * @param orgids 需要删除的戒治机构主键集合
-     * @return 结果
-     */
-    public int apporResOrginfoByOrgids(Long[] orgids);
 
     /**
      * 审批戒治机构信息
@@ -81,7 +68,17 @@ public interface IResOrginfoService
      * @param orgid 戒治机构主键
      * @return 结果
      */
-    public int apporResOrginfoByOrgid(Long orgid);
+    public int deleteResOrginfoByOrgid(Long orgid);
+
+    /**
+     * 批量审批
+     *
+     * @param apporParams 批量审批参数
+     * @return 结果
+     */
+    public int apporByIds(ResApporParam apporParams);
+
+
 
     /**
      * 批量反审批戒治机构

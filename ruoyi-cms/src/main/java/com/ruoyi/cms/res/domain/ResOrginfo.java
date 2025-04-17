@@ -127,6 +127,19 @@ public class ResOrginfo extends BaseEntity
     public Date getApporTime() {return apporTime;}
     public void setApporTime(Date apporTime) {this.apporTime = apporTime; }
 
+    /** 发布时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "发布时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date publishTime;
+
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -136,6 +149,7 @@ public class ResOrginfo extends BaseEntity
             .append("pic", getPic())
             .append("orgContent", getOrgContent())
             .append("status", getStatus())
+             .append("publishTime", getPublishTime())
             .append("appored", getAppored())
             .append("userId", getUserId())
             .append("deptId", getDeptId())

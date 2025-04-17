@@ -63,6 +63,19 @@ public class ResCase extends BaseEntity
     @Excel(name = "审批时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date apporTime;
 
+    /** 发布时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "发布时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date publishTime;
+
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
+
     public void setCaseid(Long caseid) 
     {
         this.caseid = caseid;
@@ -183,6 +196,7 @@ public class ResCase extends BaseEntity
             .append("caseType", getCaseType())
             .append("content", getContent())
             .append("status", getStatus())
+            .append("publishTime", getPublishTime())
             .append("appored", getAppored())
             .append("userId", getUserId())
             .append("deptId", getDeptId())

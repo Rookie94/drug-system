@@ -1,10 +1,12 @@
 package com.ruoyi.system.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.domain.ResApporParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysNoticeMapper;
@@ -124,31 +126,21 @@ public class SysNoticeServiceImpl implements ISysNoticeService
     }
 
     /**
-     * 审批信息
+     * 批量审批
      *
-     * @param id 主键
+     * @param apporParams 审批参数
      * @return 结果
      */
     @Override
-    public int apporById(Long id)
+    public int apporByIds(ResApporParam apporParams)
     {
-        String userName=getUsername();
-        Date apporDate=DateUtils.getNowDate();
-        return sysNoticeMapper.apporById(id,userName,apporDate);
-    }
-
-    /**
-     * 批量审批戒治机构
-     *
-     * @param ids 需要删除的主键
-     * @return 结果
-     */
-    @Override
-    public int apporByIds(Long[] ids)
-    {
-        String userName=getUsername();
-        Date apporDate=DateUtils.getNowDate();
-        return sysNoticeMapper.apporByIds(ids,userName,apporDate);
+        apporParams.setApporBy(getUsername());
+        apporParams.setApporTime(DateUtils.getNowDate());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(apporParams.flag==2){
+            apporParams.setPublishTime(dateFormat.format(DateUtils.getNowDate()));
+        }
+        return sysNoticeMapper.apporByIds(apporParams);
     }
 
     /**

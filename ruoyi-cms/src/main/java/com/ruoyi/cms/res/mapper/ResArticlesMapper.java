@@ -2,11 +2,12 @@ package com.ruoyi.cms.res.mapper;
 
 import java.util.Date;
 import java.util.List;
-import com.ruoyi.cms.res.domain.ResArticles;
+
+import com.ruoyi.cms.res.domain.*;
 import com.ruoyi.cms.res.domain.ResArticlesVo;
-import com.ruoyi.cms.res.domain.ResCase;
-import com.ruoyi.cms.res.domain.ResCategoryInfo;
 import org.apache.ibatis.annotations.Param;
+
+import com.ruoyi.system.domain.ResApporParam;
 
 /**
  * 资讯发布Mapper接口
@@ -87,20 +88,12 @@ public interface ResArticlesMapper
     public int updateStatus(ResArticles resArticles);
 
     /**
-     * 审批戒治案例
-     *
-     * @param Id 戒治案例主键
-     * @return 结果
-     */
-    public int apporById(@Param("Id") Long Id, @Param("apporBy") String apporBy, @Param("apporTime") Date apporTime);
-
-    /**
      * 批量审批
      *
-     * @param Ids 需要删除的数据主键集合
+     * @param apporParams 批量审批参数
      * @return 结果
      */
-    public int apporByIds(@Param("Ids") Long[] Ids,@Param("apporBy") String apporBy,@Param("apporTime") Date apporTime);
+    public int apporByIds(ResApporParam apporParams);
 
     /**
      * 反审批

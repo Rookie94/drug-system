@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.task.mapper.MyTaskMapper">
+
+
+    <update id="publishResources">
+        update res_jobinfo set appored='2' where appored=1 and publish_time&lt;=Now();
+        update res_skill set appored='2' where appored=1 and publish_time&lt;=Now();
+        update res_orginfo set appored='2' where appored=1 and publish_time&lt;=Now();
+        update res_expert set appored='2' where appored=1 and publish_time&lt;=Now();
+        update res_case set appored='2' where appored=1 and publish_time&lt;=Now();
+        update res_articles set appored='2' where appored=1 and publish_time&lt;=Now();
+        update sys_notice set appored='2' where appored=1 and publish_time&lt;=Now();
+    </update>
+
+
+</mapper>

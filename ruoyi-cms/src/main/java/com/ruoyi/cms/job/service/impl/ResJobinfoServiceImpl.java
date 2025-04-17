@@ -1,8 +1,10 @@
 package com.ruoyi.cms.job.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,31 +126,21 @@ public class ResJobinfoServiceImpl implements IResJobinfoService
     }
 
     /**
-     * 审批工作信息
+     * 批量审批
      *
-     * @param id 工作主键
+     * @param apporParams 审批参数
      * @return 结果
      */
     @Override
-    public int apporById(Long id)
+    public int apporByIds(ResApporParam apporParams)
     {
-        String userName=getUsername();
-        Date apporDate=DateUtils.getNowDate();
-        return resJobinfoMapper.apporById(id,userName,apporDate);
-    }
-
-    /**
-     * 批量审批戒治机构
-     *
-     * @param ids 需要删除的工作主键
-     * @return 结果
-     */
-    @Override
-    public int apporByIds(Long[] ids)
-    {
-        String userName=getUsername();
-        Date apporDate=DateUtils.getNowDate();
-        return resJobinfoMapper.apporByIds(ids,userName,apporDate);
+        apporParams.setApporBy(getUsername());
+        apporParams.setApporTime(DateUtils.getNowDate());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(apporParams.flag==2){
+            apporParams.setPublishTime(dateFormat.format(DateUtils.getNowDate()));
+        }
+        return resJobinfoMapper.apporByIds(apporParams);
     }
 
     /**

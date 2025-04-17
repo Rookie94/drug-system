@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.cms.job.domain.ResJobinfo;
+import com.ruoyi.system.domain.ResApporParam;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -71,21 +72,12 @@ public interface ResJobinfoMapper
     public int updateStatus(ResJobinfo resJobInfo);
 
     /**
-     * 审批工作
+     * 批量审批
      *
-     * @param Id 工作主键
+     * @param apporParams 批量审批参数
      * @return 结果
      */
-    public int apporById(@Param("Id") Long Id, @Param("apporBy") String apporBy, @Param("apporTime") Date apporTime);
-
-    /**
-     * 批量审批工作
-     *
-     * @param Ids 需要删除的数据主键集合
-     * @return 结果
-     */
-    public int apporByIds(@Param("Ids") Long[] Ids,@Param("apporBy") String apporBy,@Param("apporTime") Date apporTime);
-
+    public int apporByIds(ResApporParam apporParams);
     /**
      * 反审批工作
      *

@@ -1,10 +1,10 @@
 package com.ruoyi.cms.res.service;
 
 import java.util.List;
-import com.ruoyi.cms.res.domain.ResArticles;
+
+import com.ruoyi.cms.res.domain.*;
 import com.ruoyi.cms.res.domain.ResArticlesVo;
-import com.ruoyi.cms.res.domain.ResCase;
-import com.ruoyi.cms.res.domain.ResCategoryInfo;
+import com.ruoyi.system.domain.ResApporParam;
 
 /**
  * 资讯发布Service接口
@@ -87,18 +87,11 @@ public interface IResArticlesService
     /**
      * 批量审批
      *
-     * @param ids 需要删除的戒治案例主键集合
+     * @param apporParams 主键集合
      * @return 结果
      */
-    public int apporByIds(Long[] ids);
+    public int apporByIds(ResApporParam apporParams);
 
-    /**
-     * 审批
-     *
-     * @param id 戒治案例主键
-     * @return 结果
-     */
-    public int apporById(Long id);
 
     /**
      * 批量反审批

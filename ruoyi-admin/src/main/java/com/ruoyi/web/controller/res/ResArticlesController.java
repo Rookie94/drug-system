@@ -1,8 +1,10 @@
 package com.ruoyi.web.controller.res;
 
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.cms.res.domain.ResCase;
 import com.ruoyi.cms.res.domain.ResCategoryInfo;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -123,7 +125,7 @@ public class ResArticlesController extends BaseController
     /**
      * 查询已审核案例列表
      */
-    @PreAuthorize("@ss.hasPermi('res:case:list')")
+    @PreAuthorize("@ss.hasPermi('res:articles:list')")
     @GetMapping("/list/{articleIds}")
     public List<Integer> list(@PathVariable Long[] articleIds)
     {
@@ -135,8 +137,8 @@ public class ResArticlesController extends BaseController
     /**
      * 状态修改
      */
-    @PreAuthorize("@ss.hasPermi('res:case:edit')")
-    @Log(title = "戒治案例", businessType = BusinessType.UPDATE)
+    @PreAuthorize("@ss.hasPermi('res:articles:edit')")
+    @Log(title = "资讯发布", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
     public AjaxResult changeStatus(@RequestBody ResArticles resArticles)
     {
@@ -144,21 +146,21 @@ public class ResArticlesController extends BaseController
     }
 
     /**
-     * 审批专家
+     * 批量审批
      */
-    @PreAuthorize("@ss.hasPermi('res:case:appor')")
-    @Log(title = "戒治案例", businessType = BusinessType.UPDATE)
-    @PostMapping("/appor/{ids}")
-    public AjaxResult appor(@PathVariable Long[] ids)
+    @PreAuthorize("@ss.hasPermi('res:articles:appor')")
+    @Log(title = "资讯发布", businessType = BusinessType.UPDATE)
+    @PostMapping("/appor")
+    public AjaxResult appor(@RequestBody ResApporParam apporParams)
     {
-        return toAjax(resArticlesService.apporByIds(ids));
+        return toAjax(resArticlesService.apporByIds(apporParams));
     }
 
     /**
      * 反审批专家
      */
-    @PreAuthorize("@ss.hasPermi('res:case:unappor')")
-    @Log(title = "戒治案例", businessType = BusinessType.UPDATE)
+    @PreAuthorize("@ss.hasPermi('res:articles:unappor')")
+    @Log(title = "资讯发布", businessType = BusinessType.UPDATE)
     @PostMapping("/unappor/{ids}")
     public AjaxResult unappor(@PathVariable Long[] ids)
     {

@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.res;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.system.domain.ResApporParam;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -126,14 +128,14 @@ public class ResNewsController extends BaseController
     }
 
     /**
-     * 审批专家
+     * 批量审批
      */
     @PreAuthorize("@ss.hasPermi('res:news:appor')")
     @Log(title = "戒毒资讯", businessType = BusinessType.UPDATE)
-    @PostMapping("/appor/{ids}")
-    public AjaxResult appor(@PathVariable Long[] ids)
+    @PostMapping("/appor")
+    public AjaxResult appor(@RequestBody ResApporParam apporParams)
     {
-        return toAjax(resNewsService.apporByIds(ids));
+        return toAjax(resNewsService.apporByIds(apporParams));
     }
 
     /**

@@ -12,6 +12,7 @@
         <result property="content"    column="content"    />
         <result property="status"    column="status"    />
         <result property="appored"    column="appored"    />
+        <result property="publishTime"    column="publish_time"    />
         <result property="userId"    column="user_id"    />
         <result property="deptId"    column="dept_id"    />
         <result property="createBy"    column="create_by"    />
@@ -24,7 +25,7 @@
     </resultMap>
 
     <sql id="selectSysNoticeVo">
-        select notice_id, notice_title, pic, notice_type, content, status, appored, user_id, dept_id,
+        select notice_id, notice_title, pic, notice_type, content, status, appored,publish_time, user_id, dept_id,
                create_by, create_time, update_by, update_time, remark, appor_by, appor_time from sys_notice t
     </sql>
 
@@ -54,6 +55,7 @@
             <if test="content != null">content,</if>
             <if test="status != null">status,</if>
             <if test="appored != null">appored,</if>
+            <if test="publishTime != null">publish_time,</if>
             <if test="userId != null">user_id,</if>
             <if test="deptId != null">dept_id,</if>
             <if test="createBy != null">create_by,</if>
@@ -71,6 +73,7 @@
             <if test="content != null">#{content},</if>
             <if test="status != null">#{status},</if>
             <if test="appored != null">#{appored},</if>
+            <if test="publishTime != null">#{publishTime},</if>
             <if test="userId != null">#{userId},</if>
             <if test="deptId != null">#{deptId},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -92,6 +95,7 @@
             <if test="content != null">content = #{content},</if>
             <if test="status != null">status = #{status},</if>
             <if test="appored != null">appored = #{appored},</if>
+            <if test="publishTime != null">publish_time=#{publishTime},</if>
             <if test="userId != null">user_id = #{userId},</if>
             <if test="deptId != null">dept_id = #{deptId},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
@@ -117,7 +121,7 @@
     </delete>
 
     <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
-        select notice_id from sys_notice where appored='1' and notice_id in
+        select notice_id from sys_notice where appored in ('1','2')  and notice_id in
         <foreach item="noticeId" collection="array" open="(" separator="," close=")">
             #{noticeId}
         </foreach>
@@ -133,24 +137,15 @@
         where notice_id = #{noticeId}
     </update>
 
-    <update id="apporById">
+    <update id="apporByIds"  parameterType="ResApporParam">
         update sys_notice
         <trim prefix="SET" suffixOverrides=",">
-            appored='1',
+            <if test="flag != null">appored = #{flag},</if>
             <if test="apporBy != null">appor_by = #{apporBy},</if>
             <if test="apporTime != null">appor_time = #{apporTime},</if>
-        </trim>
-        where notice_id = #{Id}
-    </update>
-
-    <update id="apporByIds">
-        update sys_notice
-        <trim prefix="SET" suffixOverrides=",">
-            appored='1',
-            <if test="apporBy != null">appor_by = #{apporBy},</if>
-            <if test="apporTime != null">appor_time = #{apporTime}</if>
+            <if test="apporTime != null">publish_time = #{publishTime}</if>
             where notice_id in
-            <foreach item="id" collection="Ids" open="(" separator="," close=")">
+            <foreach item="id" collection="ids" open="(" separator="," close=")">
                 #{id}
             </foreach>
         </trim>
@@ -160,6 +155,7 @@
         update sys_notice
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
+            publish_time=NULL,
             appor_by=NULL,
             appor_time = NULL,
         </trim>
@@ -170,6 +166,7 @@
         update sys_notice
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
+            publish_time=NULL,
             appor_by=NULL,
             appor_time=NULL
             where notice_id in

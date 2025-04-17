@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.res;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,14 +129,14 @@ public class ResOrginfoController extends BaseController
     }
 
     /**
-     * 审批戒治机构
+     * 批量审批
      */
     @PreAuthorize("@ss.hasPermi('res:orginfo:appor')")
     @Log(title = "戒治机构", businessType = BusinessType.UPDATE)
-    @PostMapping("/appor/{orgids}")
-    public AjaxResult appor(@PathVariable Long[] orgids)
+    @PostMapping("/appor")
+    public AjaxResult appor(@RequestBody ResApporParam apporParams)
     {
-        return toAjax(resOrginfoService.apporResOrginfoByOrgids(orgids));
+        return toAjax(resOrginfoService.apporByIds(apporParams));
     }
 
     /**

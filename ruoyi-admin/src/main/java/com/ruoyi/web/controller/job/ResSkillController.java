@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.job;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,8 @@ import com.ruoyi.cms.job.domain.ResSkill;
 import com.ruoyi.cms.job.service.IResSkillService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+
+import com.ruoyi.system.domain.ResApporParam;
 
 /**
  * 技能信息Controller
@@ -126,14 +129,14 @@ public class ResSkillController extends BaseController
     }
 
     /**
-     * 审批专家
+     * 批量审批
      */
     @PreAuthorize("@ss.hasPermi('job:skill:appor')")
-    @Log(title = "技能信息", businessType = BusinessType.UPDATE)
-    @PostMapping("/appor/{ids}")
-    public AjaxResult appor(@PathVariable Long[] ids)
+    @Log(title = "招聘信息", businessType = BusinessType.UPDATE)
+    @PostMapping("/appor")
+    public AjaxResult appor(@RequestBody ResApporParam apporParams)
     {
-        return toAjax(resSkillService.apporByIds(ids));
+        return toAjax(resSkillService.apporByIds(apporParams));
     }
 
     /**

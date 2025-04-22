@@ -33,6 +33,13 @@ server:
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
 
+# HTTPS
+ssl:
+  key-store: classpath:X.jks
+  key-store-password: 80s1231jzr
+  key-store-type: JKS
+  enabled: false
+
 # 日志配置
 logging:
   level:
@@ -129,3 +136,28 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+# oss配置
+minio:
+  # 是否启用Minio
+  useEnable: true
+  # oss地址
+  url: https://yiti.shunxuan.net.cn:9000
+  # osskey
+  accessKey: utOGh5X1fv7d7Kiwbzm5
+  # oss秘钥
+  secretKey: 8KhucwRkd8f8QiimshP3Uz7SNBlaaIB895GDeBjS
+  # 默认bucket
+  bucketName: public
+
+#微信小程序配置
+wx:
+  miniapp:
+    useRedis: true
+    jedisConfig:
+      host: 127.0.0.1
+      port: 6379
+      password:
+      timeout: 5000
+      database: 0
+

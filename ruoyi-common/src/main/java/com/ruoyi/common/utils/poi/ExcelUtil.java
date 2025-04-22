@@ -1031,6 +1031,7 @@ public class ExcelUtil<T>
                 String dictType = attr.dictType();
                 if (StringUtils.isNotEmpty(dateFormat) && StringUtils.isNotNull(value))
                 {
+                    cell.getCellStyle().setDataFormat(this.wb.getCreationHelper().createDataFormat().getFormat(dateFormat));
                     cell.setCellValue(parseDateToStr(dateFormat, value));
                 }
                 else if (StringUtils.isNotEmpty(readConverterExp) && StringUtils.isNotNull(value))
@@ -1214,7 +1215,7 @@ public class ExcelUtil<T>
             {
                 for (String value : propertyValue.split(separator))
                 {
-                    if (itemArray[1].equals(value))
+                    if (itemArray[1].equals(value) || itemArray[0].equals(value))
                     {
                         propertyString.append(itemArray[0] + separator);
                         break;
@@ -1223,7 +1224,7 @@ public class ExcelUtil<T>
             }
             else
             {
-                if (itemArray[1].equals(propertyValue))
+                if (itemArray[1].equals(propertyValue) || itemArray[0].equals(propertyValue))
                 {
                     return itemArray[0];
                 }

@@ -60,8 +60,8 @@ public class ResArticles extends BaseEntity
     /** 部门ID */
     private Long deptId;
 
-    /** 更新者 */
-    @Excel(name = "更新者")
+    /** 审核者 */
+    @Excel(name = "审核者")
     private String apporBy;
 
     /** 审核时间 */

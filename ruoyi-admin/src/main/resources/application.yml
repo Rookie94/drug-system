@@ -33,6 +33,13 @@ server:
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
 
+# HTTPS
+ssl:
+  key-store: classpath:X.jks
+  key-store-password: 80s1231jzr
+  key-store-type: JKS
+  enabled: false
+
 # 日志配置
 logging:
   level:

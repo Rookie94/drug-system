@@ -68,11 +68,11 @@
         </dependency>
 
         <!-- cms-->
-
-        <dependency>
+       <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-cms</artifactId>
         </dependency>
+
 
         <dependency>
             <groupId>com.ruoyi</groupId>

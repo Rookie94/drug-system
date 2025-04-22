@@ -141,6 +141,8 @@ public class QuestionServiceImpl implements IQuestionService {
      */
     @Override
     public void updateQuesiotnNo(List<Map<String, Object>> queNoes) {
-        questionMapper.updateQuesiotnNo(queNoes);
+        if(queNoes!=null && queNoes.size()>0){
+            questionMapper.updateQuesiotnNo(queNoes);
+        }
     }
 }

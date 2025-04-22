@@ -171,14 +171,17 @@
     </update>
 
     <delete id="deleteQuestionByQuestionId" parameterType="Long">
-        delete
-        from tb_question
-        where question_id = #{questionId}
+        delete from tb_options where question_id = #{questionId};
+        delete from tb_question where question_id = #{questionId};
     </delete>
 
     <delete id="deleteQuestionByQuestionIds" parameterType="String">
+        delete from tb_options where question_id in
+        <foreach item="questionId" collection="array" open="(" separator="," close=");">
+            #{questionId}
+        </foreach>
         delete from tb_question where question_id in
-        <foreach item="questionId" collection="array" open="(" separator="," close=")">
+        <foreach item="questionId" collection="array" open="(" separator="," close=");">
             #{questionId}
         </foreach>
     </delete>

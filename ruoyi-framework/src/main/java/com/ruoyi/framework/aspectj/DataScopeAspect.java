@@ -2,6 +2,8 @@ package com.ruoyi.framework.aspectj;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.common.constant.UserConstants;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -92,10 +94,24 @@ public class DataScopeAspect
     {
         StringBuilder sqlString = new StringBuilder();
         List<String> conditions = new ArrayList<String>();
-
+        List<String> scopeCustomIds = new ArrayList<String>();
+        user.getRoles().forEach(role -> {
+            if (DATA_SCOPE_CUSTOM.equals(role.getDataScope()) && StringUtils.equals(role.getStatus(), UserConstants.ROLE_NORMAL) && StringUtils.containsAny(role.getPermissions(), Convert.toStrArray(permission)))
+            {
+                scopeCustomIds.add(Convert.toStr(role.getRoleId()));
+            }
+        });
         for (SysRole role : user.getRoles())
         {
             String dataScope = role.getDataScope();
+            if (conditions.contains(dataScope) || StringUtils.equals(role.getStatus(), UserConstants.ROLE_DISABLE))
+            {
+                continue;
+            }
+            if (!StringUtils.containsAny(role.getPermissions(), Convert.toStrArray(permission)))
+            {
+                continue;
+            }
             if (!DATA_SCOPE_CUSTOM.equals(dataScope) && conditions.contains(dataScope))
             {
                 continue;
@@ -113,9 +129,16 @@ public class DataScopeAspect
             }
             else if (DATA_SCOPE_CUSTOM.equals(dataScope))
             {
-                sqlString.append(StringUtils.format(
-                        " OR {}.dept_id IN ( SELECT dept_id FROM sys_role_dept WHERE role_id = {} )  or  {}.dept_id is null ", deptAlias,
-                        role.getRoleId(),deptAlias));
+                if (scopeCustomIds.size() > 1)
+                {
+                    // 多个自定数据权限使用in查询，避免多次拼接。
+                    sqlString.append(StringUtils.format(" OR {}.dept_id IN ( SELECT dept_id FROM sys_role_dept WHERE role_id in ({}) ) or  {}.dept_id is null ", deptAlias, String.join(",", scopeCustomIds),deptAlias));
+                }
+                else
+                {
+                    sqlString.append(StringUtils.format(" OR {}.dept_id IN ( SELECT dept_id FROM sys_role_dept WHERE role_id = {} )  or  {}.dept_id is null ", deptAlias, role.getRoleId(),deptAlias));
+                }
+                //sqlString.append(StringUtils.format(" OR {}.dept_id IN ( SELECT dept_id FROM sys_role_dept WHERE role_id = {} )  or  {}.dept_id is null ", deptAlias,role.getRoleId(),deptAlias));
             }
             else if (DATA_SCOPE_DEPT.equals(dataScope))
             {

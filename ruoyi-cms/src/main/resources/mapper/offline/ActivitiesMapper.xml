@@ -16,6 +16,7 @@
         <result property="tel"    column="tel"    />
         <result property="startTime"    column="start_time"    />
         <result property="endTime"    column="end_time"    />
+        <result property="activityType"    column="activity_type"    />
         <result property="status"    column="status"    />
         <result property="appored"    column="appored"    />
         <result property="publishTime"    column="publish_time"    />
@@ -33,7 +34,7 @@
 
     <sql id="selectActivitiesVo">
         select activity_id, parent_activity_id, order_num, activity_name, img, address, org_name, content, tel,
-               start_time, end_time, status, appored,publish_time, del_flag, user_id, dept_id, create_by, create_time,
+               start_time, end_time,activity_type, status, appored,publish_time, del_flag, user_id, dept_id, create_by, create_time,
                update_by, update_time, remark, appor_by, appor_time from tb_activities t
     </sql>
 
@@ -111,6 +112,7 @@
             <if test="tel != null">tel,</if>
             <if test="startTime != null">start_time,</if>
             <if test="endTime != null">end_time,</if>
+            <if test="activityType != null">activity_type,</if>
             <if test="status != null">status,</if>
             <if test="appored != null">appored,</if>
             <if test="publishTime != null">publish_time,</if>
@@ -136,6 +138,7 @@
             <if test="tel != null">#{tel},</if>
             <if test="startTime != null">#{startTime},</if>
             <if test="endTime != null">#{endTime},</if>
+            <if test="activityType != null">activity_type,</if>
             <if test="status != null">#{status},</if>
             <if test="appored != null">#{appored},</if>
             <if test="publishTime != null">#{publishTime},</if>
@@ -165,6 +168,7 @@
             <if test="tel != null">tel = #{tel},</if>
             <if test="startTime != null">start_time = #{startTime},</if>
             <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="activityType != null">activity_type = #{activityType},</if>
             <if test="status != null">status = #{status},</if>
             <if test="appored != null">appored = #{appored},</if>
             <if test="publishTime != null">publish_time=#{publishTime},</if>

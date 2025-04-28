@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.offline.mapper.SignUpMapper">
+    
+    <resultMap type="SignUpVo" id="SignUpResult">
+        <result property="signId"    column="sign_id"    />
+        <result property="activityId"    column="activity_id"    />
+        <result property="activityName"    column="activity_name"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="signTime"    column="sign_time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userType"    column="user_type"    />
+        <result property="userName"    column="user_name"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="phonenumber"    column="phonenumber"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSignUpVo">
+        select t.sign_id,t.activity_id,b.activity_name,b.start_time,b.end_time,t.sign_time,t.user_id,c.user_type,
+               c.user_name,c.nick_name,c.phonenumber,t.dept_id,d.dept_name,t.create_by,t.create_time,t.update_by,
+               t.update_time,t.remark from tb_signup t left join tb_activities b on t.activity_id=b.activity_id
+                   left join sys_user c on t.user_id=c.user_id left join sys_dept d  on t.dept_id=d.dept_id
+    </sql>
+
+    <select id="selectSignUpList" parameterType="SignUp" resultMap="SignUpResult">
+        <include refid="selectSignUpVo"/>
+        <where>  
+            <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="params.beginSignTime != null and params.beginSignTime != '' and params.endSignTime != null and params.endSignTime != ''"> and sign_time between #{params.beginSignTime} and #{params.endSignTime}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="phonenumber != null  and phonenumber != ''"> and phonenumber = #{phonenumber}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectSignUpBySignId" parameterType="Long" resultMap="SignUpResult">
+        <include refid="selectSignUpVo"/>
+        where sign_id = #{signId}
+    </select>
+        
+    <insert id="insertSignUp" parameterType="SignUp">
+        insert into tb_signup
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="signId != null">sign_id,</if>
+            <if test="activityId != null">activity_id,</if>
+            <if test="signTime != null">sign_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="signId != null">#{signId},</if>
+            <if test="activityId != null">#{activityId},</if>
+            <if test="signTime != null">#{signTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSignUp" parameterType="SignUp">
+        update tb_signup
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="activityId != null">activity_id = #{activityId},</if>
+            <if test="signTime != null">sign_time = #{signTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where sign_id = #{signId}
+    </update>
+
+    <delete id="deleteSignUpBySignId" parameterType="Long">
+        delete from tb_signup where sign_id = #{signId}
+    </delete>
+
+    <delete id="deleteSignUpBySignIds" parameterType="String">
+        delete from tb_signup where sign_id in
+        <foreach item="signId" collection="array" open="(" separator="," close=")">
+            #{signId}
+        </foreach>
+    </delete>
+</mapper>

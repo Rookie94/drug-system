@@ -19,6 +19,14 @@ public interface ISysUserService
     public List<SysUser> selectUserList(SysUser user);
 
     /**
+     * 根据条件分页查询学员列表
+     *
+     * @param user 学员信息
+     * @return 学员信息集合信息
+     */
+    public List<SysUser> selectStudentList(SysUser user);
+
+    /**
      * 根据条件分页查询已分配用户角色列表
      * 
      * @param user 用户信息
@@ -203,4 +211,16 @@ public interface ISysUserService
      * @return 结果
      */
     public String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName);
+
+    /**
+     * 导入学员数据
+     *
+     * @param userList 用户数据列表
+     * @param isUpdateSupport 是否更新支持，如果已存在，则进行更新数据
+     * @param operName 操作用户
+     * @return 结果
+     */
+    public String importStudent(List<SysUser> userList, Boolean isUpdateSupport, String operName);
+
+
 }

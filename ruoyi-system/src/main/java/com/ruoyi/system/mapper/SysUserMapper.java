@@ -20,6 +20,14 @@ public interface SysUserMapper
     public List<SysUser> selectUserList(SysUser sysUser);
 
     /**
+     * 根据条件分页查询学员列表
+     *
+     * @param user 学员信息
+     * @return 学员信息集合信息
+     */
+    public List<SysUser> selectStudentList(SysUser user);
+
+    /**
      * 根据条件分页查询已配用户角色列表
      * 
      * @param user 用户信息
@@ -100,6 +108,14 @@ public interface SysUserMapper
      * @return 结果
      */
     public int deleteUserByIds(Long[] userIds);
+
+    /**
+     * 批量停用用户信息
+     *
+     * @param userIds 需要停用的用户ID
+     * @return 结果
+     */
+    public int updateUserStatusByIds(Long[] userIds);
 
     /**
      * 校验用户名称是否唯一

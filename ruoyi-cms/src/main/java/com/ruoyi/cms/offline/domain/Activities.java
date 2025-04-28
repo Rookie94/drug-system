@@ -5,20 +5,24 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.TreeEntity;
 
 /**
  * 活动发布对象 tb_activities
- * 
+ *
  * @author admin
- * @date 2025-03-30
+ * @date 2025-04-25
  */
-public class Activities extends BaseEntity
+public class Activities extends TreeEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 活动ID */
     private Long activityId;
+
+    /** 子活动ID */
+    @Excel(name = "子活动ID")
+    private Long parentActivityId;
 
     /** 活动主题 */
     @Excel(name = "活动主题")
@@ -36,9 +40,9 @@ public class Activities extends BaseEntity
     @Excel(name = "活动组织者")
     private String orgName;
 
-    /** 归属部门 */
-    @Excel(name = "归属部门")
-    private Long deptId;
+    /** 活动详情 */
+    @Excel(name = "活动详情")
+    private String content;
 
     /** 联系电话 */
     @Excel(name = "联系电话")
@@ -58,128 +62,221 @@ public class Activities extends BaseEntity
     @Excel(name = "活动状态")
     private String status;
 
+    /** 审批状态（0待审批 1已发布） */
+    @Excel(name = "审批状态", readConverterExp = "0=待审批,1=已发布")
+    private String appored;
+
     /** 删除标志（0代表存在 2代表删除） */
     private String delFlag;
 
-    public void setActivityId(Long activityId) 
+    /** 用户ID */
+    private Long userId;
+
+    /** 归属部门 */
+    private Long deptId;
+
+    /** 更新者 */
+    @Excel(name = "审核者")
+    private String apporBy;
+
+    /** 更新时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "审核时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date apporTime;
+
+    /** 发布时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "发布时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date publishTime;
+
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
+
+    public void setActivityId(Long activityId)
     {
         this.activityId = activityId;
     }
 
-    public Long getActivityId() 
+    public Long getActivityId()
     {
         return activityId;
     }
-    public void setActivityName(String activityName) 
+    public void setParentActivityId(Long parentActivityId)
+    {
+        this.parentActivityId = parentActivityId;
+    }
+
+    public Long getParentActivityId()
+    {
+        return parentActivityId;
+    }
+    public void setActivityName(String activityName)
     {
         this.activityName = activityName;
     }
 
-    public String getActivityName() 
+    public String getActivityName()
     {
         return activityName;
     }
-    public void setImg(String img) 
+    public void setImg(String img)
     {
         this.img = img;
     }
 
-    public String getImg() 
+    public String getImg()
     {
         return img;
     }
-    public void setAddress(String address) 
+    public void setAddress(String address)
     {
         this.address = address;
     }
 
-    public String getAddress() 
+    public String getAddress()
     {
         return address;
     }
-    public void setOrgName(String orgName) 
+    public void setOrgName(String orgName)
     {
         this.orgName = orgName;
     }
 
-    public String getOrgName() 
+    public String getOrgName()
     {
         return orgName;
     }
-    public void setDeptId(Long deptId) 
+    public void setContent(String content)
     {
-        this.deptId = deptId;
+        this.content = content;
     }
 
-    public Long getDeptId() 
+    public String getContent()
     {
-        return deptId;
+        return content;
     }
-    public void setTel(String tel) 
+    public void setTel(String tel)
     {
         this.tel = tel;
     }
 
-    public String getTel() 
+    public String getTel()
     {
         return tel;
     }
-    public void setStartTime(Date startTime) 
+    public void setStartTime(Date startTime)
     {
         this.startTime = startTime;
     }
 
-    public Date getStartTime() 
+    public Date getStartTime()
     {
         return startTime;
     }
-    public void setEndTime(Date endTime) 
+    public void setEndTime(Date endTime)
     {
         this.endTime = endTime;
     }
 
-    public Date getEndTime() 
+    public Date getEndTime()
     {
         return endTime;
     }
-    public void setStatus(String status) 
+    public void setStatus(String status)
     {
         this.status = status;
     }
 
-    public String getStatus() 
+    public String getStatus()
     {
         return status;
     }
-    public void setDelFlag(String delFlag) 
+    public void setAppored(String appored)
+    {
+        this.appored = appored;
+    }
+
+    public String getAppored()
+    {
+        return appored;
+    }
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }
 
-    public String getDelFlag() 
+    public String getDelFlag()
     {
         return delFlag;
+    }
+    public void setUserId(Long userId)
+    {
+        this.userId = userId;
+    }
+
+    public Long getUserId()
+    {
+        return userId;
+    }
+    public void setDeptId(Long deptId)
+    {
+        this.deptId = deptId;
+    }
+
+    public Long getDeptId()
+    {
+        return deptId;
+    }
+    public void setApporBy(String apporBy)
+    {
+        this.apporBy = apporBy;
+    }
+
+    public String getApporBy()
+    {
+        return apporBy;
+    }
+    public void setApporTime(Date apporTime)
+    {
+        this.apporTime = apporTime;
+    }
+
+    public Date getApporTime()
+    {
+        return apporTime;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("activityId", getActivityId())
-            .append("activityName", getActivityName())
-            .append("img", getImg())
-            .append("address", getAddress())
-            .append("orgName", getOrgName())
-            .append("deptId", getDeptId())
-            .append("tel", getTel())
-            .append("remark", getRemark())
-            .append("startTime", getStartTime())
-            .append("endTime", getEndTime())
-            .append("status", getStatus())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+                .append("activityId", getActivityId())
+                .append("parentActivityId", getParentActivityId())
+                .append("orderNum", getOrderNum())
+                .append("activityName", getActivityName())
+                .append("img", getImg())
+                .append("address", getAddress())
+                .append("orgName", getOrgName())
+                .append("content", getContent())
+                .append("tel", getTel())
+                .append("startTime", getStartTime())
+                .append("endTime", getEndTime())
+                .append("status", getStatus())
+                .append("appored", getAppored())
+                .append("delFlag", getDelFlag())
+                .append("userId", getUserId())
+                .append("deptId", getDeptId())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("remark", getRemark())
+                .append("apporBy", getApporBy())
+                .append("apporTime", getApporTime())
+                .toString();
     }
 }

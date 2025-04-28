@@ -132,7 +132,7 @@ public class ResSkillController extends BaseController
      * 批量审批
      */
     @PreAuthorize("@ss.hasPermi('job:skill:appor')")
-    @Log(title = "招聘信息", businessType = BusinessType.UPDATE)
+    @Log(title = "技能信息", businessType = BusinessType.UPDATE)
     @PostMapping("/appor")
     public AjaxResult appor(@RequestBody ResApporParam apporParams)
     {

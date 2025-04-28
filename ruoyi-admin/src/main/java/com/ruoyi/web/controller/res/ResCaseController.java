@@ -132,7 +132,7 @@ public class ResCaseController extends BaseController
      * 批量审批
      */
     @PreAuthorize("@ss.hasPermi('res:case:appor')")
-    @Log(title = "资讯发布", businessType = BusinessType.UPDATE)
+    @Log(title = "戒治案例", businessType = BusinessType.UPDATE)
     @PostMapping("/appor")
     public AjaxResult appor(@RequestBody ResApporParam apporParams)
     {

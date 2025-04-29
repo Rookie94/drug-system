@@ -1,4 +1,4 @@
-package com.ruoyi.ruoyiapi.wxapi;
+package com.ruoyi.ruoyiapi.Controller.wxapi;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

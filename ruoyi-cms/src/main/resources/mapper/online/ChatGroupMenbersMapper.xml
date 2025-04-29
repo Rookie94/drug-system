@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.online.mapper.ChatGroupMenbersMapper">
+
+    <resultMap type="ChatGroupMenbersVo" id="ChatGroupMenbersResult">
+        <result property="mbrId"    column="mbr_id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="userType"    column="user_type"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="status"    column="status"    />
+        <result property="appored"    column="appored"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="apporBy"    column="appor_by"    />
+        <result property="apporTime"    column="appor_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectChatGroupMenbersVo">
+        SELECT
+            t.mbr_id,
+            t.group_id,
+            c.group_name,
+            t.user_id,
+            u.user_name,
+            u.nick_name,
+            u.user_type,
+            t.dept_id,
+            d.dept_name,
+            t.STATUS,
+            t.appored,
+            t.del_flag,
+            t.create_by,
+            t.create_time,
+            t.update_by,
+            t.update_time,
+            t.appor_by,
+            t.appor_time,
+            t.remark
+        FROM
+            chat_groupmbrs t
+                LEFT JOIN chat_group c ON t.group_id = c.group_id
+                LEFT JOIN sys_user u ON t.user_id = u.user_id
+                LEFT JOIN sys_dept d ON t.dept_id = d.dept_id
+    </sql>
+
+    <select id="selectChatGroupMenbersList" parameterType="ChatGroupMenbers" resultMap="ChatGroupMenbersResult">
+        <include refid="selectChatGroupMenbersVo"/>
+        <where>
+            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
+        </where>
+    </select>
+
+    <select id="selectChatGroupMenbersByMbrId" parameterType="Long" resultMap="ChatGroupMenbersResult">
+        <include refid="selectChatGroupMenbersVo"/>
+        where mbr_id = #{mbrId}
+    </select>
+
+    <insert id="insertChatGroupMenbers" parameterType="ChatGroupMenbers">
+        insert into v_chat_groupmbrs
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mbrId != null">mbr_id,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="status != null">status,</if>
+            <if test="appored != null">appored,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="apporBy != null">appor_by,</if>
+            <if test="apporTime != null">appor_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mbrId != null">#{mbrId},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="appored != null">#{appored},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="apporBy != null">#{apporBy},</if>
+            <if test="apporTime != null">#{apporTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateChatGroupMenbers" parameterType="ChatGroupMenbers">
+        update v_chat_groupmbrs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="appored != null">appored = #{appored},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where mbr_id = #{mbrId}
+    </update>
+
+    <delete id="deleteChatGroupMenbersByMbrId" parameterType="Long">
+        delete from v_chat_groupmbrs where mbr_id = #{mbrId}
+    </delete>
+
+    <delete id="deleteChatGroupMenbersByMbrIds" parameterType="String">
+        delete from v_chat_groupmbrs where mbr_id in
+        <foreach item="mbrId" collection="array" open="(" separator="," close=")">
+            #{mbrId}
+        </foreach>
+    </delete>
+</mapper>

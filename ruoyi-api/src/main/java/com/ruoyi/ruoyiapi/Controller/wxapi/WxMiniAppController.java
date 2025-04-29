@@ -1,4 +1,4 @@
-package com.ruoyi.ruoyiapi.wxapi;
+package com.ruoyi.ruoyiapi.Controller.wxapi;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;

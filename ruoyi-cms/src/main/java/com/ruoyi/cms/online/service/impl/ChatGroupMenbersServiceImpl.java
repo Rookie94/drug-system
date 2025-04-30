@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ruoyi.cms.job.domain.ResJobinfo;
 import com.ruoyi.cms.online.domain.vo.ChatGroupMenbersVo;
+import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.ResApporParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ public class ChatGroupMenbersServiceImpl implements IChatGroupMenbersService
      * @return 群工作人员
      */
     @Override
+    @DataScope(deptAlias = "t", userAlias = "t")
     public List<ChatGroupMenbersVo> selectChatGroupMenbersList(ChatGroupMenbersVo chatGroupMenbers)
     {
         return chatGroupMenbersMapper.selectChatGroupMenbersList(chatGroupMenbers);
@@ -60,6 +62,7 @@ public class ChatGroupMenbersServiceImpl implements IChatGroupMenbersService
     @Override
     public int insertChatGroupMenbers(ChatGroupMenbers chatGroupMenbers)
     {
+        chatGroupMenbers.setCreateBy(getUsername());
         chatGroupMenbers.setCreateTime(DateUtils.getNowDate());
         return chatGroupMenbersMapper.insertChatGroupMenbers(chatGroupMenbers);
     }
@@ -73,6 +76,7 @@ public class ChatGroupMenbersServiceImpl implements IChatGroupMenbersService
     @Override
     public int updateChatGroupMenbers(ChatGroupMenbers chatGroupMenbers)
     {
+        chatGroupMenbers.setUpdateBy(getUsername());
         chatGroupMenbers.setUpdateTime(DateUtils.getNowDate());
         return chatGroupMenbersMapper.updateChatGroupMenbers(chatGroupMenbers);
     }
@@ -131,7 +135,6 @@ public class ChatGroupMenbersServiceImpl implements IChatGroupMenbersService
     {
         apporParams.setApporBy(getUsername());
         apporParams.setApporTime(DateUtils.getNowDate());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return chatGroupMenbersMapper.apporByIds(apporParams);
     }
 

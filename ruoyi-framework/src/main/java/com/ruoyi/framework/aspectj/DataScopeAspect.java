@@ -2,13 +2,12 @@ package com.ruoyi.framework.aspectj;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.ruoyi.common.constant.UserConstants;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import com.ruoyi.common.annotation.DataScope;
+import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -75,8 +74,7 @@ public class DataScopeAspect
             if (StringUtils.isNotNull(currentUser) && !currentUser.isAdmin())
             {
                 String permission = StringUtils.defaultIfEmpty(controllerDataScope.permission(), PermissionContextHolder.getContext());
-                dataScopeFilter(joinPoint, currentUser, controllerDataScope.deptAlias(),
-                        controllerDataScope.userAlias(), permission);
+                dataScopeFilter(joinPoint, currentUser, controllerDataScope.deptAlias(),controllerDataScope.userAlias(), permission);
             }
         }
     }
@@ -112,15 +110,6 @@ public class DataScopeAspect
             {
                 continue;
             }
-            if (!DATA_SCOPE_CUSTOM.equals(dataScope) && conditions.contains(dataScope))
-            {
-                continue;
-            }
-            if (StringUtils.isNotEmpty(permission) && StringUtils.isNotEmpty(role.getPermissions())
-                    && !StringUtils.containsAny(role.getPermissions(), Convert.toStrArray(permission)))
-            {
-                continue;
-            }
             if (DATA_SCOPE_ALL.equals(dataScope))
             {
                 sqlString = new StringBuilder();
@@ -146,9 +135,7 @@ public class DataScopeAspect
             }
             else if (DATA_SCOPE_DEPT_AND_CHILD.equals(dataScope))
             {
-                sqlString.append(StringUtils.format(
-                        " OR {}.dept_id IN ( SELECT dept_id FROM sys_dept WHERE dept_id = {} or find_in_set( {} , ancestors ) ) or  {}.dept_id is null  ",
-                        deptAlias, user.getDeptId(), user.getDeptId(),deptAlias));
+                sqlString.append(StringUtils.format(" OR {}.dept_id IN ( SELECT dept_id FROM sys_dept WHERE dept_id = {} or find_in_set( {} , ancestors ) ) or  {}.dept_id is null  ",deptAlias, user.getDeptId(), user.getDeptId(),deptAlias));
             }
             else if (DATA_SCOPE_SELF.equals(dataScope))
             {

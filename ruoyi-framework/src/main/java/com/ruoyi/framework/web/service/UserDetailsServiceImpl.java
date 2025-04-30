@@ -1,7 +1,5 @@
 package com.ruoyi.framework.web.service;
 
-import com.ruoyi.framework.web.service.SysPasswordService;
-import com.ruoyi.framework.web.service.SysPermissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService
 
     @Autowired
     private ISysUserService userService;
-
+    
     @Autowired
     private SysPasswordService passwordService;
 

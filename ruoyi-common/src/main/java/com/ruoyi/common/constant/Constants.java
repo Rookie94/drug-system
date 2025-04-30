@@ -5,8 +5,8 @@ import io.jsonwebtoken.Claims;
 
 /**
  * 通用常量信息
- *
- * @author
+ * 
+ * @author ruoyi
  */
 public class Constants
 {
@@ -168,7 +168,7 @@ public class Constants
     /**
      * 定时任务白名单配置（仅允许访问的包名，如其他需要可以自行添加）
      */
-    public static final String[] JOB_WHITELIST_STR = { "com.ruoyi.cms" };
+    public static final String[] JOB_WHITELIST_STR = {  "com.ruoyi.quartz.task","com.ruoyi.cms" };
 
     /**
      * 定时任务违规的字符

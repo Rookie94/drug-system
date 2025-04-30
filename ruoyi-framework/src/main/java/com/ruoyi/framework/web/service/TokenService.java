@@ -4,9 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import eu.bitwalker.useragentutils.UserAgent;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.model.LoginUser;
@@ -16,19 +26,17 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.ip.AddressUtils;
 import com.ruoyi.common.utils.ip.IpUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
-import eu.bitwalker.useragentutils.UserAgent;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
  * token验证处理
- *
+ * 
  * @author ruoyi
  */
 @Component
 public class TokenService
 {
+    private static final Logger log = LoggerFactory.getLogger(TokenService.class);
+
     // 令牌自定义标识
     @Value("${token.header}")
     private String header;
@@ -45,14 +53,14 @@ public class TokenService
 
     protected static final long MILLIS_MINUTE = 60 * MILLIS_SECOND;
 
-    private static final Long MILLIS_MINUTE_TEN = 20 * 60 * 1000L;
+    private static final Long MILLIS_MINUTE_TWENTY = 20 * 60 * 1000L;
 
     @Autowired
     private RedisCache redisCache;
 
     /**
      * 获取用户身份信息
-     *
+     * 
      * @return 用户信息
      */
     public LoginUser getLoginUser(HttpServletRequest request)
@@ -67,11 +75,15 @@ public class TokenService
                 // 解析对应的权限以及用户信息
                 String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
                 String userKey = getTokenKey(uuid);
-                LoginUser user = redisCache.getCacheObject(userKey);
+                //解决序列化报错,2025-5-1
+                //LoginUser user = redisCache.getCacheObject(userKey);
+                String redisLoginUserJson = JSONObject.toJSONString(redisCache.getCacheObject(userKey));
+                LoginUser user = JSON.parseObject(redisLoginUserJson, LoginUser.class);
                 return user;
             }
             catch (Exception e)
             {
+                log.error("获取用户信息异常'{}'", e.getMessage());
             }
         }
         return null;
@@ -102,7 +114,7 @@ public class TokenService
 
     /**
      * 创建令牌
-     *
+     * 
      * @param loginUser 用户信息
      * @return 令牌
      */
@@ -115,20 +127,21 @@ public class TokenService
 
         Map<String, Object> claims = new HashMap<>();
         claims.put(Constants.LOGIN_USER_KEY, token);
+        claims.put(Constants.JWT_USERNAME, loginUser.getUsername());
         return createToken(claims);
     }
 
     /**
      * 验证令牌有效期，相差不足20分钟，自动刷新缓存
-     *
-     * @param loginUser
+     * 
+     * @param loginUser 登录信息
      * @return 令牌
      */
     public void verifyToken(LoginUser loginUser)
     {
         long expireTime = loginUser.getExpireTime();
         long currentTime = System.currentTimeMillis();
-        if (expireTime - currentTime <= MILLIS_MINUTE_TEN)
+        if (expireTime - currentTime <= MILLIS_MINUTE_TWENTY)
         {
             refreshToken(loginUser);
         }
@@ -136,7 +149,7 @@ public class TokenService
 
     /**
      * 刷新令牌有效期
-     *
+     * 
      * @param loginUser 登录信息
      */
     public void refreshToken(LoginUser loginUser)
@@ -150,7 +163,7 @@ public class TokenService
 
     /**
      * 设置用户代理信息
-     *
+     * 
      * @param loginUser 登录信息
      */
     public void setUserAgent(LoginUser loginUser)

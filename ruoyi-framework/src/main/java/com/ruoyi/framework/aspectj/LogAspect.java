@@ -4,10 +4,6 @@ import java.util.Collection;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.core.text.Convert;
-import com.ruoyi.common.utils.ExceptionUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -22,10 +18,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson2.JSON;
 import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.enums.BusinessStatus;
 import com.ruoyi.common.enums.HttpMethod;
 import com.ruoyi.common.filter.PropertyPreExcludeFilter;
+import com.ruoyi.common.utils.ExceptionUtil;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -55,7 +54,7 @@ public class LogAspect
      * 处理请求前执行
      */
     @Before(value = "@annotation(controllerLog)")
-    public void boBefore(JoinPoint joinPoint, Log controllerLog)
+    public void doBefore(JoinPoint joinPoint, Log controllerLog)
     {
         TIME_THREADLOCAL.set(System.currentTimeMillis());
     }

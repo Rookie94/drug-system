@@ -81,7 +81,7 @@ spring:
     # 端口，默认为6379
     port: 6379
     # 数据库索引
-    database: 1
+    database: 0
     # 密码
     password:
     # 连接超时时间
@@ -159,6 +159,6 @@ minio:
         port: 6379
         password:
         timeout: 5000
-        database: 0
+        database: 1
 
 

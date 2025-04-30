@@ -63,6 +63,8 @@
             <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
         </where>
     </select>
 
@@ -139,18 +141,18 @@
     </delete>
 
     <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
-        select mbr_id from chat_groupmbrs where appored='1' and mbr_id in
+        select mbr_id from chat_groupmbrs where appored='2' and mbr_id in
         <foreach item="mbrId" collection="array" open="(" separator="," close=")">
             #{mbrId}
         </foreach>
     </select>
 
-    <update id="updateStatus" parameterType="ResJobinfo">
+    <update id="updateStatus" parameterType="ChatGroupMenbers">
         update chat_groupmbrs
         <trim prefix="SET" suffixOverrides=",">
             <if test="status != null">status = #{status},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime}</if>
         </trim>
         where mbr_id = #{mbrId}
     </update>
@@ -160,7 +162,7 @@
         <trim prefix="SET" suffixOverrides=",">
             <if test="flag != null">appored = #{flag},</if>
             <if test="apporBy != null">appor_by = #{apporBy},</if>
-            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            <if test="apporTime != null">appor_time = #{apporTime}</if>
             where mbr_id in
             <foreach item="id" collection="ids" open="(" separator="," close=")">
                 #{id}
@@ -173,7 +175,7 @@
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
             appor_by=NULL,
-            appor_time = NULL,
+            appor_time = NULL
         </trim>
         where mbr_id = #{mbrId}
     </update>

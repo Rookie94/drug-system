@@ -120,7 +120,7 @@ public class ChatGroupController extends BaseController
      * 状态修改
      */
     @PreAuthorize("@ss.hasPermi('online:group:edit')")
-    @Log(title = "招聘信息", businessType = BusinessType.UPDATE)
+    @Log(title = "聊天群组", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
     public AjaxResult changeStatus(@RequestBody ChatGroup chatGroup)
     {
@@ -131,7 +131,7 @@ public class ChatGroupController extends BaseController
      * 批量审批
      */
     @PreAuthorize("@ss.hasPermi('online:group:appor')")
-    @Log(title = "招聘信息", businessType = BusinessType.UPDATE)
+    @Log(title = "聊天群组", businessType = BusinessType.UPDATE)
     @PostMapping("/appor")
     public AjaxResult appor(@RequestBody ResApporParam apporParams)
     {
@@ -142,7 +142,7 @@ public class ChatGroupController extends BaseController
      * 反审批专家
      */
     @PreAuthorize("@ss.hasPermi('online:group:unappor')")
-    @Log(title = "招聘信息", businessType = BusinessType.UPDATE)
+    @Log(title = "聊天群组", businessType = BusinessType.UPDATE)
     @PostMapping("/unappor/{ids}")
     public AjaxResult unappor(@PathVariable Long[] ids)
     {

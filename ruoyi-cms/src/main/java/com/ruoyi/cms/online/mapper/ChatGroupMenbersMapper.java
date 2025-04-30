@@ -1,8 +1,11 @@
 package com.ruoyi.cms.online.mapper;
 
 import java.util.List;
+
+import com.ruoyi.cms.job.domain.ResJobinfo;
 import com.ruoyi.cms.online.domain.ChatGroupMenbers;
 import com.ruoyi.cms.online.domain.vo.ChatGroupMenbersVo;
+import com.ruoyi.system.domain.ResApporParam;
 
 /**
  * 群工作人员Mapper接口
@@ -59,4 +62,44 @@ public interface ChatGroupMenbersMapper
      * @return 结果
      */
     public int deleteChatGroupMenbersByMbrIds(Long[] mbrIds);
+
+    /**
+     * 修改状态
+     *
+     * @param chatGroupMenbers 工作
+     * @return 结果
+     */
+    public int updateStatus(ChatGroupMenbers chatGroupMenbers);
+
+    /**
+     * 批量审批
+     *
+     * @param apporParams 批量审批参数
+     * @return 结果
+     */
+    public int apporByIds(ResApporParam apporParams);
+    /**
+     * 反审批
+     *
+     * @param Id 工作主键
+     * @return 结果
+     */
+    public int unApporById(Long Id);
+
+    /**
+     * 批量反审批
+     *
+     * @param Ids 需要删除的数据主键集合
+     * @return 结果
+     */
+    public int unApporByIds(Long[] Ids);
+
+    /**
+     * 查询已审核的单据清单
+     *
+     * @param Ids 工作主键
+     * @return 结果
+     */
+    public List<Integer> selectApporedByIds(Long[] Ids);
+
 }

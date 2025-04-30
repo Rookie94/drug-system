@@ -142,7 +142,7 @@
             <if test="flag != null">appored = #{flag},</if>
             <if test="apporBy != null">appor_by = #{apporBy},</if>
             <if test="apporTime != null">appor_time = #{apporTime},</if>
-            <if test="apporTime != null">publish_time = #{publishTime}</if>
+            <if test="publishTime != null">publish_time = #{publishTime}</if>
             where jobid in
             <foreach item="id" collection="ids" open="(" separator="," close=")">
                 #{id}

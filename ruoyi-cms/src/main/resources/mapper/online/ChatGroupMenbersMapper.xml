@@ -72,7 +72,7 @@
     </select>
 
     <insert id="insertChatGroupMenbers" parameterType="ChatGroupMenbers">
-        insert into v_chat_groupmbrs
+        insert into chat_groupmbrs
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="mbrId != null">mbr_id,</if>
             <if test="groupId != null">group_id,</if>
@@ -108,7 +108,7 @@
     </insert>
 
     <update id="updateChatGroupMenbers" parameterType="ChatGroupMenbers">
-        update v_chat_groupmbrs
+        update chat_groupmbrs
         <trim prefix="SET" suffixOverrides=",">
             <if test="groupId != null">group_id = #{groupId},</if>
             <if test="userId != null">user_id = #{userId},</if>
@@ -128,13 +128,67 @@
     </update>
 
     <delete id="deleteChatGroupMenbersByMbrId" parameterType="Long">
-        delete from v_chat_groupmbrs where mbr_id = #{mbrId}
+        delete from chat_groupmbrs where mbr_id = #{mbrId}
     </delete>
 
     <delete id="deleteChatGroupMenbersByMbrIds" parameterType="String">
-        delete from v_chat_groupmbrs where mbr_id in
+        delete from chat_groupmbrs where mbr_id in
         <foreach item="mbrId" collection="array" open="(" separator="," close=")">
             #{mbrId}
         </foreach>
     </delete>
+
+    <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
+        select mbr_id from chat_groupmbrs where appored='1' and mbr_id in
+        <foreach item="mbrId" collection="array" open="(" separator="," close=")">
+            #{mbrId}
+        </foreach>
+    </select>
+
+    <update id="updateStatus" parameterType="ResJobinfo">
+        update chat_groupmbrs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where mbr_id = #{mbrId}
+    </update>
+
+    <update id="apporByIds"  parameterType="ResApporParam">
+        update chat_groupmbrs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="flag != null">appored = #{flag},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            where mbr_id in
+            <foreach item="id" collection="ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </trim>
+    </update>
+
+    <update id="unApporById" parameterType="Long">
+        update chat_groupmbrs
+        <trim prefix="SET" suffixOverrides=",">
+            appored='0',
+            appor_by=NULL,
+            appor_time = NULL,
+        </trim>
+        where mbr_id = #{mbrId}
+    </update>
+
+    <update id="unApporByIds" parameterType="String">
+        update chat_groupmbrs
+        <trim prefix="SET" suffixOverrides=",">
+            appored='0',
+            appor_by=NULL,
+            appor_time=NULL
+            where mbr_id in
+            <foreach item="id" collection="array" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </trim>
+    </update>
+
 </mapper>

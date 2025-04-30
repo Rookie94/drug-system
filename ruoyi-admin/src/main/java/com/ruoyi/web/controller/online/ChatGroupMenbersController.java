@@ -3,7 +3,9 @@ package com.ruoyi.web.controller.online;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.cms.online.domain.ChatGroup;
 import com.ruoyi.cms.online.domain.vo.ChatGroupMenbersVo;
+import com.ruoyi.system.domain.ResApporParam;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -103,4 +105,50 @@ public class ChatGroupMenbersController extends BaseController
     {
         return toAjax(chatGroupMenbersService.deleteChatGroupMenbersByMbrIds(mbrIds));
     }
+
+    /**
+     * 查询已审核工作列表
+     */
+    @PreAuthorize("@ss.hasPermi('online:groupmbrs:list')")
+    @GetMapping("/list/{groupIds}")
+    public List<Integer> list(@PathVariable Long[] groupIds)
+    {
+        startPage();
+        List<Integer> list = chatGroupMenbersService.selectApporedByIds(groupIds);
+        return list;
+    }
+
+    /**
+     * 状态修改
+     */
+    @PreAuthorize("@ss.hasPermi('online:groupmbrs:edit')")
+    @Log(title = "群工作人员", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody ChatGroupMenbers chatGroupMenbers)
+    {
+        return toAjax(chatGroupMenbersService.updateStatus(chatGroupMenbers));
+    }
+
+    /**
+     * 批量审批
+     */
+    @PreAuthorize("@ss.hasPermi('online:groupmbrs:appor')")
+    @Log(title = "群工作人员", businessType = BusinessType.UPDATE)
+    @PostMapping("/appor")
+    public AjaxResult appor(@RequestBody ResApporParam apporParams)
+    {
+        return toAjax(chatGroupMenbersService.apporByIds(apporParams));
+    }
+
+    /**
+     * 反审批专家
+     */
+    @PreAuthorize("@ss.hasPermi('online:groupmbrs:unappor')")
+    @Log(title = "群工作人员", businessType = BusinessType.UPDATE)
+    @PostMapping("/unappor/{ids}")
+    public AjaxResult unappor(@PathVariable Long[] ids)
+    {
+        return toAjax(chatGroupMenbersService.unApporByIds(ids));
+    }
+
 }

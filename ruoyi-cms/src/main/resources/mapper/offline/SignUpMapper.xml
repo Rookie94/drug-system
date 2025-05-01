@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectSignUpVo">
         select t.sign_id,t.activity_id,b.activity_name,b.start_time,b.end_time,t.sign_time,t.user_id,c.user_type,
                c.user_name,c.nick_name,c.phonenumber,t.dept_id,d.dept_name,t.create_by,t.create_time,t.update_by,
-               t.update_time,t.remark from tb_signup t left join tb_activities b on t.activity_id=b.activity_id
+               t.update_time,t.remark from ofa_signup t left join ofa_activities b on t.activity_id=b.activity_id
                    left join sys_user c on t.user_id=c.user_id left join sys_dept d  on t.dept_id=d.dept_id
     </sql>
 
@@ -52,7 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertSignUp" parameterType="SignUp">
-        insert into tb_signup
+        insert into ofa_signup
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="signId != null">sign_id,</if>
             <if test="activityId != null">activity_id,</if>
@@ -80,7 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateSignUp" parameterType="SignUp">
-        update tb_signup
+        update ofa_signup
         <trim prefix="SET" suffixOverrides=",">
             <if test="activityId != null">activity_id = #{activityId},</if>
             <if test="signTime != null">sign_time = #{signTime},</if>
@@ -96,11 +96,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteSignUpBySignId" parameterType="Long">
-        delete from tb_signup where sign_id = #{signId}
+        delete from ofa_signup where sign_id = #{signId}
     </delete>
 
     <delete id="deleteSignUpBySignIds" parameterType="String">
-        delete from tb_signup where sign_id in
+        delete from ofa_signup where sign_id in
         <foreach item="signId" collection="array" open="(" separator="," close=")">
             #{signId}
         </foreach>

@@ -35,7 +35,7 @@
     <sql id="selectActivitiesVo">
         select activity_id, parent_activity_id, order_num, activity_name, img, address, org_name, content, tel,
                start_time, end_time,activity_type, status, appored,publish_time, del_flag, user_id, dept_id, create_by, create_time,
-               update_by, update_time, remark, appor_by, appor_time from tb_activities t
+               update_by, update_time, remark, appor_by, appor_time from ofa_activities t
     </sql>
 
     <sql id="filterConditions">
@@ -67,7 +67,7 @@
             union all
             <include refid="selectActivitiesVo"/> where parent_activity_id in
             (
-                select activity_id from tb_activities
+                select activity_id from ofa_activities
                 <where>
                     parent_activity_id = 0
                     <include refid="filterConditions"/>
@@ -76,7 +76,7 @@
             union all
             <include refid="selectActivitiesVo"/> where activity_id in
             (
-                select parent_activity_id from tb_activities
+                select parent_activity_id from ofa_activities
                 <where>
                     parent_activity_id &lt;&gt;'0'
                     <include refid="filterConditions"/>
@@ -85,7 +85,7 @@
             union all
             <include refid="selectActivitiesVo"/> where parent_activity_id in
             (
-            select parent_activity_id from tb_activities
+            select parent_activity_id from ofa_activities
             <where>
                 parent_activity_id &lt;&gt;'0'
                 <include refid="filterConditions"/>
@@ -100,7 +100,7 @@
     </select>
 
     <insert id="insertActivities" parameterType="Activities" useGeneratedKeys="true" keyProperty="activityId">
-        insert into tb_activities
+        insert into ofa_activities
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="parentActivityId != null">parent_activity_id,</if>
             <if test="orderNum != null">order_num,</if>
@@ -156,7 +156,7 @@
     </insert>
 
     <update id="updateActivities" parameterType="Activities">
-        update tb_activities
+        update ofa_activities
         <trim prefix="SET" suffixOverrides=",">
             <if test="parentActivityId != null">parent_activity_id = #{parentActivityId},</if>
             <if test="orderNum != null">order_num = #{orderNum},</if>
@@ -187,11 +187,11 @@
     </update>
 
     <delete id="deleteActivitiesByActivityId" parameterType="Long">
-        delete from tb_activities where activity_id = #{activityId}
+        delete from ofa_activities where activity_id = #{activityId}
     </delete>
 
     <delete id="deleteActivitiesByActivityIds" parameterType="String">
-        delete from tb_activities where activity_id in
+        delete from ofa_activities where activity_id in
         <foreach item="activityId" collection="array" open="(" separator="," close=")">
             #{activityId}
         </foreach>
@@ -199,14 +199,14 @@
 
 
     <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
-        select activity_id from tb_activities where appored&lt;&gt;'0' and activity_id in
+        select activity_id from ofa_activities where appored&lt;&gt;'0' and activity_id in
         <foreach item="activityId" collection="array" open="(" separator="," close=")">
             #{activityId}
         </foreach>
     </select>
 
     <update id="updateStatus" parameterType="Activities">
-        update tb_activities
+        update ofa_activities
         <trim prefix="SET" suffixOverrides=",">
             <if test="status != null">status = #{status},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
@@ -216,7 +216,7 @@
     </update>
 
     <update id="apporByIds"  parameterType="ResApporParam">
-        update tb_activities
+        update ofa_activities
         <trim prefix="SET" suffixOverrides=",">
             <if test="flag != null">appored = #{flag},</if>
             <if test="apporBy != null">appor_by = #{apporBy},</if>
@@ -234,7 +234,7 @@
     </update>
 
     <update id="unApporById" parameterType="Long">
-        update tb_activities
+        update ofa_activities
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
             publish_time=NULL,
@@ -245,7 +245,7 @@
     </update>
 
     <update id="unApporByIds" parameterType="String">
-        update tb_activities
+        update ofa_activities
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
             publish_time=NULL,

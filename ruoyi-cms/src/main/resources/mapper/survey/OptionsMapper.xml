@@ -42,7 +42,7 @@
                logic_symbol,
                survey_id,
                book_code
-        from tb_options
+        from doc_options
     </sql>
 
     <select id="selectOptionsList" parameterType="Options" resultMap="OptionsResult">
@@ -73,7 +73,7 @@
     </select>
 
     <insert id="insertOptions" parameterType="Options" useGeneratedKeys="true" keyProperty="optionId">
-        insert into tb_options
+        insert into doc_options
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="questionId != null">question_id,</if>
             <if test="optionCode != null and optionCode != ''">option_code,</if>
@@ -113,7 +113,7 @@
     </insert>
 
     <insert id="insertOptionBatch" parameterType="java.util.List">
-        insert into tb_options
+        insert into doc_options
         (question_id,option_code,option_text,option_no,hide_question,show_question,is_wtqd,wtqd_type,wtqd_value,wtqd_symbol,wtqd_desc,is_extend,create_time,logic_symbol,survey_id,book_code)
         values
         <foreach collection="optionList" item="item" index="index" separator=",">
@@ -125,7 +125,7 @@
     </insert>
 
     <update id="updateOptions" parameterType="Options">
-        update tb_options
+        update doc_options
         <trim prefix="SET" suffixOverrides=",">
             <if test="questionId != null">question_id = #{questionId},</if>
             <if test="optionCode != null and optionCode != ''">option_code = #{optionCode},</if>
@@ -149,19 +149,19 @@
 
     <delete id="deleteOptionsByOptionId" parameterType="Long">
         delete
-        from tb_options
+        from doc_options
         where option_id = #{optionId}
     </delete>
 
     <delete id="deleteOptionsByOptionIds" parameterType="String">
-        delete from tb_options where option_id in
+        delete from doc_options where option_id in
         <foreach item="optionId" collection="array" open="(" separator="," close=")">
             #{optionId}
         </foreach>
     </delete>
 
     <delete id="deleteOptionsBySurveyIds" parameterType="String">
-        delete from tb_options where survey_id in
+        delete from doc_options where survey_id in
         <foreach item="optionId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>
@@ -169,7 +169,7 @@
 
     <delete id="deleteOptionsByQuestionId" parameterType="Long">
         delete
-        from tb_options
+        from doc_options
         where question_id = #{QuestionId}
     </delete>
 </mapper>

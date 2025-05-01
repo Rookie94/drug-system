@@ -39,6 +39,18 @@ public class ChatGroupMenbersController extends BaseController
     private IChatGroupMenbersService chatGroupMenbersService;
 
     /**
+     * 查询聊天群组列表
+     */
+    @PreAuthorize("@ss.hasPermi('online:groupmbrs:list')")
+    @GetMapping("/listgroup")
+    public TableDataInfo list(ChatGroup chatGroup)
+    {
+        startPage();
+        List<ChatGroup> list = chatGroupMenbersService.selectChatGroupList(chatGroup);
+        return getDataTable(list);
+    }
+
+    /**
      * 查询群工作人员列表
      */
     @PreAuthorize("@ss.hasPermi('online:groupmbrs:list')")
@@ -81,6 +93,10 @@ public class ChatGroupMenbersController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody ChatGroupMenbers chatGroupMenbers)
     {
+        if (!chatGroupMenbersService.checkGroupUserUnique(chatGroupMenbers))
+        {
+            return error("新增群组工作人员失败，该工作人员已存在");
+        }
         return toAjax(chatGroupMenbersService.insertChatGroupMenbers(chatGroupMenbers));
     }
 
@@ -92,6 +108,10 @@ public class ChatGroupMenbersController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody ChatGroupMenbers chatGroupMenbers)
     {
+        if (!chatGroupMenbersService.checkGroupUserUnique(chatGroupMenbers))
+        {
+            return error("修改群组工作人员失败，该工作人员已存在");
+        }
         return toAjax(chatGroupMenbersService.updateChatGroupMenbers(chatGroupMenbers));
     }
 

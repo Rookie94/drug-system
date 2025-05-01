@@ -3,8 +3,10 @@ package com.ruoyi.cms.online.service;
 import java.util.List;
 
 import com.ruoyi.cms.job.domain.ResJobinfo;
+import com.ruoyi.cms.online.domain.ChatGroup;
 import com.ruoyi.cms.online.domain.ChatGroupMenbers;
 import com.ruoyi.cms.online.domain.vo.ChatGroupMenbersVo;
+import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.system.domain.ResApporParam;
 
 /**
@@ -22,6 +24,22 @@ public interface IChatGroupMenbersService
      * @return 群工作人员
      */
     public ChatGroupMenbersVo selectChatGroupMenbersByMbrId(Long mbrId);
+
+    /**
+     * 查询聊天群组列表
+     *
+     * @param chatGroup 聊天群组
+     * @return 聊天群组集合
+     */
+    public List<ChatGroup> selectChatGroupList(ChatGroup chatGroup);
+
+    /**
+     * 校验群组成员是否唯一
+     *
+     * @param chatGroupMenbers 角色信息
+     * @return 结果
+     */
+    public boolean checkGroupUserUnique(ChatGroupMenbers chatGroupMenbers);
 
     /**
      * 查询群工作人员列表

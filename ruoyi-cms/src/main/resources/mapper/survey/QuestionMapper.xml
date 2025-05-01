@@ -74,8 +74,8 @@
                o.is_extend,
                o.logic_symbol,
                o.survey_id
-        from tb_question t
-                 left join tb_options o on t.question_id = o.question_id
+        from doc_question t
+                 left join doc_options o on t.question_id = o.question_id
     </sql>
 
     <select id="selectQuestionList" parameterType="Question" resultMap="QuestionResult">
@@ -111,7 +111,7 @@
     </select>
 
     <insert id="insertQuestion" parameterType="Question" useGeneratedKeys="true" keyProperty="questionId">
-        insert into tb_question
+        insert into doc_question
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="surveyId != null">survey_id,</if>
             <if test="questionNo != null">question_no,</if>
@@ -149,7 +149,7 @@
     </insert>
 
     <update id="updateQuestion" parameterType="Question">
-        update tb_question
+        update doc_question
         <trim prefix="SET" suffixOverrides=",">
             <if test="surveyId != null">survey_id = #{surveyId},</if>
             <if test="questionNo != null">question_no = #{questionNo},</if>
@@ -171,30 +171,30 @@
     </update>
 
     <delete id="deleteQuestionByQuestionId" parameterType="Long">
-        delete from tb_options where question_id = #{questionId};
-        delete from tb_question where question_id = #{questionId};
+        delete from doc_options where question_id = #{questionId};
+        delete from doc_question where question_id = #{questionId};
     </delete>
 
     <delete id="deleteQuestionByQuestionIds" parameterType="String">
-        delete from tb_options where question_id in
+        delete from doc_options where question_id in
         <foreach item="questionId" collection="array" open="(" separator="," close=");">
             #{questionId}
         </foreach>
-        delete from tb_question where question_id in
+        delete from doc_question where question_id in
         <foreach item="questionId" collection="array" open="(" separator="," close=");">
             #{questionId}
         </foreach>
     </delete>
 
     <delete id="deleteQuestionBySurveyIds" parameterType="String">
-        delete from tb_question where survey_id in
+        delete from doc_question where survey_id in
         <foreach item="questionId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>
     </delete>
 
     <update id="updateQuesiotnNo" parameterType="java.util.List">
-        update tb_question
+        update doc_question
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="question_sort = case" suffix="end,">
                 <foreach collection="list" item="i">

@@ -26,7 +26,7 @@
                user_id,
                status,
                book_code
-        from tb_survey
+        from doc_survey
     </sql>
 
     <select id="selectSurveyList" parameterType="Survey" resultMap="SurveyResult">
@@ -48,7 +48,7 @@
     </select>
 
     <insert id="insertSurvey" parameterType="Survey" useGeneratedKeys="true" keyProperty="surveyId">
-        insert into tb_survey
+        insert into doc_survey
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="surveyName != null and surveyName != ''">survey_name,</if>
             <if test="surveyDesc != null">survey_desc,</if>
@@ -72,7 +72,7 @@
     </insert>
 
     <update id="updateSurvey" parameterType="Survey">
-        update tb_survey
+        update doc_survey
         <trim prefix="SET" suffixOverrides=",">
             <if test="surveyName != null and surveyName != ''">survey_name = #{surveyName},</if>
             <if test="surveyDesc != null">survey_desc = #{surveyDesc},</if>
@@ -87,20 +87,20 @@
     </update>
 
     <update id="removeSurveyBySurveyId" parameterType="Long">
-        update tb_survey
+        update doc_survey
         set status = '0'
         where survey_id = #{surveyId}
     </update>
 
     <update id="removeSurveyBySurveyIds" parameterType="String">
-        update tb_survey set status = '0' where survey_id in
+        update doc_survey set status = '0' where survey_id in
         <foreach item="surveyId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>
     </update>
 
     <update id="publishSurveyBySurveyIds" parameterType="String">
-        update tb_survey set survey_status = '1' where survey_id in
+        update doc_survey set survey_status = '1' where survey_id in
         <foreach item="surveyId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>
@@ -108,26 +108,26 @@
 
     <delete id="deleteSurveyBySurveyId" parameterType="Long">
         delete
-        from tb_survey
+        from doc_survey
         where survey_id = #{surveyId}
     </delete>
 
     <delete id="deleteSurveyBySurveyIds" parameterType="String">
-        delete from tb_survey where survey_id in
+        delete from doc_survey where survey_id in
         <foreach item="surveyId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>
     </delete>
 
     <update id="restoreSurveyBySurveyIds" parameterType="String">
-        update tb_survey set status = '1' where survey_id in
+        update doc_survey set status = '1' where survey_id in
         <foreach item="surveyId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>
     </update>
 
     <update id="revokeSurveyBySurveyId" parameterType="Long">
-        update tb_survey
+        update doc_survey
         set survey_status = '0'
         where survey_id = #{surveyId}
     </update>

@@ -4,6 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.cms.online.mapper.ChatGroupMenbersMapper">
 
+    <resultMap type="ChatGroup" id="ChatGroupResult">
+        <result property="groupId"    column="group_id"    />
+        <result property="groupName"    column="group_name"    />
+    </resultMap>
+
     <resultMap type="ChatGroupMenbersVo" id="ChatGroupMenbersResult">
         <result property="mbrId"    column="mbr_id"    />
         <result property="groupId"    column="group_id"    />
@@ -54,6 +59,15 @@
                 LEFT JOIN sys_dept d ON t.dept_id = d.dept_id
     </sql>
 
+    <select id="selectChatGroupList" parameterType="ChatGroup" resultMap="ChatGroupResult">
+        select group_id, group_name from chat_group
+        <where>
+            status='0' and appored='2' and del_flag='0'
+            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
     <select id="selectChatGroupMenbersList" parameterType="ChatGroupMenbers" resultMap="ChatGroupMenbersResult">
         <include refid="selectChatGroupMenbersVo"/>
         <where>
@@ -71,6 +85,11 @@
     <select id="selectChatGroupMenbersByMbrId" parameterType="Long" resultMap="ChatGroupMenbersResult">
         <include refid="selectChatGroupMenbersVo"/>
         where mbr_id = #{mbrId}
+    </select>
+
+    <select id="checkGroupUserUnique" parameterType="ChatGroupMenbers" resultMap="ChatGroupMenbersResult">
+        <include refid="selectChatGroupMenbersVo"/>
+        where t.group_id=#{groupId} and t.user_id = #{userId} limit 1
     </select>
 
     <insert id="insertChatGroupMenbers" parameterType="ChatGroupMenbers">

@@ -16,7 +16,7 @@
 
     <sql id="selectAnswerJsonVo">
         select an_id, survey_id, answer_json, user_id, user_name, create_time, book_code
-        from tb_answer_json
+        from doc_answer_json
     </sql>
 
     <select id="selectAnswerJsonList" parameterType="AnswerJson" resultMap="AnswerJsonResult">
@@ -36,7 +36,7 @@
     </select>
 
     <insert id="insertAnswerJson" parameterType="AnswerJson" useGeneratedKeys="true" keyProperty="anId">
-        insert into tb_answer_json
+        insert into doc_answer_json
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="surveyId != null">survey_id,</if>
             <if test="answerJson != null">answer_json,</if>
@@ -56,7 +56,7 @@
     </insert>
 
     <update id="updateAnswerJson" parameterType="AnswerJson">
-        update tb_answer_json
+        update doc_answer_json
         <trim prefix="SET" suffixOverrides=",">
             <if test="surveyId != null">survey_id = #{surveyId},</if>
             <if test="answerJson != null">answer_json = #{answerJson},</if>
@@ -70,12 +70,12 @@
 
     <delete id="deleteAnswerJsonByAnId" parameterType="Long">
         delete
-        from tb_answer_json
+        from doc_answer_json
         where an_id = #{anId}
     </delete>
 
     <delete id="deleteAnswerJsonByAnIds" parameterType="String">
-        delete from tb_answer_json where an_id in
+        delete from doc_answer_json where an_id in
         <foreach item="anId" collection="array" open="(" separator="," close=")">
             #{anId}
         </foreach>
@@ -87,7 +87,7 @@
     </select>
 
     <delete id="deleteAnswerJsonBySurveyIds" parameterType="String">
-        delete from tb_answer_json where survey_id in
+        delete from doc_answer_json where survey_id in
         <foreach item="anId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>

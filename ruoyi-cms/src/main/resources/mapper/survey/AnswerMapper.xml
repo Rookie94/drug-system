@@ -28,7 +28,7 @@
                user_name,
                create_time,
                book_code
-        from tb_answer
+        from doc_answer
     </sql>
 
     <select id="selectAnswerList" parameterType="Answer" resultMap="AnswerResult">
@@ -51,7 +51,7 @@
     </select>
 
     <insert id="insertAnswer" parameterType="Answer" useGeneratedKeys="true" keyProperty="answerId">
-        insert into tb_answer
+        insert into doc_answer
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="surveyId != null">survey_id,</if>
             <if test="questionId != null">question_id,</if>
@@ -77,7 +77,7 @@
     </insert>
 
     <update id="updateAnswer" parameterType="Answer">
-        update tb_answer
+        update doc_answer
         <trim prefix="SET" suffixOverrides=",">
             <if test="surveyId != null">survey_id = #{surveyId},</if>
             <if test="questionId != null">question_id = #{questionId},</if>
@@ -94,19 +94,19 @@
 
     <delete id="deleteAnswerByAnswerId" parameterType="Long">
         delete
-        from tb_answer
+        from doc_answer
         where answer_id = #{answerId}
     </delete>
 
     <delete id="deleteAnswerByAnswerIds" parameterType="String">
-        delete from tb_answer where answer_id in
+        delete from doc_answer where answer_id in
         <foreach item="answerId" collection="array" open="(" separator="," close=")">
             #{answerId}
         </foreach>
     </delete>
 
     <delete id="deleteAnswerBySurveyIds" parameterType="String">
-        delete from tb_answer where survey_id in
+        delete from doc_answer where survey_id in
         <foreach item="answerId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>

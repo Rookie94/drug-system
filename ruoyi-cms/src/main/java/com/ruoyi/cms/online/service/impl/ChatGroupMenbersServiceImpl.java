@@ -1,12 +1,14 @@
 package com.ruoyi.cms.online.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
-import com.ruoyi.cms.job.domain.ResJobinfo;
+import com.ruoyi.cms.online.domain.ChatGroup;
 import com.ruoyi.cms.online.domain.vo.ChatGroupMenbersVo;
 import com.ruoyi.common.annotation.DataScope;
+import com.ruoyi.common.constant.UserConstants;
+import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.ResApporParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,18 @@ public class ChatGroupMenbersServiceImpl implements IChatGroupMenbersService
     }
 
     /**
+     * 查询聊天群组列表
+     *
+     * @param chatGroup 聊天群组
+     * @return 聊天群组
+     */
+    @Override
+    public List<ChatGroup> selectChatGroupList(ChatGroup chatGroup)
+    {
+        return chatGroupMenbersMapper.selectChatGroupList(chatGroup);
+    }
+
+    /**
      * 查询群工作人员列表
      *
      * @param chatGroupMenbers 群工作人员
@@ -51,6 +65,24 @@ public class ChatGroupMenbersServiceImpl implements IChatGroupMenbersService
     public List<ChatGroupMenbersVo> selectChatGroupMenbersList(ChatGroupMenbersVo chatGroupMenbers)
     {
         return chatGroupMenbersMapper.selectChatGroupMenbersList(chatGroupMenbers);
+    }
+
+    /**
+     * 校验群组成员是否唯一
+     *
+     * @param chatGroupMenbers 角色信息
+     * @return 结果
+     */
+    @Override
+    public boolean checkGroupUserUnique(ChatGroupMenbers chatGroupMenbers)
+    {
+        Long mbrId = StringUtils.isNull(chatGroupMenbers.getMbrId()) ? -1L : chatGroupMenbers.getMbrId();
+        ChatGroupMenbersVo groupMenber = chatGroupMenbersMapper.checkGroupUserUnique(chatGroupMenbers);
+        if (StringUtils.isNotNull(groupMenber) && groupMenber.getMbrId().longValue()!=mbrId.longValue())
+        {
+            return false;
+        }
+        return true;
     }
 
     /**

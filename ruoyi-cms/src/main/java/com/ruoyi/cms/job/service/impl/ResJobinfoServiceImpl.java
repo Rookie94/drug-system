@@ -114,12 +114,6 @@ public class ResJobinfoServiceImpl implements IResJobinfoService
      */
     public int updateStatus(ResJobinfo resJobInfo)
     {
-        if(resJobInfo.getStatus()=="0"){
-            resJobInfo.setStatus("1");
-        }
-        else{
-            resJobInfo.setStatus("0");
-        }
         resJobInfo.setUpdateBy(getUsername());
         resJobInfo.setUpdateTime(DateUtils.getNowDate());
         return resJobinfoMapper.updateStatus(resJobInfo);

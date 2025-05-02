@@ -114,12 +114,6 @@ public class SysNoticeServiceImpl implements ISysNoticeService
      */
     public int updateStatus(SysNotice sysNotice)
     {
-        if(sysNotice.getStatus()=="0"){
-            sysNotice.setStatus("1");
-        }
-        else{
-            sysNotice.setStatus("0");
-        }
         sysNotice.setUpdateBy(getUsername());
         sysNotice.setUpdateTime(DateUtils.getNowDate());
         return sysNoticeMapper.updateStatus(sysNotice);

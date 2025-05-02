@@ -42,7 +42,7 @@
             u.user_type,
             t.dept_id,
             d.dept_name,
-            t.STATUS,
+            t.status,
             t.appored,
             t.del_flag,
             t.create_by,
@@ -68,15 +68,17 @@
         </where>
     </select>
 
-    <select id="selectChatGroupMenbersList" parameterType="ChatGroupMenbers" resultMap="ChatGroupMenbersResult">
+    <select id="selectChatGroupMenbersList" parameterType="ChatGroupMenbersVo" resultMap="ChatGroupMenbersResult">
         <include refid="selectChatGroupMenbersVo"/>
         <where>
+            <if test="groupId != null  and groupId != ''"> and t.group_id = #{groupId}</if>
             <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="userId != null  and userId != ''"> and t.user_id = #{userId}</if>
             <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
             <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
             <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
+            <if test="status != null  and status != ''"> and t.status = #{status}</if>
+            <if test="appored != null  and appored != ''"> and t.appored = #{appored}</if>
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>

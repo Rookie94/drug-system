@@ -127,12 +127,6 @@ public class ActivitiesServiceImpl implements IActivitiesService
      */
     public int updateStatus(Activities activities)
     {
-        if(activities.getStatus()=="0"){
-            activities.setStatus("1");
-        }
-        else{
-            activities.setStatus("0");
-        }
         activities.setUpdateBy(getUsername());
         activities.setUpdateTime(DateUtils.getNowDate());
         return activitiesMapper.updateStatus(activities);

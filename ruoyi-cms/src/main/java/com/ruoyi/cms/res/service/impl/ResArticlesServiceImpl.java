@@ -137,12 +137,6 @@ public class ResArticlesServiceImpl implements IResArticlesService
      */
     public int updateStatus(ResArticles resArticles)
     {
-        if(resArticles.getStatus()=="0"){
-            resArticles.setStatus("1");
-        }
-        else{
-            resArticles.setStatus("0");
-        }
         resArticles.setUpdateBy(getUsername());
         resArticles.setUpdateTime(DateUtils.getNowDate());
         return resArticlesMapper.updateStatus(resArticles);

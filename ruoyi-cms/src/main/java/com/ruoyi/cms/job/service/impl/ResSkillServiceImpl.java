@@ -114,12 +114,6 @@ public class ResSkillServiceImpl implements IResSkillService
      */
     public int updateStatus(ResSkill resSkill)
     {
-        if(resSkill.getStatus()=="0"){
-            resSkill.setStatus("1");
-        }
-        else{
-            resSkill.setStatus("0");
-        }
         resSkill.setUpdateBy(getUsername());
         resSkill.setUpdateTime(DateUtils.getNowDate());
         return resSkillMapper.updateStatus(resSkill);

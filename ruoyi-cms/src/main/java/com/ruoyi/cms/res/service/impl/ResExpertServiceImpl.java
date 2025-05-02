@@ -116,12 +116,6 @@ public class ResExpertServiceImpl implements IResExpertService
      */
     public int updateStatus(ResExpert resExpert)
     {
-        if(resExpert.getStatus()=="0"){
-            resExpert.setStatus("1");
-        }
-        else{
-            resExpert.setStatus("0");
-        }
         resExpert.setUpdateBy(getUsername());
         resExpert.setUpdateTime(DateUtils.getNowDate());
         return resExpertMapper.updateStatus(resExpert);

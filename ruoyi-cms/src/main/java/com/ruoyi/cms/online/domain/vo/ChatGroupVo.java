@@ -1,10 +1,10 @@
-package com.ruoyi.cms.online.domain;
+package com.ruoyi.cms.online.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Date;
 
@@ -14,7 +14,7 @@ import java.util.Date;
  * @author admin
  * @date 2025-04-17
  */
-public class ChatGroup extends BaseEntity
+public class ChatGroupVo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -40,6 +40,17 @@ public class ChatGroup extends BaseEntity
     /** 审批状态（0待审批 1已发布） */
     @Excel(name = "审批状态", readConverterExp = "0=待审批,1=已发布")
     private String appored;
+
+    /** 是否已入群 */
+    private String joinGroupState;
+
+    public String getjoinGroupState() {
+        return joinGroupState;
+    }
+
+    public void setJoinedGroup(String joinedGroup) {
+        this.joinGroupState = joinedGroup;
+    }
 
     /** 审核者 */
     @Excel(name = "审核者")
@@ -147,6 +158,7 @@ public class ChatGroup extends BaseEntity
             .append("status", getStatus())
             .append("appored", getAppored())
             .append("delFlag", getDelFlag())
+            .append("joinedGroup",getjoinGroupState())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

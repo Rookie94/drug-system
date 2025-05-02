@@ -90,12 +90,6 @@ public class ResOrginfoServiceImpl implements IResOrginfoService
      */
     public int updateStatus(ResOrginfo resOrginfo)
     {
-        if(resOrginfo.getStatus()=="0"){
-            resOrginfo.setStatus("1");
-        }
-        else{
-            resOrginfo.setStatus("0");
-        }
         resOrginfo.setUpdateBy(getUsername());
         resOrginfo.setUpdateTime(DateUtils.getNowDate());
         return resOrginfoMapper.updateStatus(resOrginfo);

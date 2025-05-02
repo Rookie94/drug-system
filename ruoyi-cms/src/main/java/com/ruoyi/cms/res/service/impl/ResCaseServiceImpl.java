@@ -114,12 +114,6 @@ public class ResCaseServiceImpl implements IResCaseService
      */
     public int updateStatus(ResCase resCase)
     {
-        if(resCase.getStatus()=="0"){
-            resCase.setStatus("1");
-        }
-        else{
-            resCase.setStatus("0");
-        }
         resCase.setUpdateBy(getUsername());
         resCase.setUpdateTime(DateUtils.getNowDate());
         return resCaseMapper.updateStatus(resCase);

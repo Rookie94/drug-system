@@ -145,12 +145,6 @@ public class ChatGroupMenbersServiceImpl implements IChatGroupMenbersService
      */
     public int updateStatus(ChatGroupMenbers chatGroupMenbers)
     {
-        if(chatGroupMenbers.getStatus()=="0"){
-            chatGroupMenbers.setStatus("1");
-        }
-        else{
-            chatGroupMenbers.setStatus("0");
-        }
         chatGroupMenbers.setUpdateBy(getUsername());
         chatGroupMenbers.setUpdateTime(DateUtils.getNowDate());
         return chatGroupMenbersMapper.updateStatus(chatGroupMenbers);

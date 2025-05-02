@@ -114,12 +114,6 @@ public class ResNewsServiceImpl implements IResNewsService
      */
     public int updateStatus(ResNews resNews)
     {
-        if(resNews.getStatus()=="0"){
-            resNews.setStatus("1");
-        }
-        else{
-            resNews.setStatus("0");
-        }
         resNews.setUpdateBy(getUsername());
         resNews.setUpdateTime(DateUtils.getNowDate());
         return resNewsMapper.updateStatus(resNews);

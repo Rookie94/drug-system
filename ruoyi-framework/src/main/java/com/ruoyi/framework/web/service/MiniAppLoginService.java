@@ -2,8 +2,11 @@ package com.ruoyi.framework.web.service;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +28,8 @@ import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import com.ruoyi.framework.security.wxsys.MiniAppByOpenIdAuthenticationToken;
 
 import javax.annotation.Resource;
+
+import static com.ruoyi.common.utils.SecurityUtils.getLoginUser;
 
 @Slf4j
 @Service
@@ -94,4 +99,17 @@ public class MiniAppLoginService
             log.error("用户已经存在,无需重复添加,openId:{},miniAppId:{}",openId,miniAppId);
         }
     }
+
+    public void wxMiniLogout(MiniAppUser miniAppUser)
+    {
+        try
+        {
+            //
+        }
+        catch (Exception e)
+        {
+            //
+        }
+    }
+
 }

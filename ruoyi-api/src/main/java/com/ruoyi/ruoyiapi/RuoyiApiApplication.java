@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan("com.ruoyi.common")
 @ComponentScan("com.ruoyi.system")
 @ComponentScan("com.ruoyi.wxsys")
+@ComponentScan("com.ruoyi.cms")
 public class RuoyiApiApplication {
 
     public static void main(String[] args) {

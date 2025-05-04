@@ -31,8 +31,8 @@ public class WxMiniAppUserController extends BaseController
     @GetMapping("/getMiniAppUserInfo")
     public R getMiniAppUserInfo()
     {
-
-        return R.success(getLoginUser().getMiniAppUser());
+        //return R.success(getLoginUser().getMiniAppUser());
+        return R.success(getLoginUser());
     }
 
     /**

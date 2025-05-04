@@ -77,4 +77,5 @@ public class WxMaServiceManager
     {
         return wxMaServiceMap.get(appId);
     }
+
 }

@@ -19,6 +19,12 @@ ruoyi:
 server:
   # 服务器的HTTP端口，默认为8080
   port: 8888
+  # HTTPS
+  ssl:
+    key-store: classpath:yiti.shunxuan.net.cn.jks
+    key-store-password: 123456
+    key-store-type: PKCS12
+    enabled: true
   servlet:
     # 应用的访问路径
     context-path: /
@@ -32,13 +38,6 @@ server:
       max: 800
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
-
-# HTTPS
-ssl:
-  key-store: classpath:X.jks
-  key-store-password: 80s1231jzr
-  key-store-type: JKS
-  enabled: false
 
 # 日志配置
 logging:
@@ -159,5 +158,5 @@ wx:
       port: 6379
       password:
       timeout: 5000
-      database: 0
+      database: 1
 

@@ -67,6 +67,11 @@
             <artifactId>ruoyi-framework</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-common</artifactId>
+        </dependency>
+
         <!-- cms-->
        <dependency>
             <groupId>com.ruoyi</groupId>

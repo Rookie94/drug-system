@@ -1,6 +1,7 @@
 package com.ruoyi.ruoyiapi.Controller.wxapi;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.core.domain.entity.MiniAppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,14 @@ public class WxLoginController
     public R wxMiniLogin(@RequestBody WxLoginBody wxLoginBody) throws MiniAppException
     {
         JSONObject data = miniAppLoginService.wxMiniLogin(wxLoginBody);
+        return R.success(data);
+    }
+
+    @PostMapping("/wxMiniLogout")
+    public R wxMiniLogout(@RequestBody MiniAppUser miniAppUser) throws MiniAppException
+    {
+        //JSONObject data = miniAppLoginService.wxMiniLogout(miniAppUser);
+        JSONObject data=new JSONObject();
         return R.success(data);
     }
 

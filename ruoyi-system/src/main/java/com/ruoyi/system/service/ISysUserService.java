@@ -75,6 +75,20 @@ public interface ISysUserService
     public String selectUserPostGroup(String userName);
 
     /**
+     * 根据openId查询用户信息
+     * @param openId
+     * @return
+     */
+    public SysUser selectWxUserByOpenId(String openId);
+
+    /**
+     * 根据手机号查询用户信息
+     * @param phoneNumber
+     * @return
+     */
+    public SysUser selectWxUserByPhoneNumber(String phoneNumber);
+
+    /**
      * 校验用户名称是否唯一
      * 
      * @param user 用户信息

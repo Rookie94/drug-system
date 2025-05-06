@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.scale.mapper.LbsContextsMapper">
+    
+    <resultMap type="LbsContexts" id="LbsContextsResult">
+        <result property="contextId"    column="context_id"    />
+        <result property="parentContextId"    column="parent_context_id"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="contextName"    column="context_name"    />
+        <result property="pic"    column="pic"    />
+        <result property="content"    column="content"    />
+        <result property="jsonData"    column="json_data"    />
+        <result property="status"    column="status"    />
+        <result property="appored"    column="appored"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="apporBy"    column="appor_by"    />
+        <result property="apporTime"    column="appor_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectLbsContextsVo">
+        select context_id, parent_context_id, order_num, context_name, pic, content,json_data, status, appored, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from lbs_contexts
+    </sql>
+
+    <select id="selectLbsContextsList" parameterType="LbsContexts" resultMap="LbsContextsResult">
+        <include refid="selectLbsContextsVo"/>
+        <where>  
+            <if test="contextName != null  and contextName != ''"> and context_name like concat('%', #{contextName}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
+        </where>
+    </select>
+    
+    <select id="selectLbsContextsByContextId" parameterType="Integer" resultMap="LbsContextsResult">
+        <include refid="selectLbsContextsVo"/>
+        where context_id = #{contextId}
+    </select>
+
+    <insert id="insertLbsContexts" parameterType="LbsContexts">
+        insert into lbs_contexts
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contextId != null">context_id,</if>
+            <if test="parentContextId != null">parent_context_id,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="contextName != null">context_name,</if>
+            <if test="pic != null">pic,</if>
+            <if test="content != null">content,</if>
+            <if test="jsonData != null">json_data,</if>
+            <if test="status != null">status,</if>
+            <if test="appored != null">appored,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="apporBy != null">appor_by,</if>
+            <if test="apporTime != null">appor_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contextId != null">#{contextId},</if>
+            <if test="parentContextId != null">#{parentContextId},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="contextName != null">#{contextName},</if>
+            <if test="pic != null">#{pic},</if>
+            <if test="content != null">#{content},</if>
+            <if test="jsonData != null">#{jsonData},</if>
+            <if test="status != null">#{status},</if>
+            <if test="appored != null">#{appored},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="apporBy != null">#{apporBy},</if>
+            <if test="apporTime != null">#{apporTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLbsContexts" parameterType="LbsContexts">
+        update lbs_contexts
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentContextId != null">parent_context_id = #{parentContextId},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="contextName != null">context_name = #{contextName},</if>
+            <if test="pic != null">pic = #{pic},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="jsonData != null">json_data = #{jsonData},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="appored != null">appored = #{appored},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where context_id = #{contextId}
+    </update>
+
+    <delete id="deleteLbsContextsByContextId" parameterType="Integer">
+        delete from lbs_contexts where context_id = #{contextId}
+    </delete>
+
+    <delete id="deleteLbsContextsByContextIds" parameterType="String">
+        delete from lbs_contexts where context_id in 
+        <foreach item="contextId" collection="array" open="(" separator="," close=")">
+            #{contextId}
+        </foreach>
+    </delete>
+</mapper>

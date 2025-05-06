@@ -235,7 +235,7 @@ public class SysStudentController extends BaseController
     }
 
     /**
-     * 获取部门树列表
+     * 获取量表树列表
      */
     @PreAuthorize("@ss.hasPermi('student:profile:list')")
     @GetMapping("/deptTree")

@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * 程序注解配置
@@ -19,6 +20,16 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @MapperScan("com.ruoyi.**.mapper")
 public class ApplicationConfig
 {
+    /**
+     * 远程调用
+     * @return
+     */
+    @Bean
+    public RestTemplate restTemplate()
+    {
+        return new RestTemplate();
+    }
+
     /**
      * 时区配置
      */

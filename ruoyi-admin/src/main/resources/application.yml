@@ -11,7 +11,7 @@ ruoyi:
   # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath或var/ruoyi/uploadPath）
   profile: var/ruoyi/uploadPath
   # 获取ip地址开关
-  addressEnabled: false
+  addressEnabled: true
   # 验证码类型 math 数字计算 char 字符验证
   captchaType: math
 
@@ -148,16 +148,5 @@ minio:
   secretKey: 8KhucwRkd8f8QiimshP3Uz7SNBlaaIB895GDeBjS
   # 默认bucket
   bucketName: public
-
-  #微信小程序配置
-  wx:
-    miniapp:
-      useRedis: true
-      jedisConfig:
-        host: 127.0.0.1
-        port: 6379
-        password:
-        timeout: 5000
-        database: 1
 
 

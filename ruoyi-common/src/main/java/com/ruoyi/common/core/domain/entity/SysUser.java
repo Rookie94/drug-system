@@ -45,7 +45,7 @@ public class SysUser extends BaseEntity
 
     /** 手机号码 */
     @Excel(name = "手机号码", cellType = ColumnType.TEXT)
-    private String phonenumber;
+    private String phoneNumber;
 
     /** 用户性别 */
     @Excel(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
@@ -63,6 +63,12 @@ public class SysUser extends BaseEntity
 
     /** 删除标志（0代表存在 2代表删除） */
     private String delFlag;
+
+    /** unionId */
+    private String unionId;
+
+    /** openId */
+    private String openId;
 
     /** 最后登录IP */
     @Excel(name = "最后登录IP", type = Type.EXPORT)
@@ -179,12 +185,12 @@ public class SysUser extends BaseEntity
     @Size(min = 0, max = 11, message = "手机号码长度不能超过11个字符")
     public String getPhonenumber()
     {
-        return phonenumber;
+        return phoneNumber;
     }
 
     public void setPhonenumber(String phonenumber)
     {
-        this.phonenumber = phonenumber;
+        this.phoneNumber = phonenumber;
     }
 
     public String getSex()
@@ -236,6 +242,14 @@ public class SysUser extends BaseEntity
     {
         this.delFlag = delFlag;
     }
+
+    public String getUnionId() {return unionId;}
+
+    public void setUnionId(String unionId) {this.unionId = unionId;}
+
+    public String getOpenId() {return openId;}
+
+    public void setOpenId(String openId) {this.openId = openId;}
 
     public String getLoginIp()
     {

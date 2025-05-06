@@ -144,6 +144,24 @@ public class SysUserServiceImpl implements ISysUserService
     }
 
     /**
+     * 根据openId查询用户信息
+     * @param openId
+     * @return
+     */
+    public SysUser selectWxUserByOpenId(String openId){
+        return userMapper.selectWxUserByOpenId(openId);
+    }
+
+    /**
+     * 根据手机号查询用户信息
+     * @param phoneNumber
+     * @return
+     */
+    public SysUser selectWxUserByPhoneNumber(String phoneNumber){
+        return userMapper.selectWxUserByPhoneNumber(phoneNumber);
+    }
+
+    /**
      * 查询用户所属角色组
      * 
      * @param userName 用户名

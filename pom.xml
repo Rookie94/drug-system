@@ -105,6 +105,13 @@
                 <version>${tomcat.version}</version>
             </dependency>
 
+            <!-- SpringBoot Websocket -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-websocket</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
             <!-- 阿里数据库连接池 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -277,13 +284,6 @@
             <!-- 系统模块-->
             <dependency>
                 <groupId>com.ruoyi</groupId>
-                <artifactId>ruoyi-wxsys</artifactId>
-                <version>${ruoyi.version}</version>
-            </dependency>
-
-            <!-- 系统模块-->
-            <dependency>
-                <groupId>com.ruoyi</groupId>
                 <artifactId>ruoyi-api</artifactId>
                 <version>${ruoyi.version}</version>
             </dependency>
@@ -312,7 +312,6 @@
         <module>ruoyi-quartz</module>
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
-        <module>ruoyi-wxsys</module>
         <module>ruoyi-cms</module>
         <module>ruoyi-api</module>
     </modules>

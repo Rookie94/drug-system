@@ -1,6 +1,10 @@
 package com.ruoyi.framework.web.service;
 
 import javax.annotation.Resource;
+
+import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.core.domain.model.WxParam;
+import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -51,6 +55,29 @@ public class SysLoginService
 
     @Autowired
     private ISysConfigService configService;
+
+    /**
+     * 微信登录
+     * @param openId
+     * @param user
+     * @return
+     */
+    public String wxLogin(String openId,SysUser user){
+
+        //组装token信息
+        LoginUser loginUser = new LoginUser();
+        loginUser.setOpenId(openId);
+        //如果有的话设置
+        //loginUser.setUnionId(unionid);
+        loginUser.setUser(user);
+        loginUser.setUserId(user.getUserId());
+
+        AsyncManager.me().execute(AsyncFactory.recordLogininfor(user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
+        recordLoginInfo(loginUser.getUserId());
+
+        // 生成token
+        return tokenService.createToken(loginUser);
+    }
 
     /**
      * 登录验证

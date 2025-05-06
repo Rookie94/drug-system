@@ -60,6 +60,20 @@ public interface SysUserMapper
     public SysUser selectUserById(Long userId);
 
     /**
+     * 根据openId查询用户信息
+     * @param openId
+     * @return
+     */
+    public SysUser selectWxUserByOpenId(String openId);
+
+    /**
+     * 根据手机号查询用户信息
+     * @param phoneNumber
+     * @return
+     */
+    public SysUser selectWxUserByPhoneNumber(String phoneNumber);
+
+    /**
      * 新增用户信息
      * 
      * @param user 用户信息

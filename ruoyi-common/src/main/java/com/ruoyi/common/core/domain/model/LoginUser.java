@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Set;
 
-import com.ruoyi.common.core.domain.entity.MiniAppUser;
 import com.ruoyi.common.core.domain.entity.SysUser;
 
 /**
@@ -27,6 +26,12 @@ public class LoginUser implements UserDetails
      * 部门ID
      */
     private Long deptId;
+
+    /** unionId */
+    private String unionId;
+
+    /** openId */
+    private String openId;
 
     /**
      * 用户唯一标识
@@ -73,25 +78,9 @@ public class LoginUser implements UserDetails
      */
     private SysUser user;
 
-    /**
-     * 微信小程序用户信息
-     */
-    private MiniAppUser miniAppUser;
-
-    /**
-     * 是否为微信小程序用户 默认false
-     */
-    private Boolean isMiniApp = false;
 
     public LoginUser()
     {
-    }
-
-    public LoginUser(MiniAppUser miniAppUser)
-    {
-        this.miniAppUser = miniAppUser;
-        this.isMiniApp = true;
-        this.user = new SysUser();
     }
 
     public LoginUser(SysUser user, Set<String> permissions)
@@ -277,30 +266,27 @@ public class LoginUser implements UserDetails
         this.user = user;
     }
 
+    public String getUnionId() {
+        return unionId;
+    }
+
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
         return null;
     }
 
-    public MiniAppUser getMiniAppUser()
-    {
-        return miniAppUser;
-    }
 
-    public void setMiniAppUser(MiniAppUser miniAppUser)
-    {
-        this.miniAppUser = miniAppUser;
-    }
-
-    public Boolean getIsMiniApp()
-    {
-
-        return isMiniApp;
-    }
-
-    public void setIsMiniApp(Boolean isMiniApp)
-    {
-        this.isMiniApp = isMiniApp;
-    }
 }

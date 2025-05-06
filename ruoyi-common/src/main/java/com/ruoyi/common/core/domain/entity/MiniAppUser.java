@@ -25,6 +25,14 @@ public class MiniAppUser extends BaseEntity
     @Excel(name = "头像")
     private String avatar;
 
+    /** 头像 */
+    @Excel(name = "手机号")
+    private String phoneNumber;
+
+    /** 用户唯一标识 */
+    @Excel(name = "全局唯一标识")
+    private String unionId;
+
     /** 用户唯一标识 */
     @Excel(name = "用户唯一标识")
     private String openId;
@@ -90,6 +98,22 @@ public class MiniAppUser extends BaseEntity
         this.avatar = avatar;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getUnionId() {
+        return unionId;
+    }
+
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
+    }
+
     public String getOpenId()
     {
         return openId;
@@ -137,6 +161,7 @@ public class MiniAppUser extends BaseEntity
                 "id=" + id +
                 ", nickName='" + nickName + '\'' +
                 ", avatar='" + avatar + '\'' +
+                ", unionId='" + unionId + '\'' +
                 ", openId='" + openId + '\'' +
                 ", sex='" + sex + '\'' +
                 ", miniAppId=" + miniAppId +

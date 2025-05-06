@@ -1,8 +1,6 @@
 package com.ruoyi.framework.config;
 
-import com.ruoyi.framework.security.wxsys.MiniAppByOpenIdAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -36,15 +34,7 @@ public class SecurityConfig
      * 自定义用户认证逻辑
      */
     @Autowired
-    @Qualifier("userDetailsService")
     private UserDetailsService userDetailsService;
-
-    /**
-     * 微信小程序认证逻辑
-     */
-    @Autowired
-    @Qualifier("userDetailsMiniAppByOpenIdServiceImpl")
-    private UserDetailsService userDetailsMiniAppByOpenId;
 
     /**
      * 认证失败处理类
@@ -85,8 +75,7 @@ public class SecurityConfig
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
-        MiniAppByOpenIdAuthenticationProvider miniAppByOpenIdAuthenticationProvider = new MiniAppByOpenIdAuthenticationProvider(userDetailsMiniAppByOpenId);
-        return new ProviderManager(daoAuthenticationProvider,miniAppByOpenIdAuthenticationProvider);
+        return new ProviderManager(daoAuthenticationProvider);
     }
 
     /**
@@ -122,7 +111,7 @@ public class SecurityConfig
                 .authorizeHttpRequests((requests) -> {
                     permitAllUrl.getUrls().forEach(url -> requests.antMatchers(url).permitAll());
                     // 对于登录login 注册register 验证码captchaImage 允许匿名访问
-                    requests.antMatchers("/login", "/register", "/captchaImage","/miniapp/wxMiniLogin").permitAll()
+                    requests.antMatchers("/login", "/register", "/captchaImage","/wxLogin","/check-binding","/binding-phone").permitAll()
                             // 静态资源，可匿名访问
                             .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
                             .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()

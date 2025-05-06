@@ -101,11 +101,6 @@
             <artifactId>weixin-java-miniapp</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-wxsys</artifactId>
-        </dependency>
-
     </dependencies>
 
 </project>

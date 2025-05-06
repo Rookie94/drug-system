@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysMiniAppUserMapper">
+    
+    <resultMap type="com.ruoyi.common.core.domain.entity.MiniAppUser" id="MiniAppUserResult">
+        <result property="id"    column="id"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="unionId"    column="union_id"    />
+        <result property="openId"    column="open_id"    />
+        <result property="sex"    column="sex"    />
+        <result property="miniAppId"    column="mini_app_id"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMiniAppUserVo">
+        select id, nick_name, avatar, open_id,union_id,phonenumber, sex, mini_app_id, remark, create_time, update_time from sys_app_user
+    </sql>
+
+    <select id="selectMiniAppUserList" parameterType="MiniAppUser" resultMap="MiniAppUserResult">
+        <include refid="selectMiniAppUserVo"/>
+        <where>  
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="avatar != null  and avatar != ''"> and avatar = #{avatar}</if>
+            <if test="phoneNumber != null  and phoneNumber != ''"> and phonenumber = #{phoneNumber}</if>
+            <if test="openId != null  and openId != ''"> and open_id = #{openId}</if>
+            <if test="unionId != null  and unionId != ''"> and union_id = #{unionId}</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="miniAppId != null "> and mini_app_id = #{miniAppId}</if>
+        </where>
+    </select>
+    
+    <select id="selectMiniAppUserById" parameterType="Long" resultMap="MiniAppUserResult">
+        <include refid="selectMiniAppUserVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMiniAppUser" parameterType="MiniAppUser" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_app_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="nickName != null">nick_name,</if>
+            <if test="avatar != null">avatar,</if>
+            <if test="phoneNumber != null">phonenumber,</if>
+            <if test="openId != null">open_id,</if>
+            <if test="unionId != null">union_id,</if>
+            <if test="sex != null">sex,</if>
+            <if test="miniAppId != null">mini_app_id,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="nickName != null">#{nickName},</if>
+            <if test="avatar != null">#{avatar},</if>
+            <if test="phoneNumber != null">#{phoneNumber},</if>
+            <if test="openId != null">#{openId},</if>
+            <if test="unionId != null">#{unionId},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="miniAppId != null">#{miniAppId},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMiniAppUser" parameterType="MiniAppUser">
+        update sys_app_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="nickName != null">nick_name = #{nickName},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="phoneNumber != null">phonenumber = #{phoneNumber},</if>
+            <if test="openId != null">open_id = #{openId},</if>
+            <if test="unionId != null">union_id = #{unionId},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="miniAppId != null">mini_app_id = #{miniAppId},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMiniAppUserById" parameterType="Long">
+        delete from sys_app_user where id = #{id}
+    </delete>
+
+    <delete id="deleteMiniAppUserByIds" parameterType="String">
+        delete from sys_app_user where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectMiniAppUserByOpenIdAndMiniAppId" resultMap="MiniAppUserResult">
+        <include refid="selectMiniAppUserVo"/>
+        where open_id = #{openId} and mini_app_id = #{miniAppId}
+    </select>
+
+    <select id="selectMiniAppUserInnerJoinMiniAppList" parameterType="MiniAppUser" resultMap="MiniAppUserResult">
+        select
+               mau.id,
+               mau.nick_name,
+               mau.avatar,
+               mau.union_id,
+               mau.open_id,
+               mau.sex,
+               mau.mini_app_id,
+               mau.remark,
+               mau.create_time,
+               mau.update_time,
+               ma.name as miniAppName
+        from sys_app_user mau inner join sys_app ma on mau.mini_app_id = ma.id
+        <where>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="avatar != null  and avatar != ''"> and avatar = #{avatar}</if>
+            <if test="phoneNumber != null  and phoneNumber != ''"> and phonenumber = #{phoneNumber}</if>
+            <if test="unionId != null  and unionId != ''"> and union_id = #{unionId}</if>
+            <if test="openId != null  and openId != ''"> and open_id = #{openId}</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="miniAppId != null "> and mini_app_id = #{miniAppId}</if>
+        </where>
+    </select>
+</mapper>

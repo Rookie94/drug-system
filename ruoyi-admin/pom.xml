@@ -24,6 +24,12 @@
             <optional>true</optional> <!-- 表示依赖不会传递 -->
         </dependency>
 
+        <!-- SpringBoot Websocket -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!-- swagger3-->
         <dependency>
             <groupId>io.springfox</groupId>
@@ -70,6 +76,16 @@
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-cms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-chat</artifactId>
+            <version>3.8.6</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

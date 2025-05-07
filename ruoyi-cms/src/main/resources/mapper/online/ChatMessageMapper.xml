@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.online.mapper.ChatMessageMapper">
+
+    <resultMap type="ChatMessageVo" id="ChatMessageResult">
+        <result property="messageId"    column="message_id"    />
+        <result property="parentMessageId"    column="parent_message_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="userType"    column="user_type"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="title"    column="title"    />
+        <result property="message"    column="message"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectChatMessageVo">
+        SELECT
+            t.message_id,
+            t.parent_message_id,
+            t.user_id,
+            u.user_name,
+            u.nick_name,
+            u.user_type,
+            t.group_id,
+            g.group_name,
+            t.dept_id,
+            d.dept_name,
+            t.title,
+            t.message,
+            t.status,
+            t.del_flag,
+            t.create_by,
+            t.create_time,
+            t.update_by,
+            t.update_time,
+            t.remark
+        FROM
+            chat_message t
+                LEFT JOIN chat_group g ON t.group_id = g.group_id
+                LEFT JOIN sys_user u ON t.user_id = u.user_id
+                LEFT JOIN sys_dept d ON t.dept_id = d.dept_id
+    </sql>
+
+    <select id="selectChatMessageList" parameterType="ChatMessage" resultMap="ChatMessageResult">
+        <include refid="selectChatMessageVo"/>
+        <where>
+            <if test="groupId != null  and groupId != ''"> and t.group_id = #{groupId}</if>
+            <if test="title != null  and title != ''"> and t.title like concat('%', #{title}, '%')</if>
+            <if test="userName != null  and userName != ''"> and u.user_name like concat('%', #{userName}, '%')</if>
+            <if test="nickName != null  and nickName != ''"> and u.nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="deptName != null  and deptName != ''"> and d.dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="status != null  and status != ''"> and t.status = #{status}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and t.create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+            and u.user_type='11'
+            and t.parent_message_id=0
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        order by t.create_time desc
+    </select>
+
+    <select id="selectChatMessageByMessageId" parameterType="Long" resultMap="ChatMessageResult">
+        <include refid="selectChatMessageVo"/>
+        where message_id = #{messageId}
+    </select>
+
+    <insert id="insertChatMessage" parameterType="ChatMessage">
+        insert into chat_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="messageId != null">message_id,</if>
+            <if test="parentMessageId != null">parent_message_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="message != null">message,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="messageId != null">#{messageId},</if>
+            <if test="parentMessageId != null">#{parentMessageId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="message != null">#{message},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateChatMessage" parameterType="ChatMessage">
+        update chat_message
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentMessageId != null">parent_message_id = #{parentMessageId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="message != null">message = #{message},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where message_id = #{messageId}
+    </update>
+
+    <delete id="deleteChatMessageByMessageId" parameterType="Long">
+        delete from chat_message where message_id = #{messageId}
+    </delete>
+
+    <delete id="deleteChatMessageByMessageIds" parameterType="String">
+        delete from chat_message where message_id in
+        <foreach item="messageId" collection="array" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </delete>
+</mapper>

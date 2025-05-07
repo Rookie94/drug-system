@@ -1,18 +1,14 @@
-package com.ruoyi.wxapp.Controller;
+package com.ruoyi.wxapp.Controller.wx;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.domain.entity.MiniAppUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.model.WxParam;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.framework.web.service.TokenService;
-import com.ruoyi.system.mapper.SysMiniAppMapper;
 import com.ruoyi.system.service.ISysMiniAppUserService;
 import com.ruoyi.system.service.ISysUserService;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,27 +16,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.spec.AlgorithmParameterSpec;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.MiniApp;
-import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.core.domain.model.LoginBody;
 import com.ruoyi.common.core.domain.model.WxLoginBody;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.framework.web.service.SysLoginService;
 import com.ruoyi.framework.web.service.SysPermissionService;
-import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.service.ISysMiniAppService;
 import com.ruoyi.common.utils.WeChatUtils;
 

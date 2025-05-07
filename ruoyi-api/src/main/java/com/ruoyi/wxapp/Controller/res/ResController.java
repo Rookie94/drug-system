@@ -1,4 +1,4 @@
-package com.ruoyi.wxapp.Controller;
+package com.ruoyi.wxapp.Controller.res;
 
 import com.ruoyi.common.core.page.TableDataInfo;
 import org.springframework.beans.factory.annotation.Autowired;

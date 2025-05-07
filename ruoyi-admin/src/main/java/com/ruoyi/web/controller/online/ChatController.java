@@ -66,7 +66,7 @@ public class ChatController extends BaseController
     /**
      * 新增聊天群组
      */
-    @PreAuthorize("@ss.hasPermi('online:group:query')")
+    @PreAuthorize("@ss.hasPermi('online:chat:query')")
     @Log(title = "聊天功能", businessType = BusinessType.INSERT)
     @PostMapping(value = "/joingroup")
     public AjaxResult add(@RequestBody ChatGroup chatGroup)

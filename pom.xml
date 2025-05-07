@@ -38,7 +38,7 @@
         <spring-framework.version>5.3.39</spring-framework.version>
         <jedis.version>3.3.0</jedis.version>
         <minio.version>8.2.2</minio.version>
-        <okhttp3.version>4.8.1</okhttp3.version>
+        <okhttp3.version>4.9.1</okhttp3.version>
         <hutool-all.version>5.4.2</hutool-all.version>
     </properties>
 
@@ -237,7 +237,7 @@
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
-                <version>${okhttp.version}</version>
+                <version>${okhttp3.version}</version>
             </dependency>
 
             <dependency>
@@ -314,6 +314,7 @@
         <module>ruoyi-common</module>
         <module>ruoyi-cms</module>
         <module>ruoyi-api</module>
+        <module>ruoyi-chat</module>
     </modules>
     <packaging>pom</packaging>
 

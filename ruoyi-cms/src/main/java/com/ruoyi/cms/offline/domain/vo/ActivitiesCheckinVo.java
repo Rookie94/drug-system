@@ -8,19 +8,21 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 预约详情对象 v_signup
+ * 活动签到对象 v_ofa_activities_checkin
  * 
  * @author admin
- * @date 2025-04-28
+ * @date 2025-05-09
  */
-public class SignUpVo extends BaseEntity
+public class ActivitiesCheckinVo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 预约id */
-    private Long signId;
+    /** 签到id */
+    @Excel(name = "签到id")
+    private Long checkinId;
 
     /** 活动id */
+    @Excel(name = "活动id")
     private Long activityId;
 
     /** 活动主题 */
@@ -37,45 +39,49 @@ public class SignUpVo extends BaseEntity
     @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 
-    /** 预约时间 */
+    /** 签到时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Excel(name = "预约时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
-    private Date signTime;
+    @Excel(name = "签到时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date checkinTime;
 
-    /** 用户id */
+    /** 用户ID */
+    @Excel(name = "用户ID")
     private Long userId;
 
     /** 用户类型（00系统用户） */
+    @Excel(name = "用户类型", readConverterExp = "0=0系统用户")
     private String userType;
 
     /** 用户账号 */
-    @Excel(name = "学员账号")
+    @Excel(name = "用户账号")
     private String userName;
 
     /** 用户昵称 */
-    @Excel(name = "学员名称")
+    @Excel(name = "用户昵称")
     private String nickName;
 
     /** 手机号码 */
     @Excel(name = "手机号码")
     private String phonenumber;
 
-    /** 部门id */
+    /** 归属部门 */
+    @Excel(name = "归属部门")
     private Long deptId;
 
     /** 部门名称 */
-    @Excel(name = "归属机构")
+    @Excel(name = "部门名称")
     private String deptName;
 
-    public void setSignId(Long signId) 
+    public void setCheckinId(Long checkinId) 
     {
-        this.signId = signId;
+        this.checkinId = checkinId;
     }
 
-    public Long getSignId() 
+    public Long getCheckinId() 
     {
-        return signId;
+        return checkinId;
     }
+
     public void setActivityId(Long activityId) 
     {
         this.activityId = activityId;
@@ -85,6 +91,7 @@ public class SignUpVo extends BaseEntity
     {
         return activityId;
     }
+
     public void setActivityName(String activityName) 
     {
         this.activityName = activityName;
@@ -94,6 +101,7 @@ public class SignUpVo extends BaseEntity
     {
         return activityName;
     }
+
     public void setStartTime(Date startTime) 
     {
         this.startTime = startTime;
@@ -103,6 +111,7 @@ public class SignUpVo extends BaseEntity
     {
         return startTime;
     }
+
     public void setEndTime(Date endTime) 
     {
         this.endTime = endTime;
@@ -112,15 +121,17 @@ public class SignUpVo extends BaseEntity
     {
         return endTime;
     }
-    public void setSignTime(Date signTime) 
+
+    public void setCheckinTime(Date checkinTime) 
     {
-        this.signTime = signTime;
+        this.checkinTime = checkinTime;
     }
 
-    public Date getSignTime() 
+    public Date getCheckinTime() 
     {
-        return signTime;
+        return checkinTime;
     }
+
     public void setUserId(Long userId) 
     {
         this.userId = userId;
@@ -130,6 +141,7 @@ public class SignUpVo extends BaseEntity
     {
         return userId;
     }
+
     public void setUserType(String userType) 
     {
         this.userType = userType;
@@ -139,6 +151,7 @@ public class SignUpVo extends BaseEntity
     {
         return userType;
     }
+
     public void setUserName(String userName) 
     {
         this.userName = userName;
@@ -148,6 +161,7 @@ public class SignUpVo extends BaseEntity
     {
         return userName;
     }
+
     public void setNickName(String nickName) 
     {
         this.nickName = nickName;
@@ -157,6 +171,7 @@ public class SignUpVo extends BaseEntity
     {
         return nickName;
     }
+
     public void setPhonenumber(String phonenumber) 
     {
         this.phonenumber = phonenumber;
@@ -166,6 +181,7 @@ public class SignUpVo extends BaseEntity
     {
         return phonenumber;
     }
+
     public void setDeptId(Long deptId) 
     {
         this.deptId = deptId;
@@ -175,6 +191,7 @@ public class SignUpVo extends BaseEntity
     {
         return deptId;
     }
+
     public void setDeptName(String deptName) 
     {
         this.deptName = deptName;
@@ -188,12 +205,12 @@ public class SignUpVo extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("signId", getSignId())
+            .append("checkinId", getCheckinId())
             .append("activityId", getActivityId())
             .append("activityName", getActivityName())
             .append("startTime", getStartTime())
             .append("endTime", getEndTime())
-            .append("signTime", getSignTime())
+            .append("checkinTime", getCheckinTime())
             .append("userId", getUserId())
             .append("userType", getUserType())
             .append("userName", getUserName())

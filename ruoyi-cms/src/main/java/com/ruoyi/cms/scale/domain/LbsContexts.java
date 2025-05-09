@@ -47,8 +47,18 @@ public class LbsContexts extends BaseEntity
     @Excel(name = "简介")
     private String content;
 
+    /** 自动生成的题目JSON */
+    private String jsonMonitor;
+
     /** 题目JSON */
     private String jsonData;
+
+    /** 量表计算参数 */
+    private String jsonParams;
+
+    /** 量表结果集JSON格式 */
+    private String jsonResult;
+
 
     /** 目录状态 */
     @Excel(name = "目录状态")
@@ -133,12 +143,37 @@ public class LbsContexts extends BaseEntity
         return content;
     }
 
+
+    public String getJsonMonitor() {
+        return jsonMonitor;
+    }
+
+    public void setJsonMonitor(String jsonMonitor) {
+        this.jsonMonitor = jsonMonitor;
+    }
+
     public String getJsonData() {
         return jsonData;
     }
 
     public void setJsonData(String jsonData) {
         this.jsonData = jsonData;
+    }
+
+    public String getJsonParams() {
+        return jsonParams;
+    }
+
+    public void setJsonParams(String jsonParams) {
+        this.jsonParams = jsonParams;
+    }
+
+    public String getJsonResult() {
+        return jsonResult;
+    }
+
+    public void setJsonResult(String jsonResult) {
+        this.jsonResult = jsonResult;
     }
 
     public void setStatus(String status) 
@@ -201,6 +236,10 @@ public class LbsContexts extends BaseEntity
             .append("contextName", getContextName())
             .append("pic", getPic())
             .append("content", getContent())
+            .append("jsonMonitor", getJsonMonitor())
+            .append("jsonData", getJsonData())
+            .append("jsonParams", getJsonParams())
+            .append("jsonResult", getJsonResult())
             .append("status", getStatus())
             .append("appored", getAppored())
             .append("createBy", getCreateBy())

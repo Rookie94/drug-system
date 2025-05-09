@@ -3,7 +3,7 @@ package com.ruoyi.web.controller.offline;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ruoyi.cms.offline.domain.vo.SignUpVo;
+import com.ruoyi.cms.offline.domain.vo.ActivitiesSignUpVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +18,8 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.cms.offline.domain.SignUp;
-import com.ruoyi.cms.offline.service.ISignUpService;
+import com.ruoyi.cms.offline.domain.ActivitiesSignUp;
+import com.ruoyi.cms.offline.service.IActivitiesSignUpService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
@@ -31,20 +31,20 @@ import com.ruoyi.common.core.page.TableDataInfo;
  */
 @RestController
 @RequestMapping("/offline/signup")
-public class SignUpController extends BaseController
+public class ActivitiesSignUpController extends BaseController
 {
     @Autowired
-    private ISignUpService signUpService;
+    private IActivitiesSignUpService signUpService;
 
     /**
      * 查询预约详情列表
      */
     @PreAuthorize("@ss.hasPermi('offline:signup:list')")
     @GetMapping("/list")
-    public TableDataInfo list(SignUpVo signUp)
+    public TableDataInfo list(ActivitiesSignUpVo signUp)
     {
         startPage();
-        List<SignUpVo> list = signUpService.selectSignUpList(signUp);
+        List<ActivitiesSignUpVo> list = signUpService.selectSignUpList(signUp);
         return getDataTable(list);
     }
 
@@ -54,10 +54,10 @@ public class SignUpController extends BaseController
     @PreAuthorize("@ss.hasPermi('offline:signup:export')")
     @Log(title = "预约详情", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, SignUpVo signUp)
+    public void export(HttpServletResponse response, ActivitiesSignUpVo signUp)
     {
-        List<SignUpVo> list = signUpService.selectSignUpList(signUp);
-        ExcelUtil<SignUpVo> util = new ExcelUtil<SignUpVo>(SignUpVo.class);
+        List<ActivitiesSignUpVo> list = signUpService.selectSignUpList(signUp);
+        ExcelUtil<ActivitiesSignUpVo> util = new ExcelUtil<ActivitiesSignUpVo>(ActivitiesSignUpVo.class);
         util.exportExcel(response, list, "预约详情数据");
     }
 
@@ -77,7 +77,7 @@ public class SignUpController extends BaseController
     @PreAuthorize("@ss.hasPermi('offline:signup:add')")
     @Log(title = "预约详情", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody SignUp signUp)
+    public AjaxResult add(@RequestBody ActivitiesSignUp signUp)
     {
         return toAjax(signUpService.insertSignUp(signUp));
     }
@@ -88,7 +88,7 @@ public class SignUpController extends BaseController
     @PreAuthorize("@ss.hasPermi('offline:signup:edit')")
     @Log(title = "预约详情", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody SignUp signUp)
+    public AjaxResult edit(@RequestBody ActivitiesSignUp signUp)
     {
         return toAjax(signUpService.updateSignUp(signUp));
     }

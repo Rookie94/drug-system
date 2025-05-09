@@ -295,13 +295,6 @@
                 <version>${ruoyi.version}</version>
             </dependency>
 
-            <!-- 前端接口-->
-            <dependency>
-                <groupId>com.ruoyi</groupId>
-                <artifactId>ruoyi-api</artifactId>
-                <version>${ruoyi.version}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -314,7 +307,6 @@
         <module>ruoyi-common</module>
         <module>ruoyi-cms</module>
         <module>ruoyi-api</module>
-        <module>ruoyi-chat</module>
     </modules>
     <packaging>pom</packaging>
 

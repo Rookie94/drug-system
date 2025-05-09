@@ -2,13 +2,13 @@ package com.ruoyi.cms.offline.service.impl;
 
 import java.util.List;
 
-import com.ruoyi.cms.offline.domain.vo.SignUpVo;
+import com.ruoyi.cms.offline.domain.vo.ActivitiesSignUpVo;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.cms.offline.mapper.SignUpMapper;
-import com.ruoyi.cms.offline.domain.SignUp;
-import com.ruoyi.cms.offline.service.ISignUpService;
+import com.ruoyi.cms.offline.mapper.ActivitiesSignUpMapper;
+import com.ruoyi.cms.offline.domain.ActivitiesSignUp;
+import com.ruoyi.cms.offline.service.IActivitiesSignUpService;
 
 /**
  * 预约详情Service业务层处理
@@ -17,10 +17,10 @@ import com.ruoyi.cms.offline.service.ISignUpService;
  * @date 2025-04-28
  */
 @Service
-public class SignUpServiceImpl implements ISignUpService 
+public class ActivitiesSignUpServiceImpl implements IActivitiesSignUpService
 {
     @Autowired
-    private SignUpMapper signUpMapper;
+    private ActivitiesSignUpMapper signUpMapper;
 
     /**
      * 查询预约详情
@@ -29,7 +29,7 @@ public class SignUpServiceImpl implements ISignUpService
      * @return 预约详情
      */
     @Override
-    public SignUpVo selectSignUpBySignId(Long signId)
+    public ActivitiesSignUpVo selectSignUpBySignId(Long signId)
     {
         return signUpMapper.selectSignUpBySignId(signId);
     }
@@ -41,7 +41,7 @@ public class SignUpServiceImpl implements ISignUpService
      * @return 预约详情
      */
     @Override
-    public List<SignUpVo> selectSignUpList(SignUpVo signUp)
+    public List<ActivitiesSignUpVo> selectSignUpList(ActivitiesSignUpVo signUp)
     {
         return signUpMapper.selectSignUpList(signUp);
     }
@@ -53,7 +53,7 @@ public class SignUpServiceImpl implements ISignUpService
      * @return 结果
      */
     @Override
-    public int insertSignUp(SignUp signUp)
+    public int insertSignUp(ActivitiesSignUp signUp)
     {
         signUp.setCreateTime(DateUtils.getNowDate());
         return signUpMapper.insertSignUp(signUp);
@@ -66,7 +66,7 @@ public class SignUpServiceImpl implements ISignUpService
      * @return 结果
      */
     @Override
-    public int updateSignUp(SignUp signUp)
+    public int updateSignUp(ActivitiesSignUp signUp)
     {
         signUp.setUpdateTime(DateUtils.getNowDate());
         return signUpMapper.updateSignUp(signUp);

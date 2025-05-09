@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysAreaMapper">
+    
+    <resultMap type="SysArea" id="SysAreaResult">
+        <result property="id"    column="id"    />
+        <result property="pid"    column="pid"    />
+        <result property="cityName"    column="city_name"    />
+        <result property="type"    column="type"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysAreaVo">
+        select id, pid, city_name, type,status,create_by,create_time,update_by,update_time,remark from sys_area t
+    </sql>
+
+    <select id="selectSysAreaList" parameterType="SysArea" resultMap="SysAreaResult">
+        <include refid="selectSysAreaVo"/>
+        <where>  
+            <if test="cityName != null  and cityName != ''"> and city_name like concat('%', #{cityName}, '%')</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysAreaById" parameterType="Long" resultMap="SysAreaResult">
+        <include refid="selectSysAreaVo"/>
+        where id = #{id}
+    </select>
+
+    <sql id="filterConditions">
+        <if test="id != null "> and id = #{id}</if>
+        <if test="cityName != null  and cityName != ''"> and city_name like concat('%', #{cityName}, '%')</if>
+        <if test="type != null "> and type = #{type}</if>
+        <if test="status != null "> and status = #{status}</if>
+    </sql>
+
+    <select id="selectSysAreaWithChild" parameterType="SysArea" resultMap="SysAreaResult">
+        select distinct t.* from
+        (
+            <include refid="selectSysAreaVo"/>
+            <where>
+                <include refid="filterConditions"/>
+            </where>
+            union all
+            <include refid="selectSysAreaVo"/> where pid in
+            (
+            select id from sys_area
+            <where>
+                <include refid="filterConditions"/>
+            </where>
+            )
+            union all
+            <include refid="selectSysAreaVo"/> where pid in
+            (
+            select id from sys_area
+            <where>
+               pid in
+                (
+                SELECT id FROM sys_area
+                 <where>
+                     <include refid="filterConditions"/>
+                 </where>
+                )
+            </where>
+            )
+        ) t
+    </select>
+
+    <insert id="insertSysArea" parameterType="SysArea" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_area
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null">pid,</if>
+            <if test="cityName != null">city_name,</if>
+            <if test="type != null">type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null">#{pid},</if>
+            <if test="cityName != null">#{cityName},</if>
+            <if test="type != null">#{type},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysArea" parameterType="SysArea">
+        update sys_area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pid != null">pid = #{pid},</if>
+            <if test="cityName != null">city_name = #{cityName},</if>
+            <if test="type != null">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+
+    <update id="updateStatus" parameterType="ResJobinfo">
+        update sys_area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysAreaById" parameterType="Long">
+        delete from sys_area where id = #{id}
+    </delete>
+
+    <delete id="deleteSysAreaByIds" parameterType="String">
+        delete from sys_area where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

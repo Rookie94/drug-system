@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.res.mapper.ResRxdataMapper">
+    
+    <resultMap type="ResRxdata" id="ResRxdataResult">
+        <result property="rxId"    column="rx_id"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="title"    column="title"    />
+        <result property="pic"    column="pic"    />
+        <result property="rxType"    column="rx_type"    />
+        <result property="content"    column="content"    />
+        <result property="status"    column="status"    />
+        <result property="publishTime"    column="publish_time"    />
+        <result property="appored"    column="appored"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="apporBy"    column="appor_by"    />
+        <result property="apporTime"    column="appor_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectResRxdataVo">
+        select rx_id, order_num, title, pic, rx_type, content, status, publish_time, appored, user_id, dept_id, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_rxdata
+    </sql>
+
+    <select id="selectResRxdataList" parameterType="ResRxdata" resultMap="ResRxdataResult">
+        <include refid="selectResRxdataVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="rxType != null  and rxType != ''"> and rx_type = #{rxType}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectResRxdataByRxId" parameterType="Long" resultMap="ResRxdataResult">
+        <include refid="selectResRxdataVo"/>
+        where rx_id = #{rxId}
+    </select>
+
+    <insert id="insertResRxdata" parameterType="ResRxdata" useGeneratedKeys="true" keyProperty="rxId">
+        insert into res_rxdata
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNum != null">order_num,</if>
+            <if test="title != null">title,</if>
+            <if test="pic != null">pic,</if>
+            <if test="rxType != null">rx_type,</if>
+            <if test="content != null">content,</if>
+            <if test="status != null">status,</if>
+            <if test="publishTime != null">publish_time,</if>
+            <if test="appored != null">appored,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="apporBy != null">appor_by,</if>
+            <if test="apporTime != null">appor_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="title != null">#{title},</if>
+            <if test="pic != null">#{pic},</if>
+            <if test="rxType != null">#{rxType},</if>
+            <if test="content != null">#{content},</if>
+            <if test="status != null">#{status},</if>
+            <if test="publishTime != null">#{publishTime},</if>
+            <if test="appored != null">#{appored},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="apporBy != null">#{apporBy},</if>
+            <if test="apporTime != null">#{apporTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateResRxdata" parameterType="ResRxdata">
+        update res_rxdata
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="pic != null">pic = #{pic},</if>
+            <if test="rxType != null">rx_type = #{rxType},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="publishTime != null">publish_time = #{publishTime},</if>
+            <if test="appored != null">appored = #{appored},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where rx_id = #{rxId}
+    </update>
+
+    <delete id="deleteResRxdataByRxId" parameterType="Long">
+        delete from res_rxdata where rx_id = #{rxId}
+    </delete>
+
+    <delete id="deleteResRxdataByRxIds" parameterType="String">
+        delete from res_rxdata where rx_id in 
+        <foreach item="rxId" collection="array" open="(" separator="," close=")">
+            #{rxId}
+        </foreach>
+    </delete>
+
+
+    <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
+        select jobid from res_rxdata where appored in ('1','2') and rx_id in
+        <foreach item="rxId" collection="array" open="(" separator="," close=")">
+            #{rxId}
+        </foreach>
+    </select>
+
+    <update id="updateStatus" parameterType="ResJobinfo">
+        update res_rxdata
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where rx_id = #{rxId}
+    </update>
+
+    <update id="apporByIds"  parameterType="ResApporParam">
+        update res_rxdata
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="flag != null">appored = #{flag},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            <if test="publishTime != null">publish_time = #{publishTime}</if>
+            where rx_id in
+            <foreach item="id" collection="ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </trim>
+    </update>
+
+    <update id="unApporById" parameterType="Long">
+        update res_rxdata
+        <trim prefix="SET" suffixOverrides=",">
+            appored='0',
+            publish_time=NULL,
+            appor_by=NULL,
+            appor_time = NULL,
+        </trim>
+        where rx_id = #{rxId}
+    </update>
+
+    <update id="unApporByIds" parameterType="String">
+        update res_rxdata
+        <trim prefix="SET" suffixOverrides=",">
+            appored='0',
+            publish_time=NULL,
+            appor_by=NULL,
+            appor_time=NULL
+            where rx_id in
+            <foreach item="id" collection="array" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </trim>
+    </update>
+
+</mapper>

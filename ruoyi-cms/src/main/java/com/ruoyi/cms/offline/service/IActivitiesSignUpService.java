@@ -1,8 +1,8 @@
 package com.ruoyi.cms.offline.service;
 
 import java.util.List;
-import com.ruoyi.cms.offline.domain.SignUp;
-import com.ruoyi.cms.offline.domain.vo.SignUpVo;
+import com.ruoyi.cms.offline.domain.ActivitiesSignUp;
+import com.ruoyi.cms.offline.domain.vo.ActivitiesSignUpVo;
 
 /**
  * 预约详情Service接口
@@ -10,7 +10,7 @@ import com.ruoyi.cms.offline.domain.vo.SignUpVo;
  * @author admin
  * @date 2025-04-28
  */
-public interface ISignUpService 
+public interface IActivitiesSignUpService
 {
     /**
      * 查询预约详情
@@ -18,7 +18,7 @@ public interface ISignUpService
      * @param signId 预约详情主键
      * @return 预约详情
      */
-    public SignUpVo selectSignUpBySignId(Long signId);
+    public ActivitiesSignUpVo selectSignUpBySignId(Long signId);
 
     /**
      * 查询预约详情列表
@@ -26,7 +26,7 @@ public interface ISignUpService
      * @param signUp 预约详情
      * @return 预约详情集合
      */
-    public List<SignUpVo> selectSignUpList(SignUpVo signUp);
+    public List<ActivitiesSignUpVo> selectSignUpList(ActivitiesSignUpVo signUp);
 
     /**
      * 新增预约详情
@@ -34,7 +34,7 @@ public interface ISignUpService
      * @param signUp 预约详情
      * @return 结果
      */
-    public int insertSignUp(SignUp signUp);
+    public int insertSignUp(ActivitiesSignUp signUp);
 
     /**
      * 修改预约详情
@@ -42,7 +42,7 @@ public interface ISignUpService
      * @param signUp 预约详情
      * @return 结果
      */
-    public int updateSignUp(SignUp signUp);
+    public int updateSignUp(ActivitiesSignUp signUp);
 
     /**
      * 批量删除预约详情

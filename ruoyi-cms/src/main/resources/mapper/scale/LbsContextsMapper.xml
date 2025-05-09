@@ -11,7 +11,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contextName"    column="context_name"    />
         <result property="pic"    column="pic"    />
         <result property="content"    column="content"    />
+        <result property="jsonMonitor"    column="json_monitor"    />
         <result property="jsonData"    column="json_data"    />
+        <result property="jsonParams"    column="json_params"    />
+        <result property="jsonResult"    column="json_result"    />
         <result property="status"    column="status"    />
         <result property="appored"    column="appored"    />
         <result property="createBy"    column="create_by"    />
@@ -24,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLbsContextsVo">
-        select context_id, parent_context_id, order_num, context_name, pic, content,json_data, status, appored, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from lbs_contexts
+        select context_id, parent_context_id, order_num, context_name, pic, content,json_monitor,json_data,json_params,json_result, status, appored, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from lbs_contexts
     </sql>
 
     <select id="selectLbsContextsList" parameterType="LbsContexts" resultMap="LbsContextsResult">
@@ -50,7 +53,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contextName != null">context_name,</if>
             <if test="pic != null">pic,</if>
             <if test="content != null">content,</if>
+            <if test="jsonMonitor != null">json_monitor,</if>
             <if test="jsonData != null">json_data,</if>
+            <if test="jsonParams != null">json_params,</if>
+            <if test="jsonResult != null">json_result,</if>
             <if test="status != null">status,</if>
             <if test="appored != null">appored,</if>
             <if test="createBy != null">create_by,</if>
@@ -68,7 +74,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contextName != null">#{contextName},</if>
             <if test="pic != null">#{pic},</if>
             <if test="content != null">#{content},</if>
+            <if test="jsonMonitor != null">#{jsonMonitor},</if>
             <if test="jsonData != null">#{jsonData},</if>
+            <if test="jsonParams != null">#{jsonParams},</if>
+            <if test="jsonResult != null">#{jsonResult},</if>
             <if test="status != null">#{status},</if>
             <if test="appored != null">#{appored},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -89,7 +98,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contextName != null">context_name = #{contextName},</if>
             <if test="pic != null">pic = #{pic},</if>
             <if test="content != null">content = #{content},</if>
+            <if test="jsonMonitor != null">json_monitor = #{jsonMonitor},</if>
             <if test="jsonData != null">json_data = #{jsonData},</if>
+            <if test="jsonParams != null">json_params = #{jsonParams},</if>
+            <if test="jsonResult != null">json_result = #{jsonResult},</if>
             <if test="status != null">status = #{status},</if>
             <if test="appored != null">appored = #{appored},</if>
             <if test="createBy != null">create_by = #{createBy},</if>

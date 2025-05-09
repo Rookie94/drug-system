@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.offline.mapper.ActivitiesLiveMapper">
+    
+    <resultMap type="ActivitiesLiveVo" id="ActivitiesLiveResult">
+        <result property="liveId"    column="live_id"    />
+        <result property="activityId"    column="activity_id"    />
+        <result property="parentActivityId"    column="parent_activity_id"    />
+        <result property="activityName"    column="activity_name"    />
+        <result property="parentActivityName"    column="parent_activity_name"    />
+        <result property="subject"    column="subject"    />
+        <result property="img"    column="img"    />
+        <result property="content"    column="content"    />
+        <result property="status"    column="status"    />
+        <result property="address"    column="address"    />
+        <result property="orgName"    column="org_name"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="activityType"    column="activity_type"    />
+        <result property="appored"    column="appored"    />
+        <result property="publishTime"    column="publish_time"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="apporBy"    column="appor_by"    />
+        <result property="apporTime"    column="appor_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectActivitiesLiveVo">
+        SELECT
+            t.live_id,
+            t.activity_id,
+            a.parent_activity_id,
+            a.activity_name,
+            p.activity_name AS parent_activity_name,
+            t.`subject`,
+            t.img,
+            t.content,
+            t.status,
+            a.address,
+            a.org_name,
+            a.start_time,
+            a.end_time,
+            a.activity_type,
+            t.appored,
+            t.publish_time,
+            t.del_flag,
+            t.user_id,
+            t.dept_id,
+            t.create_by,
+            t.create_time,
+            t.update_by,
+            t.update_time,
+            t.appor_by,
+            t.appor_time,
+            t.remark
+        FROM
+            ofa_activities_live AS t
+                LEFT JOIN
+            ofa_activities AS a
+            ON
+                t.activity_id = a.activity_id
+                LEFT JOIN
+            ofa_activities AS p
+            ON
+                a.parent_activity_id = p.activity_id
+    </sql>
+
+    <select id="selectActivitiesLiveList" parameterType="ActivitiesLive" resultMap="ActivitiesLiveResult">
+        <include refid="selectActivitiesLiveVo"/>
+        <where>  
+            <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
+            <if test="parentActivityName != null  and parentActivityName != ''"> and parent_activity_name like concat('%', #{parentActivityName}, '%')</if>
+            <if test="subject != null  and subject != ''"> and subject = #{subject}</if>
+            <if test="status != null  and status != ''"> and t.status = #{status}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="orgName != null  and orgName != ''"> and org_name like concat('%', #{orgName}, '%')</if>
+            <if test="startTime != null "> and start_time &gt;= #{startTime}</if>
+            <if test="endTime != null "> and end_time &lt;= #{endTime}</if>
+            <if test="activityType != null  and activityType != ''"> and t.activity_type = #{activityType}</if>
+            <if test="appored != null  and appored != ''"> and t.appored = #{appored}</if>
+            <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+    </select>
+    
+    <select id="selectActivitiesLiveByLiveId" parameterType="Long" resultMap="ActivitiesLiveResult">
+        <include refid="selectActivitiesLiveVo"/>
+        where live_id = #{liveId}
+    </select>
+
+    <insert id="insertActivitiesLive" parameterType="ActivitiesLive">
+        insert into ofa_activities_live
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="liveId != null">live_id,</if>
+            <if test="activityId != null">activity_id,</if>
+            <if test="subject != null">subject,</if>
+            <if test="img != null">img,</if>
+            <if test="content != null">content,</if>
+            <if test="status != null">status,</if>
+            <if test="appored != null">appored,</if>
+            <if test="publishTime != null">publish_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="apporBy != null">appor_by,</if>
+            <if test="apporTime != null">appor_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="liveId != null">#{liveId},</if>
+            <if test="activityId != null">#{activityId},</if>
+            <if test="subject != null">#{subject},</if>
+            <if test="img != null">#{img},</if>
+            <if test="content != null">#{content},</if>
+            <if test="status != null">#{status},</if>
+            <if test="appored != null">#{appored},</if>
+            <if test="publishTime != null">#{publishTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="apporBy != null">#{apporBy},</if>
+            <if test="apporTime != null">#{apporTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActivitiesLive" parameterType="ActivitiesLive">
+        update ofa_activities_live
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="activityId != null">activity_id = #{activityId},</if>
+            <if test="subject != null">subject = #{subject},</if>
+            <if test="img != null">img = #{img},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="appored != null">appored = #{appored},</if>
+            <if test="publishTime != null">publish_time = #{publishTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where live_id = #{liveId}
+    </update>
+
+    <delete id="deleteActivitiesLiveByLiveId" parameterType="Long">
+        delete from ofa_activities_live where live_id = #{liveId}
+    </delete>
+
+    <delete id="deleteActivitiesLiveByLiveIds" parameterType="String">
+        delete from ofa_activities_live where live_id in
+        <foreach item="liveId" collection="array" open="(" separator="," close=")">
+            #{liveId}
+        </foreach>
+    </delete>
+</mapper>

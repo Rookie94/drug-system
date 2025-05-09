@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.cms.offline.mapper.SignUpMapper">
+<mapper namespace="com.ruoyi.cms.offline.mapper.ActivitiesSignUpMapper">
     
-    <resultMap type="SignUpVo" id="SignUpResult">
+    <resultMap type="ActivitiesSignUpVo" id="SignUpResult">
         <result property="signId"    column="sign_id"    />
         <result property="activityId"    column="activity_id"    />
         <result property="activityName"    column="activity_name"    />
@@ -28,11 +28,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectSignUpVo">
         select t.sign_id,t.activity_id,b.activity_name,b.start_time,b.end_time,t.sign_time,t.user_id,c.user_type,
                c.user_name,c.nick_name,c.phonenumber,t.dept_id,d.dept_name,t.create_by,t.create_time,t.update_by,
-               t.update_time,t.remark from ofa_signup t left join ofa_activities b on t.activity_id=b.activity_id
+               t.update_time,t.remark from ofa_activities_signup t left join ofa_activities b on t.activity_id=b.activity_id
                    left join sys_user c on t.user_id=c.user_id left join sys_dept d  on t.dept_id=d.dept_id
     </sql>
 
-    <select id="selectSignUpList" parameterType="SignUp" resultMap="SignUpResult">
+    <select id="selectSignUpList" parameterType="ActivitiesSignUp" resultMap="SignUpResult">
         <include refid="selectSignUpVo"/>
         <where>  
             <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
@@ -51,8 +51,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where sign_id = #{signId}
     </select>
         
-    <insert id="insertSignUp" parameterType="SignUp">
-        insert into ofa_signup
+    <insert id="insertSignUp" parameterType="ActivitiesSignUp">
+        insert into ofa_activities_signup
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="signId != null">sign_id,</if>
             <if test="activityId != null">activity_id,</if>
@@ -79,8 +79,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateSignUp" parameterType="SignUp">
-        update ofa_signup
+    <update id="updateSignUp" parameterType="ActivitiesSignUp">
+        update ofa_activities_signup
         <trim prefix="SET" suffixOverrides=",">
             <if test="activityId != null">activity_id = #{activityId},</if>
             <if test="signTime != null">sign_time = #{signTime},</if>
@@ -96,11 +96,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteSignUpBySignId" parameterType="Long">
-        delete from ofa_signup where sign_id = #{signId}
+        delete from ofa_activities_signup where sign_id = #{signId}
     </delete>
 
     <delete id="deleteSignUpBySignIds" parameterType="String">
-        delete from ofa_signup where sign_id in
+        delete from ofa_activities_signup where sign_id in
         <foreach item="signId" collection="array" open="(" separator="," close=")">
             #{signId}
         </foreach>

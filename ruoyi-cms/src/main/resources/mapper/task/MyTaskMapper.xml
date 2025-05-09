@@ -15,6 +15,7 @@
         update res_articles set appored='2' where appored=1 and publish_time&lt;=Now();
         update sys_notice set appored='2' where appored=1 and publish_time&lt;=Now();
         update ofa_activities set appored='2' where appored=1 and publish_time&lt;=Now();
+        update res_rxdata set appored='2' where appored=1 and publish_time&lt;=Now();
     </update>
 
 

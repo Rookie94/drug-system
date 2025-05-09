@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanValidators;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.common.core.domain.entity.MiniAppUser;
+import com.ruoyi.system.service.*;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
 import com.ruoyi.system.domain.SysUserRole;
@@ -27,9 +30,7 @@ import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysUserMapper;
 import com.ruoyi.system.mapper.SysUserPostMapper;
 import com.ruoyi.system.mapper.SysUserRoleMapper;
-import com.ruoyi.system.service.ISysConfigService;
-import com.ruoyi.system.service.ISysDeptService;
-import com.ruoyi.system.service.ISysUserService;
+
 
 /**
  * 用户 业务层处理
@@ -64,6 +65,9 @@ public class SysUserServiceImpl implements ISysUserService
 
     @Autowired
     protected Validator validator;
+
+    @Autowired
+    private ISysMiniAppUserService sysMiniAppUserService;
 
     /**
      * 根据条件分页查询用户列表
@@ -660,5 +664,20 @@ public class SysUserServiceImpl implements ISysUserService
         }
         return successMsg.toString();
     }
+
+    /**
+     * 解绑微信
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int unBindWxUserById(Long userId)
+    {
+        SysUser user= userMapper.selectUserById(userId);
+        return userMapper.unBindWxUser(user);
+    }
+
 
 }

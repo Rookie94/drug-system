@@ -116,7 +116,8 @@ mybatis:
 
 # PageHelper分页插件
 pagehelper:
-  helperDialect: mysql
+  # helperDialect: mysql
+  autoRuntimeDialect: true
   supportMethodsArguments: true
   params: count=countSql
 

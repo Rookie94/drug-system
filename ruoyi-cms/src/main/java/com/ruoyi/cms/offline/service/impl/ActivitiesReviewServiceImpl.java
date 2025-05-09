@@ -3,12 +3,15 @@ package com.ruoyi.cms.offline.service.impl;
 import java.util.List;
 
 import com.ruoyi.cms.offline.domain.vo.ActivitiesReviewVo;
+import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.cms.offline.mapper.ActivitiesReviewMapper;
 import com.ruoyi.cms.offline.domain.ActivitiesReview;
 import com.ruoyi.cms.offline.service.IActivitiesReviewService;
+
+import static com.ruoyi.common.utils.SecurityUtils.getUsername;
 
 /**
  * 活动评价Service业务层处理
@@ -41,6 +44,7 @@ public class ActivitiesReviewServiceImpl implements IActivitiesReviewService
      * @return 活动评价
      */
     @Override
+    @DataScope(deptAlias = "t", userAlias = "t")
     public List<ActivitiesReviewVo> selectActivitiesReviewList(ActivitiesReviewVo activitiesReview)
     {
         return activitiesReviewMapper.selectActivitiesReviewList(activitiesReview);
@@ -68,6 +72,7 @@ public class ActivitiesReviewServiceImpl implements IActivitiesReviewService
     @Override
     public int updateActivitiesReview(ActivitiesReview activitiesReview)
     {
+        activitiesReview.setUpdateBy(getUsername());
         activitiesReview.setUpdateTime(DateUtils.getNowDate());
         return activitiesReviewMapper.updateActivitiesReview(activitiesReview);
     }

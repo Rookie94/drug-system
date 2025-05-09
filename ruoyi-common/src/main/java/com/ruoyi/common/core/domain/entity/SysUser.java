@@ -3,6 +3,8 @@ package com.ruoyi.common.core.domain.entity;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -50,6 +52,16 @@ public class SysUser extends BaseEntity
     /** 用户性别 */
     @Excel(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
     private String sex;
+
+    /** 生日 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "生日", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date birthday;
+
+    /** 入所时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "入所时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date entryDate;
 
     /** 用户头像 */
     private String avatar;
@@ -182,15 +194,31 @@ public class SysUser extends BaseEntity
         this.email = email;
     }
 
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public Date getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(Date entryDate) {
+        this.entryDate = entryDate;
+    }
+
     @Size(min = 0, max = 11, message = "手机号码长度不能超过11个字符")
     public String getPhonenumber()
     {
         return phoneNumber;
     }
 
-    public void setPhonenumber(String phonenumber)
+    public void setPhonenumber(String phoneNumber)
     {
-        this.phoneNumber = phonenumber;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getSex()

@@ -154,4 +154,13 @@ public interface SysUserMapper
      * @return 结果
      */
     public SysUser checkEmailUnique(String email);
+
+    /**
+     * 解除用户微信绑定
+     *
+     * @param user 用户ID
+     * @return 结果
+     */
+    public int unBindWxUser(SysUser user);
+
 }

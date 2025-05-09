@@ -243,4 +243,16 @@ public class SysStudentController extends BaseController
     {
         return success(deptService.selectDeptTreeList(dept));
     }
+
+    /**
+     * 解绑微信
+     */
+    @PreAuthorize("@ss.hasPermi('student:profile:remove')")
+    @Log(title = "学员管理", businessType = BusinessType.DELETE)
+    @DeleteMapping("/unBindWx/{userId}")
+    public AjaxResult unBindWxUserById(@PathVariable("userId") Long userId)
+    {
+        return toAjax(userService.unBindWxUserById(userId));
+    }
+
 }

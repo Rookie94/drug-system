@@ -1,6 +1,8 @@
 package com.ruoyi.cms.offline.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +10,8 @@ import com.ruoyi.cms.offline.mapper.ActivitiesCheckinMapper;
 import com.ruoyi.cms.offline.domain.ActivitiesCheckin;
 import com.ruoyi.cms.offline.domain.vo.ActivitiesCheckinVo;
 import com.ruoyi.cms.offline.service.IActivitiesCheckinService;
+
+import static com.ruoyi.common.utils.SecurityUtils.*;
 
 /**
  * 活动签到Service业务层处理
@@ -40,6 +44,7 @@ public class ActivitiesCheckinServiceImpl implements IActivitiesCheckinService
      * @return 活动签到
      */
     @Override
+    @DataScope(deptAlias = "t", userAlias = "t")
     public List<ActivitiesCheckinVo> selectActivitiesCheckinList(ActivitiesCheckinVo activitiesCheckin)
     {
         return activitiesCheckinMapper.selectActivitiesCheckinList(activitiesCheckin);
@@ -54,6 +59,9 @@ public class ActivitiesCheckinServiceImpl implements IActivitiesCheckinService
     @Override
     public int insertActivitiesCheckin(ActivitiesCheckin activitiesCheckin)
     {
+        activitiesCheckin.setUserId(getUserId());
+        activitiesCheckin.setDeptId(getDeptId());
+        activitiesCheckin.setCreateBy(getUsername());
         activitiesCheckin.setCreateTime(DateUtils.getNowDate());
         return activitiesCheckinMapper.insertActivitiesCheckin(activitiesCheckin);
     }
@@ -67,6 +75,7 @@ public class ActivitiesCheckinServiceImpl implements IActivitiesCheckinService
     @Override
     public int updateActivitiesCheckin(ActivitiesCheckin activitiesCheckin)
     {
+        activitiesCheckin.setUpdateBy(getUsername());
         activitiesCheckin.setUpdateTime(DateUtils.getNowDate());
         return activitiesCheckinMapper.updateActivitiesCheckin(activitiesCheckin);
     }

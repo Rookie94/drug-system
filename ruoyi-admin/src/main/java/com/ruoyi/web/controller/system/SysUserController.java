@@ -254,4 +254,16 @@ public class SysUserController extends BaseController
     {
         return success(deptService.selectDeptTreeList(dept));
     }
+
+    /**
+     * 解绑微信
+     */
+    @PreAuthorize("@ss.hasPermi('system:user:add')")
+    @Log(title = "用户管理", businessType = BusinessType.DELETE)
+    @DeleteMapping("/unBindWx/{userId}")
+    public AjaxResult unBindWxUserById(@PathVariable("userId") Long userId)
+    {
+        return toAjax(userService.unBindWxUserById(userId));
+    }
+
 }

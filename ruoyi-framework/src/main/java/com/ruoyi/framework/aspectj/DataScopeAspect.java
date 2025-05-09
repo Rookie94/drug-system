@@ -65,6 +65,17 @@ public class DataScopeAspect
 
     protected void handleDataScope(final JoinPoint joinPoint, DataScope controllerDataScope)
     {
+        /**
+         * 自定义权限是否生效 baseEntity中  UseDataScope为false不使用数据权限
+         */
+        Object params = joinPoint.getArgs()[0];
+        if (StringUtils.isNotNull(params) && params instanceof BaseEntity) {
+            BaseEntity baseEntity = (BaseEntity) params;
+            if (!baseEntity.getUseDataScope()) {
+                return;
+            }
+        }
+
         // 获取当前的用户
         LoginUser loginUser = SecurityUtils.getLoginUser();
         if (StringUtils.isNotNull(loginUser))

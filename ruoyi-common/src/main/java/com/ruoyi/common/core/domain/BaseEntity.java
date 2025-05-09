@@ -17,6 +17,19 @@ public class BaseEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
+    /*是否启用数据权限*/
+    private Boolean useDataScope=true;
+
+    public Boolean getUseDataScope() {
+        return useDataScope;
+    }
+
+    public void setUseDataScope(Boolean useDataScope) {
+        this.useDataScope = useDataScope;
+    }
+
+
+
     /** 搜索值 */
     @JsonIgnore
     private String searchValue;

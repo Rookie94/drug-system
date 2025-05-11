@@ -23,7 +23,7 @@ import java.util.List;
 import static com.ruoyi.common.utils.SecurityUtils.getUserId;
 
 @RestController
-@RequestMapping("/api/offline/")
+@RequestMapping("/api/offline")
 public class ActivitiesController extends BaseController
 {
 

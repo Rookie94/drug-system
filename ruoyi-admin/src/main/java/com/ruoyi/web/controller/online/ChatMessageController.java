@@ -103,4 +103,15 @@ public class ChatMessageController extends BaseController
     {
         return toAjax(chatMessageService.deleteChatMessageByMessageIds(messageIds));
     }
+
+    /**
+     * 发送留言信息
+     */
+    @Log(title = "留言板", businessType = BusinessType.INSERT)
+    @PostMapping("/SendMessage")
+    public AjaxResult SendMessage(@RequestBody ChatMessage chatMessage)
+    {
+        return toAjax(chatMessageService.insertChatMessage(chatMessage));
+    }
+
 }

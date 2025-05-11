@@ -39,6 +39,10 @@ public class LbsTopicsVo extends BaseEntity
     @Excel(name = "题目类型(0 单选,1多选,2填空)")
     private String topicType;
 
+    /** 是否必填 */
+    @Excel(name = "是否必填")
+    private String required;
+
     /** 状态 */
     @Excel(name = "状态")
     private String status;
@@ -99,6 +103,14 @@ public class LbsTopicsVo extends BaseEntity
         return topicType;
     }
 
+    public String getRequired() {
+        return required;
+    }
+
+    public void setRequired(String required) {
+        this.required = required;
+    }
+
     public void setStatus(String status) 
     {
         this.status = status;
@@ -128,6 +140,7 @@ public class LbsTopicsVo extends BaseEntity
             .append("orderNum", getOrderNum())
             .append("title", getTitle())
             .append("topicType", getTopicType())
+            .append("required", getRequired())
             .append("status", getStatus())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

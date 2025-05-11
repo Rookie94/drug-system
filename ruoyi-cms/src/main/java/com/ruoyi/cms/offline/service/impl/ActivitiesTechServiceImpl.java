@@ -3,12 +3,15 @@ package com.ruoyi.cms.offline.service.impl;
 import java.util.List;
 
 import com.ruoyi.cms.offline.domain.ActivitiesTech;
+import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.cms.offline.mapper.ActivitiesTechMapper;
 import com.ruoyi.cms.offline.domain.vo.ActivitiesTechVo;
 import com.ruoyi.cms.offline.service.IActivitiesTechService;
+
+import static com.ruoyi.common.utils.SecurityUtils.*;
 
 /**
  * 活动戒治技术资料Service业务层处理
@@ -41,6 +44,7 @@ public class ActivitiesTechServiceImpl implements IActivitiesTechService
      * @return 活动戒治技术资料
      */
     @Override
+    @DataScope(deptAlias = "t", userAlias = "t")
     public List<ActivitiesTechVo> selectActivitiesTechList(ActivitiesTechVo activitiesTech)
     {
         return activitiesTechMapper.selectActivitiesTechList(activitiesTech);
@@ -55,6 +59,9 @@ public class ActivitiesTechServiceImpl implements IActivitiesTechService
     @Override
     public int insertActivitiesTech(ActivitiesTech activitiesTech)
     {
+        activitiesTech.setUserId(getUserId());
+        activitiesTech.setDeptId(getDeptId());
+        activitiesTech.setCreateBy(getUsername());
         activitiesTech.setCreateTime(DateUtils.getNowDate());
         return activitiesTechMapper.insertActivitiesTech(activitiesTech);
     }
@@ -68,6 +75,7 @@ public class ActivitiesTechServiceImpl implements IActivitiesTechService
     @Override
     public int updateActivitiesTech(ActivitiesTech activitiesTech)
     {
+        activitiesTech.setUpdateBy(getUsername());
         activitiesTech.setUpdateTime(DateUtils.getNowDate());
         return activitiesTechMapper.updateActivitiesTech(activitiesTech);
     }

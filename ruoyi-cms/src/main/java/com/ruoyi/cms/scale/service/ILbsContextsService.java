@@ -3,6 +3,7 @@ package com.ruoyi.cms.scale.service;
 import java.util.List;
 import com.ruoyi.cms.scale.domain.LbsContexts;
 import com.ruoyi.cms.scale.domain.ContextsTreeSelect;
+import com.ruoyi.cms.scale.domain.vo.ContextVo;
 
 /**
  * 量表目录Service接口
@@ -83,5 +84,20 @@ public interface ILbsContextsService
      * @return 树结构列表
      */
     public List<LbsContexts> buildContextTree(List<LbsContexts> contextsList);
+
+    /**
+     * 批量生成JSON
+     *
+     * @param contextIds 需要生成的的量表目录主键
+     * @return 结果
+     */
+    public int generalJsonByContextIds(Integer[] contextIds);
+
+    /*
+       获取量表题目对象
+        * @param contextId 需要生成的的量表目录主键
+        * @return 结果
+        */
+    public ContextVo selectContextWithRelations(String contextId);
 
 }

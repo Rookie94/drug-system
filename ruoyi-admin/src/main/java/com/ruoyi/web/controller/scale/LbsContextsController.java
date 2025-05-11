@@ -99,4 +99,15 @@ public class LbsContextsController extends BaseController
     {
         return toAjax(lbsContextsService.deleteLbsContextsByContextIds(contextIds));
     }
+
+    /**
+     * 量表转JSON
+     */
+    @PreAuthorize("@ss.hasPermi('scale:contexts:generalJson')")
+    @Log(title = "量表目录", businessType = BusinessType.UPDATE)
+    @GetMapping("/generalJson/{contextIds}")
+    public AjaxResult generalJson(@PathVariable Integer[] contextIds)
+    {
+        return toAjax(lbsContextsService.generalJsonByContextIds(contextIds));
+    }
 }

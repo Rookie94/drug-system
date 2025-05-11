@@ -39,6 +39,7 @@
     </sql>
 
     <sql id="filterConditions">
+        <if test="parentActivityId != null and parentActivityId != ''">and parent_activity_id = #{parentActivityId}</if>
         <if test="activityName != null and activityName != ''">and activity_name like CONCAT('%', #{activityName}, '%')</if>
         <if test="orgName != null and orgName != ''">and org_name like CONCAT('%', #{orgName}, '%')</if>
         <if test="startTime != null">and start_time &gt;= #{startTime}</if>

@@ -202,17 +202,7 @@ public class WxLoginController  {
                     wUser.setUpdateBy("sys");
                     wUser.setUpdateTime(DateUtils.getNowDate());
                     userService.updateUser(wUser);
-                }
-
-                SysUser sysUser=new SysUser();
-                sysUser.setOpenId(openId);
-                sysUser.setPhonenumber(phoneNumber);
-                List<SysUser> list2=userService.selectUserList(sysUser);
-                if(list2!=null && list2.size()>0){
                     return AjaxResult.success("手机号绑定成功！");
-                }
-                else{
-                    return AjaxResult.error("手机号绑定失败,写入失败！");
                 }
             }
         }

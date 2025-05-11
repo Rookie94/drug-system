@@ -26,6 +26,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
     </resultMap>
 
+    <resultMap id="ContextResult" type="ContextVo">
+        <id property="contextId" column="context_id"/>
+        <result property="contextName" column="context_name"/>
+        <result property="pic" column="pic"/>
+        <result property="content" column="content"/>
+        <collection property="topics" resultMap="TopicResult" columnPrefix="topic_"/>
+    </resultMap>
+
+    <resultMap id="TopicResult" type="TopicVo">
+        <id property="topicId" column="topic_id" />
+        <result property="topicType" column="topic_type"/>
+        <result property="orderNum" column="topic_order_num"/>
+        <result property="title" column="topic_title"/>
+        <result property="required" column="required"/>
+        <collection property="options" resultMap="OptionResult" columnPrefix="opt_"/>
+    </resultMap>
+
+    <resultMap id="OptionResult" type="OptionVo">
+        <id property="optionId" column="option_id"/>
+        <result property="orderNum" column="option_order_num"/>
+        <result property="title" column="option_title"/>
+    </resultMap>
+
     <sql id="selectLbsContextsVo">
         select context_id, parent_context_id, order_num, context_name, pic, content,json_monitor,json_data,json_params,json_result, status, appored, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from lbs_contexts
     </sql>
@@ -42,6 +65,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectLbsContextsByContextId" parameterType="Integer" resultMap="LbsContextsResult">
         <include refid="selectLbsContextsVo"/>
         where context_id = #{contextId}
+    </select>
+
+    <!-- 查询语句 -->
+    <select id="selectContextWithRelations" resultMap="ContextResult">
+        SELECT
+            c.context_id,
+            c.context_name,
+            c.pic,
+            c.content,
+            t.topic_id AS topic_topic_id,
+            t.topic_type AS topic_topic_type,
+            t.order_num AS topic_topic_order_num,
+            t.title AS topic_topic_title,
+            t.required AS topic_required,
+            o.option_id AS topic_opt_option_id,
+            o.order_num AS topic_opt_option_order_num,
+            o.title AS topic_opt_option_title
+        FROM lbs_contexts c
+                 LEFT JOIN lbs_topics t ON c.context_id = t.context_id
+                 LEFT JOIN lbs_options o ON t.topic_id = o.topic_id
+        WHERE c.context_id = #{contextId}
+        ORDER BY t.order_num, o.order_num
     </select>
 
     <insert id="insertLbsContexts" parameterType="LbsContexts">

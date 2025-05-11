@@ -1,14 +1,17 @@
 package com.ruoyi.cms.scale.domain.vo;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.util.List;
 
+@JsonPropertyOrder(alphabetic = false)
 public class TopicVo {
 
     private String topicId;
     private int topicType; // Assuming topicType is an integer based on the example
     private String orderNum;
     private String title;
-    private boolean required;
+    private String required;
     private List<OptionVo> options;
 
     // Getters and Setters
@@ -45,11 +48,11 @@ public class TopicVo {
         this.title = title;
     }
 
-    public boolean isRequired() {
+    public String isRequired() {
         return required;
     }
 
-    public void setRequired(boolean required) {
+    public void setRequired(String required) {
         this.required = required;
     }
 

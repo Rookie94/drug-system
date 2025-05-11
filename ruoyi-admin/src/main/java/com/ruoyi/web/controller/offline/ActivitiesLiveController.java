@@ -23,7 +23,7 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
- * VIEWController
+ * ActivitiesLiveController
  * 
  * @author admin
  * @date 2025-05-09
@@ -36,7 +36,7 @@ public class ActivitiesLiveController extends BaseController
     private IActivitiesLiveService activitiesLiveService;
 
     /**
-     * 查询VIEW列表
+     * 查询现场资讯列表
      */
     @PreAuthorize("@ss.hasPermi('offline:live:list')")
     @GetMapping("/list")
@@ -48,20 +48,20 @@ public class ActivitiesLiveController extends BaseController
     }
 
     /**
-     * 导出VIEW列表
+     * 导出现场资讯列表
      */
     @PreAuthorize("@ss.hasPermi('offline:live:export')")
-    @Log(title = "VIEW", businessType = BusinessType.EXPORT)
+    @Log(title = "现场资讯", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ActivitiesLiveVo activitiesLive)
     {
         List<ActivitiesLiveVo> list = activitiesLiveService.selectActivitiesLiveList(activitiesLive);
         ExcelUtil<ActivitiesLiveVo> util = new ExcelUtil<ActivitiesLiveVo>(ActivitiesLiveVo.class);
-        util.exportExcel(response, list, "VIEW数据");
+        util.exportExcel(response, list, "现场资讯数据");
     }
 
     /**
-     * 获取VIEW详细信息
+     * 获取现场资讯详细信息
      */
     @PreAuthorize("@ss.hasPermi('offline:live:query')")
     @GetMapping(value = "/{liveId}")
@@ -71,10 +71,10 @@ public class ActivitiesLiveController extends BaseController
     }
 
     /**
-     * 新增VIEW
+     * 新增现场资讯
      */
     @PreAuthorize("@ss.hasPermi('offline:live:add')")
-    @Log(title = "VIEW", businessType = BusinessType.INSERT)
+    @Log(title = "现场资讯", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ActivitiesLive activitiesLive)
     {
@@ -82,10 +82,10 @@ public class ActivitiesLiveController extends BaseController
     }
 
     /**
-     * 修改VIEW
+     * 修改现场资讯
      */
     @PreAuthorize("@ss.hasPermi('offline:live:edit')")
-    @Log(title = "VIEW", businessType = BusinessType.UPDATE)
+    @Log(title = "现场资讯", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ActivitiesLive activitiesLive)
     {
@@ -93,10 +93,10 @@ public class ActivitiesLiveController extends BaseController
     }
 
     /**
-     * 删除VIEW
+     * 删除现场资讯
      */
     @PreAuthorize("@ss.hasPermi('offline:live:remove')")
-    @Log(title = "VIEW", businessType = BusinessType.DELETE)
+    @Log(title = "现场资讯", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{liveIds}")
     public AjaxResult remove(@PathVariable Long[] liveIds)
     {

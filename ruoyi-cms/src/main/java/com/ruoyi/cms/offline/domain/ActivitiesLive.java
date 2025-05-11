@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.Date;
 
 /**
- * VIEW对象 t_ofa_activities_live
+ * 现场资讯对象 t_ofa_activities_live
  * 
  * @author admin
  * @date 2025-05-09

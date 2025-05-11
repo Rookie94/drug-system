@@ -1,7 +1,10 @@
 package com.ruoyi.cms.scale.domain.vo;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.util.List;
 
+@JsonPropertyOrder(alphabetic = false)
 public class ContextVo {
 
     private String contextId;

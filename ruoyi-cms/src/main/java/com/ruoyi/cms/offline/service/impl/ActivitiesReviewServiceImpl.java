@@ -11,7 +11,7 @@ import com.ruoyi.cms.offline.mapper.ActivitiesReviewMapper;
 import com.ruoyi.cms.offline.domain.ActivitiesReview;
 import com.ruoyi.cms.offline.service.IActivitiesReviewService;
 
-import static com.ruoyi.common.utils.SecurityUtils.getUsername;
+import static com.ruoyi.common.utils.SecurityUtils.*;
 
 /**
  * 活动评价Service业务层处理
@@ -59,6 +59,9 @@ public class ActivitiesReviewServiceImpl implements IActivitiesReviewService
     @Override
     public int insertActivitiesReview(ActivitiesReview activitiesReview)
     {
+        activitiesReview.setUserId(getUserId());
+        activitiesReview.setDeptId(getDeptId());
+        activitiesReview.setCreateBy(getUsername());
         activitiesReview.setCreateTime(DateUtils.getNowDate());
         return activitiesReviewMapper.insertActivitiesReview(activitiesReview);
     }

@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.ruoyi.cms.offline.domain.vo.ActivitiesSignUpVo;
 import com.ruoyi.common.annotation.DataScope;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.cms.offline.mapper.ActivitiesSignUpMapper;
@@ -63,6 +65,7 @@ public class ActivitiesSignUpServiceImpl implements IActivitiesSignUpService
         signUp.setDeptId(getDeptId());
         signUp.setCreateBy(getUsername());
         signUp.setCreateTime(DateUtils.getNowDate());
+        signUp.setSignTime(DateUtils.getNowDate());
         return signUpMapper.insertSignUp(signUp);
     }
 

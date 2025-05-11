@@ -5,7 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.JSON;
 import com.ruoyi.cms.scale.domain.ContextsTreeSelect;
+import com.ruoyi.cms.scale.domain.vo.ContextVo;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.cms.scale.mapper.LbsContextsMapper;
 import com.ruoyi.cms.scale.domain.LbsContexts;
 import com.ruoyi.cms.scale.service.ILbsContextsService;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.ruoyi.common.utils.SecurityUtils.*;
 
@@ -200,5 +204,49 @@ public class LbsContextsServiceImpl implements ILbsContextsService
     {
         return getChildList(list, t).size() > 0;
     }
+
+
+    /**
+     * 批量生成JSON
+     *
+     * @param contextIds 需要生成的的量表目录主键
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int generalJsonByContextIds(Integer[] contextIds)
+    {
+        int result=0;
+        try{
+            for (Integer contextId : contextIds) {
+                LbsContexts cts=lbsContextsMapper.selectLbsContextsByContextId(contextId);
+                if(cts!=null){
+                    ContextVo contextVo=lbsContextsMapper.selectContextWithRelations(contextId.toString());
+                    if(contextVo!=null){
+                        String contextJson = JSON.toJSONString(contextVo, SerializerFeature.PrettyFormat);
+                        cts.setJsonMonitor(contextJson);
+                        lbsContextsMapper.updateLbsContexts(cts);
+                    }
+                }
+            }
+            result=1;
+        }
+        catch(Exception e){
+            //
+        }
+        return result;
+    }
+
+
+    /*
+    获取量表题目对象
+     * @param contextId 需要生成的的量表目录主键
+     * @return 结果
+     */
+    public ContextVo selectContextWithRelations(String contextId){
+        return lbsContextsMapper.selectContextWithRelations(contextId);
+    }
+
+
 
 }

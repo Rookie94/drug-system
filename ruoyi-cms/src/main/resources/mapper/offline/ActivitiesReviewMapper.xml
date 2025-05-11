@@ -54,6 +54,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="phonenumber != null  and phonenumber != ''"> and phonenumber = #{phonenumber}</if>
             <if test="deptId != null "> and t.dept_id = #{deptId}</if>
             <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
         </where>
     </select>
     

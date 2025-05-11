@@ -2,6 +2,7 @@ package com.ruoyi.cms.scale.mapper;
 
 import java.util.List;
 import com.ruoyi.cms.scale.domain.LbsContexts;
+import com.ruoyi.cms.scale.domain.vo.ContextVo;
 
 /**
  * 量表目录Mapper接口
@@ -58,4 +59,12 @@ public interface LbsContextsMapper
      * @return 结果
      */
     public int deleteLbsContextsByContextIds(Integer[] contextIds);
+
+    /*
+   获取量表题目对象
+    * @param contextId 需要生成的的量表目录主键
+    * @return 结果
+    */
+    public ContextVo selectContextWithRelations(String contextId);
+
 }

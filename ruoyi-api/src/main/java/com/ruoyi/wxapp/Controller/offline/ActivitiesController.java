@@ -1,6 +1,8 @@
 package com.ruoyi.wxapp.Controller.offline;
 
 import com.ruoyi.cms.offline.domain.*;
+import com.ruoyi.cms.offline.domain.vo.ActivitiesCheckinVo;
+import com.ruoyi.cms.offline.domain.vo.ActivitiesSignUpVo;
 import com.ruoyi.cms.offline.service.*;
 import com.ruoyi.cms.res.domain.ResOrginfo;
 import com.ruoyi.cms.res.service.IResOrginfoService;
@@ -134,6 +136,24 @@ public class ActivitiesController extends BaseController
     }
 
     /**
+     * 查询活动详情
+     */
+    @GetMapping("/getSignUpState/{activityId}")
+    public AjaxResult getSignUpState(@PathVariable("activityId") Long activityId)
+    {
+        ActivitiesSignUpVo signUp=new ActivitiesSignUpVo();
+        signUp.setActivityId(activityId);
+        signUp.setUserId(getUserId());
+        List<ActivitiesSignUpVo> list=signUpService.selectSignUpList(signUp);
+        if(list==null || list.size()==0){
+            return error("当前学员未报名!");
+        }
+        else{
+            return success("当前学员已报名!");
+        }
+    }
+
+    /**
      * 新增预约详情
      */
     @Log(title = "活动报名", businessType = BusinessType.INSERT)
@@ -165,11 +185,29 @@ public class ActivitiesController extends BaseController
             return error("游客不能参加活动");
         }
         if(sysUser.getUserType().equals("11")==false){
-            return error("学员才能签到!");
+            return error("学员才能签到");
         }
         ActivitiesCheckin checkIn=new ActivitiesCheckin();
         checkIn.setActivityId(activityId);
         return toAjax(checkinService.insertActivitiesCheckin(checkIn));
+    }
+
+    /**
+     * 查询活动详情
+     */
+    @GetMapping("/getCheckInState/{activityId}")
+    public AjaxResult getCheckInState(@PathVariable("activityId") Long activityId)
+    {
+        ActivitiesCheckinVo checkIn=new ActivitiesCheckinVo();
+        checkIn.setActivityId(activityId);
+        checkIn.setUserId(getUserId());
+        List<ActivitiesCheckinVo> list=checkinService.selectActivitiesCheckinList(checkIn);
+        if(list==null || list.size()==0){
+            return error("当前学员未签到");
+        }
+        else{
+            return success("当前学员已签到");
+        }
     }
 
     /**

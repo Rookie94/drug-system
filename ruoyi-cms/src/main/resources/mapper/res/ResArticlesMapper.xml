@@ -58,6 +58,7 @@
             <if test="title != null  and title != ''"> and t.title = #{title}</if>
             <if test="categoryId != null "> and t.category_id = #{categoryId}</if>
             <if test="typeId != null "> and t.type_id = #{typeId}</if>
+            <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
             <if test="status != null  and status != ''"> and t.status = #{status}</if>
             <if test="appored != null  and appored != ''"> and t.appored = #{appored}</if>
             <!-- 数据范围过滤 -->

@@ -35,6 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="title != null  and title != ''"> and title = #{title}</if>
             <if test="rxType != null  and rxType != ''"> and rx_type = #{rxType}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
             <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
         </where>
     </select>

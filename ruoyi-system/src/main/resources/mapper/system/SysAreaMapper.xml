@@ -22,7 +22,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectSysAreaList" parameterType="SysArea" resultMap="SysAreaResult">
         <include refid="selectSysAreaVo"/>
-        <where>  
+        <where>
+            <if test="id != null "> and id = #{id}</if>
+            <if test="pid != null "> and pid = #{pid}</if>
             <if test="cityName != null  and cityName != ''"> and city_name like concat('%', #{cityName}, '%')</if>
             <if test="type != null "> and type = #{type}</if>
             <if test="status != null "> and status = #{status}</if>

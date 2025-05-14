@@ -1,6 +1,9 @@
 package com.ruoyi.web.controller.system;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.SysArea;
+import com.ruoyi.system.service.ISysAreaService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,6 +37,9 @@ public class SysDeptController extends BaseController
     @Autowired
     private ISysDeptService deptService;
 
+    @Autowired
+    private ISysAreaService sysAreaService;
+
     /**
      * 获取部门列表
      */
@@ -66,6 +72,30 @@ public class SysDeptController extends BaseController
     {
         deptService.checkDeptDataScope(deptId);
         return success(deptService.selectDeptById(deptId));
+    }
+
+    /*
+    获取省
+     */
+    @PreAuthorize("@ss.hasPermi('system:dept:list')")
+    @GetMapping("/getProvince")
+    public AjaxResult getProvince() {
+        SysArea sysArea = new SysArea();
+        sysArea.setId(16L);
+        sysArea.setStatus("0");
+        return AjaxResult.success(sysAreaService.selectSysAreaList(sysArea));
+    }
+
+    /*
+    市
+    */
+    @PreAuthorize("@ss.hasPermi('system:dept:list')")
+    @GetMapping("/getCityByParentId/{parentId}")
+    public AjaxResult getCityByParentId(@PathVariable Long parentId) {
+        SysArea sysArea = new SysArea();
+        sysArea.setPid(parentId);
+        sysArea.setStatus("0");
+        return AjaxResult.success(sysAreaService.selectSysAreaList(sysArea));
     }
 
     /**

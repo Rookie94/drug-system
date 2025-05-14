@@ -43,6 +43,15 @@ public class SysDept extends BaseEntity
     /** 邮箱 */
     private String email;
 
+    /** 省 */
+    private Long provinceId;
+
+    /** 市 */
+    private Long cityId;
+
+    /** 区 */
+    private Long areaId;
+
     /** 部门状态:0正常,1停用 */
     private String status;
 
@@ -141,6 +150,30 @@ public class SysDept extends BaseEntity
         this.email = email;
     }
 
+    public Long getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Long provinceId) {
+        this.provinceId = provinceId;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
+    }
+
     public String getStatus()
     {
         return status;
@@ -192,6 +225,9 @@ public class SysDept extends BaseEntity
             .append("leader", getLeader())
             .append("phone", getPhone())
             .append("email", getEmail())
+            .append("provinceId", getProvinceId())
+            .append("cityId", getCityId())
+            .append("areaId", getAreaId())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())
             .append("createBy", getCreateBy())

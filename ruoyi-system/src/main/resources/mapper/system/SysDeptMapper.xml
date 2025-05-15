@@ -109,9 +109,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="leader != null and leader != ''">leader,</if>
  			<if test="phone != null and phone != ''">phone,</if>
  			<if test="email != null and email != ''">email,</if>
-			<if test="provinceId != null and provinceId != ''">province_id,</if>
-			<if test="cityId != null and cityId != ''">city_id,</if>
-			<if test="areaId != null and areaId != ''">area_id,</if>
+			<if test="provinceId != null">province_id,</if>
+			<if test="cityId != null">city_id,</if>
+			<if test="areaId != null">area_id,</if>
 			<if test="status != null">status,</if>
  			<if test="createBy != null and createBy != ''">create_by,</if>
  			create_time
@@ -124,9 +124,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="leader != null and leader != ''">#{leader},</if>
  			<if test="phone != null and phone != ''">#{phone},</if>
  			<if test="email != null and email != ''">#{email},</if>
-			<if test="provinceId != null and provinceId != ''">#{provinceId},</if>
-			<if test="cityId != null and cityId != ''">#{cityId},</if>
-			<if test="areaId != null and areaId != ''">#{areaId},</if>
+			<if test="provinceId != null">#{provinceId},</if>
+			<if test="cityId != null">#{cityId},</if>
+			<if test="areaId != null">#{areaId},</if>
  			<if test="status != null">#{status},</if>
  			<if test="createBy != null and createBy != ''">#{createBy},</if>
  			sysdate()

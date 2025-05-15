@@ -2,6 +2,7 @@ package com.ruoyi.cms.offline.mapper;
 
 import java.util.List;
 import com.ruoyi.cms.offline.domain.Activities;
+import com.ruoyi.cms.offline.domain.vo.ActivitiesStateVo;
 import com.ruoyi.cms.res.domain.ResCase;
 import com.ruoyi.system.domain.ResApporParam;
 
@@ -28,6 +29,14 @@ public interface ActivitiesMapper
      * @return 活动发布集合
      */
     public List<Activities> selectActivitiesList(Activities activities);
+
+    /**
+     * 查询带状态的活动发布列表
+     *
+     * @param activities 活动发布
+     * @return 活动发布集合
+     */
+    public List<ActivitiesStateVo> selectActivitiesStateByStudent(ActivitiesStateVo activities);
 
     /**
      * 查询活动发布列表

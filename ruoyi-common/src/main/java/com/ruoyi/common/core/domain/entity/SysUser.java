@@ -82,6 +82,15 @@ public class SysUser extends BaseEntity
     /** openId */
     private String openId;
 
+    /** 省 */
+    private Long provinceId;
+
+    /** 市 */
+    private Long cityId;
+
+    /** 区 */
+    private Long areaId;
+
     /** 最后登录IP */
     @Excel(name = "最后登录IP", type = Type.EXPORT)
     private String loginIp;
@@ -219,6 +228,30 @@ public class SysUser extends BaseEntity
     public void setPhonenumber(String phoneNumber)
     {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Long getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Long provinceId) {
+        this.provinceId = provinceId;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
     }
 
     public String getSex()

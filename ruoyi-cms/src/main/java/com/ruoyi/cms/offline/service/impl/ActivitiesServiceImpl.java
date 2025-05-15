@@ -3,6 +3,7 @@ package com.ruoyi.cms.offline.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import com.ruoyi.cms.offline.domain.vo.ActivitiesStateVo;
 import com.ruoyi.cms.res.domain.ResCase;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
@@ -50,6 +51,18 @@ public class ActivitiesServiceImpl implements IActivitiesService
     public List<Activities> selectActivitiesList(Activities activities)
     {
         return activitiesMapper.selectActivitiesList(activities);
+    }
+
+    /**
+     * 查询带状态的活动发布列表
+     *
+     * @param activities 活动发布
+     * @return 活动发布集合
+     */
+    @Override
+    @DataScope(deptAlias = "t", userAlias = "t")
+    public List<ActivitiesStateVo> selectActivitiesStateByStudent(ActivitiesStateVo activities){
+        return activitiesMapper.selectActivitiesStateByStudent(activities);
     }
 
     /**

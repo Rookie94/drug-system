@@ -11,10 +11,8 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.system.service.ISysDeptService;
-import com.ruoyi.system.service.ISysPostService;
-import com.ruoyi.system.service.ISysRoleService;
-import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.domain.SysArea;
+import com.ruoyi.system.service.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,6 +44,9 @@ public class SysStudentController extends BaseController
 
     @Autowired
     private ISysPostService postService;
+
+    @Autowired
+    private ISysAreaService sysAreaService;
 
     /**
      * 获取用户列表
@@ -108,6 +109,30 @@ public class SysStudentController extends BaseController
         ajax.put("roles", SysUser.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList()));
         ajax.put("posts", postService.selectPostAll());
         return ajax;
+    }
+
+    /*
+    获取省
+     */
+    @PreAuthorize("@ss.hasPermi('student:profile:list')")
+    @GetMapping("/getProvince")
+    public AjaxResult getProvince() {
+        SysArea sysArea = new SysArea();
+        sysArea.setId(16L);
+        sysArea.setStatus("0");
+        return AjaxResult.success(sysAreaService.selectSysAreaList(sysArea));
+    }
+
+    /*
+    市
+    */
+    @PreAuthorize("@ss.hasPermi('student:profile:list')")
+    @GetMapping("/getCityByParentId/{parentId}")
+    public AjaxResult getCityByParentId(@PathVariable Long parentId) {
+        SysArea sysArea = new SysArea();
+        sysArea.setPid(parentId);
+        sysArea.setStatus("0");
+        return AjaxResult.success(sysAreaService.selectSysAreaList(sysArea));
     }
 
     /**

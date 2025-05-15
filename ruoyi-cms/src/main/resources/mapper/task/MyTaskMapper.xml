@@ -6,16 +6,19 @@
 
 
     <update id="publishResources">
-        update res_jobinfo set appored='2' where appored=1 and publish_time&lt;=Now();
-        update res_skill set appored='2' where appored=1 and publish_time&lt;=Now();
-        update res_orginfo set appored='2' where appored=1 and publish_time&lt;=Now();
-        update res_expert set appored='2' where appored=1 and publish_time&lt;=Now();
-        update res_case set appored='2' where appored=1 and publish_time&lt;=Now();
-        update res_news set appored='2' where appored=1 and publish_time&lt;=Now();
-        update res_articles set appored='2' where appored=1 and publish_time&lt;=Now();
-        update sys_notice set appored='2' where appored=1 and publish_time&lt;=Now();
-        update ofa_activities set appored='2' where appored=1 and publish_time&lt;=Now();
-        update res_rxdata set appored='2' where appored=1 and publish_time&lt;=Now();
+        update res_jobinfo set appored='2' where appored='1' and publish_time&lt;=Now();
+        update res_skill set appored='2' where appored='1' and publish_time&lt;=Now();
+        update res_orginfo set appored='2' where appored='1' and publish_time&lt;=Now();
+        update res_expert set appored='2' where appored='1' and publish_time&lt;=Now();
+        update res_case set appored='2' where appored='1' and publish_time&lt;=Now();
+        update res_news set appored='2' where appored='1' and publish_time&lt;=Now();
+        update res_articles set appored='2' where appored='1' and publish_time&lt;=Now();
+        update sys_notice set appored='2' where appored='1' and publish_time&lt;=Now();
+        update res_rxdata set appored='2' where appored='1' and publish_time&lt;=Now();
+        update ofa_activities set appored='2' where appored='1' and publish_time&lt;=Now();
+        update ofa_activities set appored='3' where appored='2' and start_time&lt;=Now() and end_time&gt;=Now();
+        update ofa_activities set appored='4' where appored in ('2','3') and end_time&lt;=Now();
+        update ofa_activities set appored='5' where appored in ('2','3','4') and end_time&lt;=DATE_ADD(now(),INTERVAL 3 DAY);
     </update>
 
 

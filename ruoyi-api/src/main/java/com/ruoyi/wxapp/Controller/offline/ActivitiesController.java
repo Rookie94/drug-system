@@ -3,6 +3,7 @@ package com.ruoyi.wxapp.Controller.offline;
 import com.ruoyi.cms.offline.domain.*;
 import com.ruoyi.cms.offline.domain.vo.ActivitiesCheckinVo;
 import com.ruoyi.cms.offline.domain.vo.ActivitiesSignUpVo;
+import com.ruoyi.cms.offline.domain.vo.ActivitiesStateVo;
 import com.ruoyi.cms.offline.service.*;
 import com.ruoyi.cms.res.domain.ResOrginfo;
 import com.ruoyi.cms.res.service.IResOrginfoService;
@@ -72,6 +73,19 @@ public class ActivitiesController extends BaseController
     }
 
     /**
+     * 查询学员活动状态
+     */
+    @GetMapping("/getActivitiesStateByStudentId")
+    public TableDataInfo getActivitiesStateByStudentId(ActivitiesStateVo activities)
+    {
+        startPage();
+        activities.setUseDataScope(false);
+        activities.setUserId(getUserId());
+        List<ActivitiesStateVo> list = activitiesService.selectActivitiesStateByStudent(activities);
+        return getDataTable(list);
+    }
+
+    /**
      * 查询活动详情
      */
     @GetMapping("/getActivity/{activityId}")
@@ -113,7 +127,7 @@ public class ActivitiesController extends BaseController
         if(!activity.getStatus().equals("0")){
             return error("活动已停用,不能报名");
         }
-        if(!activity.getAppored().equals("2")==false){
+        if(!activity.getAppored().equals("2")==false || !activity.getAppored().equals("3")==false){
             return error("活动处于不可报名状态");
         }
         if(!activity.getParentActivityId().equals("0")==false){
@@ -237,6 +251,30 @@ public class ActivitiesController extends BaseController
     @PostMapping("/tmsCommit")
     public AjaxResult tmsCommit(@RequestBody ActivitiesTmsdata activitiesTmsdata)
     {
+        if(activitiesTmsdata.getActivityId()==null){
+            return error("活动id不能为空");
+        }
+        Activities activity= activitiesService.selectActivitiesByActivityId(activitiesTmsdata.getActivityId());
+        if(activity==null){
+            return error("活动不存在");
+        }
+        if(!activity.getStatus().equals("0")){
+            return error("活动已停用,不能上传现场资讯");
+        }
+        if(!activity.getAppored().equals("5")==false){
+            return error("活动已归档,不能上传经颅磁资讯");
+        }
+        LoginUser loginUser=getLoginUser();
+        if(loginUser==null){
+            return error("无法获取登录用户信息");
+        }
+        SysUser sysUser=loginUser.getUser();
+        if(sysUser==null){
+            return error("游客不能上传经颅磁资讯");
+        }
+        if(sysUser.getUserType().equals("00")==false){
+            return error("警官才能上传经颅磁资讯");
+        }
         return toAjax(activitiesTmsdataService.insertActivitiesTmsdata(activitiesTmsdata));
     }
 
@@ -262,6 +300,30 @@ public class ActivitiesController extends BaseController
     @PostMapping("/techCommit")
     public AjaxResult techCommit(@RequestBody ActivitiesTech activitiesTech)
     {
+        if(activitiesTech.getActivityId()==null){
+            return error("活动id不能为空");
+        }
+        Activities activity= activitiesService.selectActivitiesByActivityId(activitiesTech.getActivityId());
+        if(activity==null){
+            return error("活动不存在");
+        }
+        if(!activity.getStatus().equals("0")){
+            return error("活动已停用,不能上传戒治技术资料");
+        }
+        if(!activity.getAppored().equals("5")==false){
+            return error("活动已归档,不能上传戒治技术资料");
+        }
+        LoginUser loginUser=getLoginUser();
+        if(loginUser==null){
+            return error("无法获取登录用户信息");
+        }
+        SysUser sysUser=loginUser.getUser();
+        if(sysUser==null){
+            return error("游客不能上传戒治技术资料");
+        }
+        if(sysUser.getUserType().equals("00")==false){
+            return error("警官才能上传戒治技术资料");
+        }
         return toAjax(activitiesTechService.insertActivitiesTech(activitiesTech));
     }
 
@@ -270,8 +332,32 @@ public class ActivitiesController extends BaseController
      */
     @Log(title = "活动评价", businessType = BusinessType.INSERT)
     @PostMapping("/reviewCommit")
-    public AjaxResult add(@RequestBody ActivitiesReview activitiesReview)
+    public AjaxResult reviewCommit(@RequestBody ActivitiesReview activitiesReview)
     {
+        if(activitiesReview.getActivityId()==null){
+            return error("活动id不能为空");
+        }
+        Activities activity= activitiesService.selectActivitiesByActivityId(activitiesReview.getActivityId());
+        if(activity==null){
+            return error("活动不存在");
+        }
+        if(!activity.getStatus().equals("0")){
+            return error("活动已停用,不能评价");
+        }
+        if(!activity.getAppored().equals("5")==false){
+            return error("活动已归档,处于不可评价状态");
+        }
+        LoginUser loginUser=getLoginUser();
+        if(loginUser==null){
+            return error("无法获取登录用户信息");
+        }
+        SysUser sysUser=loginUser.getUser();
+        if(sysUser==null){
+            return error("游客不能参加活动评价");
+        }
+        if(sysUser.getUserType().equals("11")==false){
+            return error("学员才能参加活动评价");
+        }
         return toAjax(activitiesReviewService.insertActivitiesReview(activitiesReview));
     }
 
@@ -282,6 +368,30 @@ public class ActivitiesController extends BaseController
     @PostMapping("/liveCommit")
     public AjaxResult add(@RequestBody ActivitiesLive activitiesLive)
     {
+        if(activitiesLive.getActivityId()==null){
+            return error("活动id不能为空");
+        }
+        Activities activity= activitiesService.selectActivitiesByActivityId(activitiesLive.getActivityId());
+        if(activity==null){
+            return error("活动不存在");
+        }
+        if(!activity.getStatus().equals("0")){
+            return error("活动已停用,不能上传现场资讯");
+        }
+        if(!activity.getAppored().equals("5")==false){
+            return error("活动已归档,不能上传现场资讯");
+        }
+        LoginUser loginUser=getLoginUser();
+        if(loginUser==null){
+            return error("无法获取登录用户信息");
+        }
+        SysUser sysUser=loginUser.getUser();
+        if(sysUser==null){
+            return error("游客不能上传现场资讯");
+        }
+        if(sysUser.getUserType().equals("00")==false){
+            return error("警官才能上传现场资讯");
+        }
         return toAjax(activitiesLiveService.insertActivitiesLive(activitiesLive));
     }
 

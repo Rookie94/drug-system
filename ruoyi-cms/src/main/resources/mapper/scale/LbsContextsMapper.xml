@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contextId"    column="context_id"    />
         <result property="parentContextId"    column="parent_context_id"    />
         <result property="orderNum"    column="order_num"    />
+        <result property="contextNo"    column="context_no"    />
         <result property="contextName"    column="context_name"    />
         <result property="pic"    column="pic"    />
         <result property="content"    column="content"    />
@@ -28,6 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <resultMap id="ContextResult" type="ContextVo">
         <id property="contextId" column="context_id"/>
+        <result property="contextNo" column="context_no"/>
         <result property="contextName" column="context_name"/>
         <result property="pic" column="pic"/>
         <result property="content" column="content"/>
@@ -50,19 +52,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLbsContextsVo">
-        select context_id, parent_context_id, order_num, context_name, pic, content,json_monitor,json_data,json_params,json_result, status, appored, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from lbs_contexts
+        select context_id, parent_context_id, order_num, context_no, context_name, pic, content,json_monitor,json_data,json_params,json_result, status, appored, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from lbs_contexts
     </sql>
 
     <select id="selectLbsContextsList" parameterType="LbsContexts" resultMap="LbsContextsResult">
         <include refid="selectLbsContextsVo"/>
-        <where>  
+        <where>
+            <if test="contextNo != null  and contextNo != ''"> and context_no like concat('%', #{contextNo}, '%')</if>
             <if test="contextName != null  and contextName != ''"> and context_name like concat('%', #{contextName}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
         </where>
     </select>
     
-    <select id="selectLbsContextsByContextId" parameterType="Integer" resultMap="LbsContextsResult">
+    <select id="selectLbsContextsByContextId" parameterType="Long" resultMap="LbsContextsResult">
         <include refid="selectLbsContextsVo"/>
         where context_id = #{contextId}
     </select>
@@ -71,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectContextWithRelations" resultMap="ContextResult">
         SELECT
             c.context_id,
+            c.context_no,
             c.context_name,
             c.pic,
             c.content,
@@ -95,6 +99,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contextId != null">context_id,</if>
             <if test="parentContextId != null">parent_context_id,</if>
             <if test="orderNum != null">order_num,</if>
+            <if test="contextNo != null">context_no,</if>
             <if test="contextName != null">context_name,</if>
             <if test="pic != null">pic,</if>
             <if test="content != null">content,</if>
@@ -116,6 +121,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contextId != null">#{contextId},</if>
             <if test="parentContextId != null">#{parentContextId},</if>
             <if test="orderNum != null">#{orderNum},</if>
+            <if test="contextNo != null">#{contextNo},</if>
             <if test="contextName != null">#{contextName},</if>
             <if test="pic != null">#{pic},</if>
             <if test="content != null">#{content},</if>
@@ -140,6 +146,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="parentContextId != null">parent_context_id = #{parentContextId},</if>
             <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="contextNo != null">context_no = #{contextNo},</if>
             <if test="contextName != null">context_name = #{contextName},</if>
             <if test="pic != null">pic = #{pic},</if>
             <if test="content != null">content = #{content},</if>

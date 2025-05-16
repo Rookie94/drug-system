@@ -1,6 +1,7 @@
 package com.ruoyi.cms.scale.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.ruoyi.common.annotation.Excel;
 
 import java.util.List;
 
@@ -8,6 +9,7 @@ import java.util.List;
 public class ContextVo {
 
     private String contextId;
+    private String contextNo;
     private String contextName;
     private String pic;
     private String content;
@@ -21,6 +23,15 @@ public class ContextVo {
 
     public void setContextId(String contextId) {
         this.contextId = contextId;
+    }
+
+
+    public String getContextNo() {
+        return contextNo;
+    }
+
+    public void setContextNo(String contextNo) {
+        this.contextNo = contextNo;
     }
 
     public String getContextName() {

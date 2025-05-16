@@ -58,15 +58,13 @@
         <result property="remark"    column="remark"    />
         <result property="apporBy"    column="appor_by"    />
         <result property="apporTime"    column="appor_time"    />
-
-        <result property="createBy"    column="hd_status"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
-        <result property="apporBy"    column="appor_by"    />
-        <result property="apporTime"    column="appor_time"    />
-
+        <result property="hdState"    column="hd_state"    />
+        <result property="isSigned"    column="is_signed"    />
+        <result property="canSign"    column="can_sign"    />
+        <result property="isCheckIn"    column="is_checkin"    />
+        <result property="canCheckIn"    column="can_checkin"    />
+        <result property="isReview"    column="is_review"    />
+        <result property="canReview"    column="can_review"    />
     </resultMap>
 
     <sql id="selectActivitiesVo">
@@ -91,6 +89,21 @@
         <include refid="selectActivitiesVo"/>
         <where>
             <include refid="filterConditions"/>
+        </where>
+    </select>
+
+    <select id="selectPrimaryActivitiesList" parameterType="Activities" resultMap="ActivitiesResult">
+        <include refid="selectActivitiesVo"/>
+        <where>
+            <if test="parentActivityId != null ">and parent_activity_id = #{parentActivityId}</if>
+            <if test="activityName != null and activityName != ''">and activity_name like CONCAT('%', #{activityName}, '%')</if>
+            <if test="orgName != null and orgName != ''">and org_name like CONCAT('%', #{orgName}, '%')</if>
+            <if test="startTime != null">and start_time &gt;= #{startTime}</if>
+            <if test="endTime != null">and end_time &lt;= #{endTime}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            and appored in ('2','3')
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
         </where>
     </select>
 
@@ -143,7 +156,7 @@
             (
                 SELECT
                     a.*,
-                    s.dict_label hd_status,
+                    s.dict_label hd_state,
                     CASE WHEN b.user_id IS NULL THEN 0 ELSE 1 END is_signed,
                     CASE WHEN (a.appored in ('2','3') and b.user_id is null) THEN 1 ELSE 0 END can_sign,
                     CASE WHEN c.user_id IS NULL THEN 0 ELSE 1 END is_checkin,
@@ -172,7 +185,7 @@
                 <if test="endTime != null">and end_time &lt;= #{endTime}</if>
                 <if test="status != null and status != ''">and status = #{status}</if>
                 <if test="appored != null and appored != ''">and appored = #{appored}</if>
-                <if test="hdStatus != null and hdStatus != ''">and hd_status = #{hdStatus}</if>
+                <if test="hdState != null and hdStatus != ''">and hd_state = #{hdState}</if>
                 <if test="isSigned != null and isSigned != ''">and is_signed = #{isSigned}</if>
                 <if test="canSign != null and canSign != ''">and can_sign = #{canSign}</if>
                 <if test="isCheckIn != null and isCheckIn != ''">and is_checkin = #{isCheckIn}</if>

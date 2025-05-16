@@ -40,7 +40,7 @@ public class LbsContextsServiceImpl implements ILbsContextsService
      * @return 量表目录
      */
     @Override
-    public LbsContexts selectLbsContextsByContextId(Integer contextId)
+    public LbsContexts selectLbsContextsByContextId(Long contextId)
     {
         return lbsContextsMapper.selectLbsContextsByContextId(contextId);
     }
@@ -92,7 +92,7 @@ public class LbsContextsServiceImpl implements ILbsContextsService
      * @return 结果
      */
     @Override
-    public int deleteLbsContextsByContextIds(Integer[] contextIds)
+    public int deleteLbsContextsByContextIds(Long[] contextIds)
     {
         return lbsContextsMapper.deleteLbsContextsByContextIds(contextIds);
     }
@@ -104,7 +104,7 @@ public class LbsContextsServiceImpl implements ILbsContextsService
      * @return 结果
      */
     @Override
-    public int deleteLbsContextsByContextId(Integer contextId)
+    public int deleteLbsContextsByContextId(Long contextId)
     {
         return lbsContextsMapper.deleteLbsContextsByContextId(contextId);
     }
@@ -214,14 +214,14 @@ public class LbsContextsServiceImpl implements ILbsContextsService
      */
     @Override
     @Transactional
-    public int generalJsonByContextIds(Integer[] contextIds)
+    public int generalJsonByContextIds(Long[] contextIds)
     {
         int result=0;
         try{
-            for (Integer contextId : contextIds) {
+            for (Long contextId : contextIds) {
                 LbsContexts cts=lbsContextsMapper.selectLbsContextsByContextId(contextId);
                 if(cts!=null){
-                    ContextVo contextVo=lbsContextsMapper.selectContextWithRelations(contextId.toString());
+                    ContextVo contextVo=lbsContextsMapper.selectContextWithRelations(contextId);
                     if(contextVo!=null){
                         String contextJson = JSON.toJSONString(contextVo, SerializerFeature.PrettyFormat);
                         cts.setJsonMonitor(contextJson);
@@ -243,7 +243,7 @@ public class LbsContextsServiceImpl implements ILbsContextsService
      * @param contextId 需要生成的的量表目录主键
      * @return 结果
      */
-    public ContextVo selectContextWithRelations(String contextId){
+    public ContextVo selectContextWithRelations(Long contextId){
         return lbsContextsMapper.selectContextWithRelations(contextId);
     }
 

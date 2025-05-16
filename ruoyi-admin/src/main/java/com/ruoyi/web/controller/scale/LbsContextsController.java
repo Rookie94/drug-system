@@ -62,7 +62,7 @@ public class LbsContextsController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('scale:contexts:query')")
     @GetMapping(value = "/{contextId}")
-    public AjaxResult getInfo(@PathVariable("contextId") Integer contextId)
+    public AjaxResult getInfo(@PathVariable("contextId") Long contextId)
     {
         return success(lbsContextsService.selectLbsContextsByContextId(contextId));
     }
@@ -95,7 +95,7 @@ public class LbsContextsController extends BaseController
     @PreAuthorize("@ss.hasPermi('scale:contexts:remove')")
     @Log(title = "量表目录", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{contextIds}")
-    public AjaxResult remove(@PathVariable Integer[] contextIds)
+    public AjaxResult remove(@PathVariable Long[] contextIds)
     {
         return toAjax(lbsContextsService.deleteLbsContextsByContextIds(contextIds));
     }
@@ -106,7 +106,7 @@ public class LbsContextsController extends BaseController
     @PreAuthorize("@ss.hasPermi('scale:contexts:generalJson')")
     @Log(title = "量表目录", businessType = BusinessType.UPDATE)
     @GetMapping("/generalJson/{contextIds}")
-    public AjaxResult generalJson(@PathVariable Integer[] contextIds)
+    public AjaxResult generalJson(@PathVariable Long[] contextIds)
     {
         return toAjax(lbsContextsService.generalJsonByContextIds(contextIds));
     }

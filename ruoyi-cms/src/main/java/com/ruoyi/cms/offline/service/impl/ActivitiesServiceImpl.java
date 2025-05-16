@@ -54,6 +54,19 @@ public class ActivitiesServiceImpl implements IActivitiesService
     }
 
     /**
+     * 查询活动发布列表
+     *
+     * @param activities 活动发布
+     * @return 活动发布
+     */
+    @Override
+    @DataScope(deptAlias = "t", userAlias = "t")
+    public List<Activities> selectPrimaryActivitiesList(Activities activities)
+    {
+        return activitiesMapper.selectPrimaryActivitiesList(activities);
+    }
+
+    /**
      * 查询带状态的活动发布列表
      *
      * @param activities 活动发布

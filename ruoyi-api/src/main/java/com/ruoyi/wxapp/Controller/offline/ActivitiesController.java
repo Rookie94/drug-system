@@ -66,9 +66,8 @@ public class ActivitiesController extends BaseController
         startPage();
         activities.setUseDataScope(false);
         activities.setParentActivityId(0L);
-        activities.setAppored("2");
         activities.setStatus("0");
-        List<Activities> list = activitiesService.selectActivitiesList(activities);
+        List<Activities> list = activitiesService.selectPrimaryActivitiesList(activities);
         return getDataTable(list);
     }
 

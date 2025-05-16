@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectLbsTopicsByTopicId" parameterType="Long" resultMap="LbsTopicsLbsOptionsResult">
-        select topic_id,context_id, order_num, title, topic_type,t.required, status, create_by, create_time, update_by, update_time, remark
+        select topic_id,context_id, order_num, title, topic_type,required, status, create_by, create_time, update_by, update_time, remark
         from lbs_topics
         where topic_id = #{topicId}
     </select>

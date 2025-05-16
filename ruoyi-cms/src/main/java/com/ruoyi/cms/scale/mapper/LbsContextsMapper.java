@@ -18,7 +18,7 @@ public interface LbsContextsMapper
      * @param contextId 量表目录主键
      * @return 量表目录
      */
-    public LbsContexts selectLbsContextsByContextId(Integer contextId);
+    public LbsContexts selectLbsContextsByContextId(Long contextId);
 
     /**
      * 查询量表目录列表
@@ -50,7 +50,7 @@ public interface LbsContextsMapper
      * @param contextId 量表目录主键
      * @return 结果
      */
-    public int deleteLbsContextsByContextId(Integer contextId);
+    public int deleteLbsContextsByContextId(Long contextId);
 
     /**
      * 批量删除量表目录
@@ -58,13 +58,13 @@ public interface LbsContextsMapper
      * @param contextIds 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteLbsContextsByContextIds(Integer[] contextIds);
+    public int deleteLbsContextsByContextIds(Long[] contextIds);
 
     /*
    获取量表题目对象
     * @param contextId 需要生成的的量表目录主键
     * @return 结果
     */
-    public ContextVo selectContextWithRelations(String contextId);
+    public ContextVo selectContextWithRelations(Long contextId);
 
 }

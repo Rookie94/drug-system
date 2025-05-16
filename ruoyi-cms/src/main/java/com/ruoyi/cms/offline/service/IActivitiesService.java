@@ -31,6 +31,15 @@ public interface IActivitiesService
     public List<Activities> selectActivitiesList(Activities activities);
 
     /**
+     * 查询活动发布列表
+     *
+     * @param activities 活动发布
+     * @return 活动发布集合
+     */
+    public List<Activities> selectPrimaryActivitiesList(Activities activities);
+
+
+    /**
      * 查询带状态的活动发布列表
      *
      * @param activities 活动发布

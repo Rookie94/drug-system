@@ -1,4 +1,4 @@
-package com.ruoyi.cms.scale.domain.calc;
+package com.ruoyi.cms.scale.calcdata.params.standard;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  * score: 分数
  * rate: 比率因子
  */
-public class SDSParams {
+public class SDSCalcParams {
     @JsonProperty("ascTopic")
     private List<Integer> ascTopic;
 
@@ -24,13 +24,13 @@ public class SDSParams {
     private double rate;
 
     // 无参构造器
-    public SDSParams() {}
+    public SDSCalcParams() {}
 
     // 完整构造器
-    public SDSParams(List<Integer> ascTopic,
-                     List<Integer> descTopic,
-                     List<Integer> score,
-                     double rate) {
+    public SDSCalcParams(List<Integer> ascTopic,
+                         List<Integer> descTopic,
+                         List<Integer> score,
+                         double rate) {
         this.ascTopic = ascTopic;
         this.descTopic = descTopic;
         this.score = score;

@@ -35,6 +35,10 @@ public class LbsContexts extends BaseEntity
     @Excel(name = "序号")
     private Long orderNum;
 
+    /** 目录编号 */
+    @Excel(name = "目录编号")
+    private String contextNo;
+
     /** 目录名称 */
     @Excel(name = "目录名称")
     private String contextName;
@@ -116,6 +120,14 @@ public class LbsContexts extends BaseEntity
 
     public void setAncestors(String ancestors) {
         this.ancestors = ancestors;
+    }
+
+    public String getContextNo() {
+        return contextNo;
+    }
+
+    public void setContextNo(String contextNo) {
+        this.contextNo = contextNo;
     }
 
     public String getContextName() 
@@ -233,6 +245,7 @@ public class LbsContexts extends BaseEntity
             .append("contextId", getContextId())
             .append("parentContextId", getParentContextId())
             .append("orderNum", getOrderNum())
+            .append("contextNo", getContextNo())
             .append("contextName", getContextName())
             .append("pic", getPic())
             .append("content", getContent())

@@ -39,7 +39,7 @@
         <jedis.version>3.3.0</jedis.version>
         <minio.version>8.2.2</minio.version>
         <okhttp3.version>4.9.1</okhttp3.version>
-        <hutool-all.version>5.4.2</hutool-all.version>
+        <hutool-all.version>5.8.8</hutool-all.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -244,6 +244,13 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool-all.version}</version>
+            </dependency>
+
+            <!-- 加密库 -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.70</version>
             </dependency>
 
             <!-- 定时任务-->

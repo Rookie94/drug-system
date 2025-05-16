@@ -1,8 +1,11 @@
 package com.ruoyi.framework.config;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.DispatcherType;
+
+import com.ruoyi.framework.security.filter.DecryptionFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -54,5 +57,19 @@ public class FilterConfig
         registration.setOrder(FilterRegistrationBean.LOWEST_PRECEDENCE);
         return registration;
     }
+
+    @Bean
+    public FilterRegistrationBean<DecryptionFilter> decryptionFilter(
+            @Value("${encrypt.enabled}") Boolean enabled,
+            @Value("${encrypt.key}") String key,
+            @Value("${encrypt.filterUrls}") List<String> filterUrls) {
+        FilterRegistrationBean<DecryptionFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setOrder(FilterRegistrationBean.HIGHEST_PRECEDENCE + 1);
+        DecryptionFilter decryptionFilter = new DecryptionFilter(enabled, key, filterUrls);
+        registrationBean.setFilter(decryptionFilter);
+        registrationBean.addUrlPatterns("/*"); // 根据需要调整URL模式
+        return registrationBean;
+    }
+
 
 }

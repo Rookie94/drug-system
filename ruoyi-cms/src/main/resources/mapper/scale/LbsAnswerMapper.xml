@@ -1,0 +1,114 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.scale.mapper.AnswerMapper">
+
+    <resultMap id="AnswerResult" type="AnswerVo">
+        <id property="answerId" column="answer_id"/>
+        <result property="resultId" column="result_id"/>
+        <result property="topicId" column="topic_id"/>
+        <result property="answer" column="answer"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <!-- 查询单个 -->
+    <select id="selectAnswerById" parameterType="Long" resultMap="AnswerResult">
+        SELECT * FROM lbs_answers WHERE answer_id = #{answerId}
+    </select>
+
+    <!-- 查询列表 -->
+    <select id="selectAnswerList" parameterType="AnswerVo" resultMap="AnswerResult">
+        SELECT * FROM lbs_answers
+        <where>
+            <if test="resultId != null">AND result_id = #{resultId}</if>
+            <if test="topicId != null">AND topic_id = #{topicId}</if>
+            <if test="answer != null">AND answer LIKE CONCAT('%', #{answer}, '%')</if>
+        </where>
+    </select>
+
+    <!-- 插入数据 -->
+    <insert id="insertAnswer" parameterType="AnswerVo">
+        INSERT INTO lbs_answers
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="answerId != null">answer_id,</if>
+            <if test="resultId != null">result_id,</if>
+            <if test="topicId != null">topic_id,</if>
+            <if test="answer != null">answer,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="answerId != null">#{answerId},</if>
+            <if test="resultId != null">#{resultId},</if>
+            <if test="topicId != null">#{topicId},</if>
+            <if test="answer != null">#{answer},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertAnswer" parameterType="java.util.List">
+        INSERT INTO lbs_answers
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].answerId != null">answer_id,</if>
+            <if test="list[0].resultId != null">result_id,</if>
+            <if test="list[0].topicId != null">topic_id,</if>
+            <if test="list[0].answer != null">answer,</if>
+            <if test="list[0].createBy != null">create_by,</if>
+            <if test="list[0].createTime != null">create_time,</if>
+            <if test="list[0].updateBy != null">update_by,</if>
+            <if test="list[0].updateTime != null">update_time,</if>
+            <if test="list[0].remark != null">remark,</if>
+        </trim>
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.answerId != null">#{item.answerId},</if>
+                <if test="item.resultId != null">#{item.resultId},</if>
+                <if test="item.topicId != null">#{item.topicId},</if>
+                <if test="item.answer != null">#{item.answer},</if>
+                <if test="item.createBy != null">#{item.createBy},</if>
+                <if test="item.createTime != null">#{item.createTime},</if>
+                <if test="item.updateBy != null">#{item.updateBy},</if>
+                <if test="item.updateTime != null">#{item.updateTime},</if>
+                <if test="item.remark != null">#{item.remark},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <!-- 更新数据 -->
+    <update id="updateAnswer" parameterType="AnswerVo">
+        UPDATE lbs_answers
+        <set>
+            <if test="resultId != null">result_id = #{resultId},</if>
+            <if test="topicId != null">topic_id = #{topicId},</if>
+            <if test="answer != null">answer = #{answer},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = #{updateTime},
+            <if test="remark != null">remark = #{remark},</if>
+        </set>
+        WHERE answer_id = #{answerId}
+    </update>
+
+    <!-- 删除数据 -->
+    <delete id="deleteAnswerById" parameterType="Long">
+        DELETE FROM lbs_answers WHERE answer_id = #{answerId}
+    </delete>
+
+    <!-- 删除数据 -->
+    <delete id="deleteAnswerByResultId" parameterType="Long">
+        DELETE FROM lbs_answers WHERE result_id = #{resultId}
+    </delete>
+
+</mapper>

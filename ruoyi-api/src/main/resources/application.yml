@@ -150,3 +150,13 @@ minio:
   # 默认bucket
   bucketName: public
 
+encrypt:
+  ## 开关控制
+  enabled: false
+  ## 密钥，与前端保持一致
+  key: 0123456789abcdef0123456789abcdef
+  ## 忽略url，不做处理
+  filterUrls: /common/*,/profile/upload/*,/captchaImage
+
+
+

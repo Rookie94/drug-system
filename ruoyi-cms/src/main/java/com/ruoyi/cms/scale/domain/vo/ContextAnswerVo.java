@@ -4,16 +4,16 @@ import java.util.List;
 
 public class ContextAnswerVo {
 
-    private String contextId;
+    private Long contextId;
     private List<AnswerVo> answers;
 
 
     // 外层类的Getters & Setters
-    public String getContextId() {
+    public Long getContextId() {
         return contextId;
     }
 
-    public void setContextId(String contextId) {
+    public void setContextId(Long contextId) {
         this.contextId = contextId;
     }
 

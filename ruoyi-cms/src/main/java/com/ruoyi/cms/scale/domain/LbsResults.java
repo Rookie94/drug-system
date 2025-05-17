@@ -41,6 +41,9 @@ public class LbsResults extends BaseEntity
     @Excel(name = "提交时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date commitTime;
 
+
+    private String status;
+
     /** 量表答案 */
     private String jsonResult;
 
@@ -110,6 +113,14 @@ public class LbsResults extends BaseEntity
         return commitTime;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public void setJsonResult(String jsonResult) 
     {
         this.jsonResult = jsonResult;
@@ -149,6 +160,7 @@ public class LbsResults extends BaseEntity
             .append("deptId", getDeptId())
             .append("userId", getUserId())
             .append("commitTime", getCommitTime())
+            .append("status", getStatus())
             .append("jsonResult", getJsonResult())
             .append("thinJsonResult", getThinJsonResult())
             .append("jsonReport", getJsonReport())

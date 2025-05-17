@@ -74,6 +74,10 @@ public class LbsResultsVo extends BaseEntity
     @Excel(name = "提交时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date commitTime;
 
+    /** 手机号码 */
+    @Excel(name = "手机号码")
+    private String status;
+
     /** 量表答案 */
     private String jsonResult;
 
@@ -82,6 +86,11 @@ public class LbsResultsVo extends BaseEntity
 
     /** 测评报告 */
     private String jsonReport;
+
+    public Long getResultId()
+    {
+        return resultId;
+    }
 
     public void setResultId(Long resultId) 
     {
@@ -94,11 +103,6 @@ public class LbsResultsVo extends BaseEntity
 
     public void setResultNo(String resultNo) {
         this.resultNo = resultNo;
-    }
-
-    public Long getResultId() 
-    {
-        return resultId;
     }
 
     public void setContextId(Long contextId) 
@@ -231,6 +235,14 @@ public class LbsResultsVo extends BaseEntity
         return commitTime;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public void setJsonResult(String jsonResult) 
     {
         this.jsonResult = jsonResult;
@@ -279,6 +291,7 @@ public class LbsResultsVo extends BaseEntity
             .append("birthday", getBirthday())
             .append("phonenumber", getPhonenumber())
             .append("commitTime", getCommitTime())
+            .append("status", getStatus())
             .append("jsonResult", getJsonResult())
             .append("thinJsonResult", getThinJsonResult())
             .append("jsonReport", getJsonReport())

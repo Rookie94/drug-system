@@ -64,6 +64,7 @@ public class LbsResultsServiceImpl implements ILbsResultsService
     @Override
     public int insertLbsResults(LbsResults lbsResults)
     {
+        lbsResults.setCommitTime(DateUtils.getNowDate());
         lbsResults.setUserId(getUserId());
         lbsResults.setDeptId(getDeptId());
         lbsResults.setCreateBy(getUsername());

@@ -58,6 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectLbsContextsList" parameterType="LbsContexts" resultMap="LbsContextsResult">
         <include refid="selectLbsContextsVo"/>
         <where>
+            <if test="parentContextId != null "> and parent_context_id = #{parentContextId}</if>
             <if test="contextNo != null  and contextNo != ''"> and context_no like concat('%', #{contextNo}, '%')</if>
             <if test="contextName != null  and contextName != ''"> and context_name like concat('%', #{contextName}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>

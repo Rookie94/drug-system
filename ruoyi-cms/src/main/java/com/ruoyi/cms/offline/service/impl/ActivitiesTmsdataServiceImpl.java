@@ -59,8 +59,8 @@ public class ActivitiesTmsdataServiceImpl implements IActivitiesTmsdataService
     @Override
     public int insertActivitiesTmsdata(ActivitiesTmsdata activitiesTmsdata)
     {
-        activitiesTmsdata.setUserId(getUserId());
-        activitiesTmsdata.setDeptId(getDeptId());
+        //activitiesTmsdata.setUserId(getUserId());
+        //activitiesTmsdata.setDeptId(getDeptId());
         activitiesTmsdata.setCreateBy(getUsername());
         activitiesTmsdata.setCreateTime(DateUtils.getNowDate());
         return activitiesTmsdataMapper.insertActivitiesTmsdata(activitiesTmsdata);

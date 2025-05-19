@@ -277,6 +277,7 @@ public class Activities extends TreeEntity
                 .append("tel", getTel())
                 .append("startTime", getStartTime())
                 .append("endTime", getEndTime())
+                .append("activityType", getActivityType())
                 .append("status", getStatus())
                 .append("appored", getAppored())
                 .append("delFlag", getDelFlag())

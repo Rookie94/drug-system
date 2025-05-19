@@ -234,7 +234,7 @@
             <if test="tel != null">#{tel},</if>
             <if test="startTime != null">#{startTime},</if>
             <if test="endTime != null">#{endTime},</if>
-            <if test="activityType != null">activity_type,</if>
+            <if test="activityType != null">activityType,</if>
             <if test="status != null">#{status},</if>
             <if test="appored != null">#{appored},</if>
             <if test="publishTime != null">#{publishTime},</if>

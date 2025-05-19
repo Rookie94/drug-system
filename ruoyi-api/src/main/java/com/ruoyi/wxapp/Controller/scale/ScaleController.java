@@ -8,6 +8,8 @@ import com.ruoyi.cms.scale.domain.vo.AnswerVo;
 import com.ruoyi.cms.scale.domain.vo.ContextAnswerVo;
 import com.ruoyi.cms.scale.domain.vo.LbsResultsVo;
 import com.ruoyi.cms.scale.domain.vo.LbsTopicsVo;
+import com.ruoyi.cms.scale.report.ITemplateStrategy;
+import com.ruoyi.cms.scale.report.TemplateStrategyFactory;
 import com.ruoyi.cms.scale.service.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -40,6 +42,8 @@ public class ScaleController extends BaseController {
     @Autowired
     private ILbsCalcService lbsCalcService;
 
+    @Autowired
+    private TemplateStrategyFactory reportFactory;
 
     @GetMapping("/getContexts")
     public AjaxResult getContexts(LbsContexts lbsContexts)
@@ -82,24 +86,16 @@ public class ScaleController extends BaseController {
         return toAjax(result);
     }
 
-    @Log(title = "测评报告", businessType = BusinessType.UPDATE)
-    @GetMapping("/refreshResult/{resultIds}")
-    public AjaxResult refreshResult(@PathVariable Long[] resultIds)
+    @GetMapping("/getReport")
+    public String renderTemplate(@RequestParam Long resultId,@RequestParam(defaultValue = "pc") String deviceType)
     {
-        try{
-            for (Long resultId : resultIds) {
-                LbsResultsVo lbsResults=lbsResultsService.selectLbsResultsByResultId(resultId);
-                ContextAnswerVo contextAnswerVo=new ContextAnswerVo();
-                contextAnswerVo.setContextId(lbsResults.getContextId());
-                List<AnswerVo> list= JSONArray.parseArray(lbsResults.getJsonResult(),AnswerVo.class);
-                contextAnswerVo.setAnswers(list);
-                lbsAnswerService.deleteAnswerByResultId(resultId);
-                lbsAnswerService.batchInsertAnswer(list);
-                lbsCalcService.calcData(contextAnswerVo);
-            }
-            return success("刷新成功");
-        }catch (Exception ex){
-            return error("刷新失败");
+        LbsResultsVo lbsResults = lbsResultsService.selectLbsResultsByResultId(resultId);
+        Long contextId = lbsResults.getContextId();
+        ITemplateStrategy strategy = reportFactory.getStrategy(contextId, deviceType);
+        if (strategy == null) {
+            return "templates/default/" + contextId + "-" + deviceType + ".html";
         }
+        return strategy.getTemplate(contextId,deviceType,lbsResults);
     }
+
 }

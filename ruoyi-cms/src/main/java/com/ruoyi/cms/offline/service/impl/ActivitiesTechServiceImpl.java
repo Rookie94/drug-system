@@ -59,8 +59,8 @@ public class ActivitiesTechServiceImpl implements IActivitiesTechService
     @Override
     public int insertActivitiesTech(ActivitiesTech activitiesTech)
     {
-        activitiesTech.setUserId(getUserId());
-        activitiesTech.setDeptId(getDeptId());
+        //activitiesTech.setUserId(getUserId());
+        //activitiesTech.setDeptId(getDeptId());
         activitiesTech.setCreateBy(getUsername());
         activitiesTech.setCreateTime(DateUtils.getNowDate());
         return activitiesTechMapper.insertActivitiesTech(activitiesTech);

@@ -3,25 +3,22 @@ package com.ruoyi.web.controller.scale;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.cms.scale.domain.LbsContexts;
 import com.ruoyi.cms.scale.domain.LbsResults;
-import com.ruoyi.cms.scale.service.ILbsContextsService;
+import com.ruoyi.cms.scale.domain.vo.AnswerVo;
+import com.ruoyi.cms.scale.domain.vo.ContextAnswerVo;
+import com.ruoyi.cms.scale.report.ITemplateStrategy;
+import com.ruoyi.cms.scale.report.TemplateStrategyFactory;
+import com.ruoyi.cms.scale.service.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.cms.scale.domain.vo.LbsResultsVo;
-import com.ruoyi.cms.scale.service.ILbsResultsService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
@@ -41,6 +38,15 @@ public class LbsResultsController extends BaseController
 
     @Autowired
     private ILbsResultsService lbsResultsService;
+
+    @Autowired
+    private ILbsAnswerService lbsAnswerService;
+
+    @Autowired
+    private ILbsCalcService lbsCalcService;
+
+    @Autowired
+    private TemplateStrategyFactory reportFactory;
 
     /**
      * 查询测评报告列表
@@ -126,6 +132,40 @@ public class LbsResultsController extends BaseController
     public AjaxResult contextTree(LbsContexts lbsContexts)
     {
         return success(lbsContextsService.selectLbsContextsTreeList(lbsContexts));
+    }
+
+    @PreAuthorize("@ss.hasPermi('scale:report:edit')")
+    @Log(title = "测评报告", businessType = BusinessType.UPDATE)
+    @GetMapping("/refreshResult/{resultIds}")
+    public AjaxResult refreshResult(@PathVariable Long[] resultIds)
+    {
+        try{
+            for (Long resultId : resultIds) {
+                LbsResultsVo lbsResults=lbsResultsService.selectLbsResultsByResultId(resultId);
+                ContextAnswerVo contextAnswerVo=new ContextAnswerVo();
+                contextAnswerVo.setContextId(lbsResults.getContextId());
+                List<AnswerVo> list= JSONArray.parseArray(lbsResults.getJsonResult(),AnswerVo.class);
+                contextAnswerVo.setAnswers(list);
+                lbsAnswerService.deleteAnswerByResultId(resultId);
+                lbsAnswerService.batchInsertAnswer(list);
+                lbsCalcService.calcData(contextAnswerVo);
+            }
+            return success("刷新成功");
+        }catch (Exception ex){
+            return error("刷新失败");
+        }
+    }
+
+    @GetMapping("/getReport")
+    public String renderTemplate(@RequestParam Long resultId, @RequestParam(defaultValue = "pc") String deviceType)
+    {
+        LbsResultsVo lbsResults = lbsResultsService.selectLbsResultsByResultId(resultId);
+        Long contextId = lbsResults.getContextId();
+        ITemplateStrategy strategy = reportFactory.getStrategy(contextId, deviceType);
+        if (strategy == null) {
+            return "templates/default/" + contextId + "-" + deviceType + ".html";
+        }
+        return strategy.getTemplate(contextId,deviceType,lbsResults);
     }
 
 }

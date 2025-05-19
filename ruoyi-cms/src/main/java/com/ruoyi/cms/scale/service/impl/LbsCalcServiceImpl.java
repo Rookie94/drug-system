@@ -18,7 +18,7 @@ public class LbsCalcServiceImpl implements ILbsCalcService {
     @Override
     public int calcData(ContextAnswerVo contextAnswerVo) {
         ICalcStrategy strategy = CalcStrategyFactory.getStrategy(
-                contextAnswerVo.getContextId());
+                contextAnswerVo.getContextId().toString());
         return strategy.calculate(contextAnswerVo);
     }
 

@@ -1,9 +1,7 @@
 package com.ruoyi.wxapp.Controller.offline;
 
 import com.ruoyi.cms.offline.domain.*;
-import com.ruoyi.cms.offline.domain.vo.ActivitiesCheckinVo;
-import com.ruoyi.cms.offline.domain.vo.ActivitiesSignUpVo;
-import com.ruoyi.cms.offline.domain.vo.ActivitiesStateVo;
+import com.ruoyi.cms.offline.domain.vo.*;
 import com.ruoyi.cms.offline.service.*;
 import com.ruoyi.cms.res.domain.ResOrginfo;
 import com.ruoyi.cms.res.service.IResOrginfoService;
@@ -126,10 +124,10 @@ public class ActivitiesController extends BaseController
         if(!activity.getStatus().equals("0")){
             return error("活动已停用,不能报名");
         }
-        if(!activity.getAppored().equals("2")==false || !activity.getAppored().equals("3")==false){
-            return error("活动处于不可报名状态");
+        if(!activity.getAppored().equals("2")&& !activity.getAppored().equals("3")){
+            return error("活动没有处于报名中或活动进行中状态,不可报名");
         }
-        if(!activity.getParentActivityId().equals("0")==false){
+        if(!activity.getParentActivityId().equals("0")){
             return error("主活动才能报名");
         }
         LoginUser loginUser=getLoginUser();
@@ -167,9 +165,47 @@ public class ActivitiesController extends BaseController
     }
 
     /**
+     * 获取活动报名人员清单
+     */
+    @GetMapping("/getSignUpList")
+    public TableDataInfo getSignUpList(ActivitiesSignUpVo signUp)
+    {
+        TableDataInfo tableDataInfo=new TableDataInfo();
+        tableDataInfo.setCode(500);
+        tableDataInfo.setTotal(0L);
+        if(signUp.getActivityId()==null){
+            tableDataInfo.setMsg("活动id不能为空");
+            return tableDataInfo;
+        }
+        Activities activity= activitiesService.selectActivitiesByActivityId(signUp.getActivityId());
+        if(activity==null){
+            tableDataInfo.setMsg("活动不存在");
+            return tableDataInfo;
+        }
+        LoginUser loginUser=getLoginUser();
+        if(loginUser==null){
+            tableDataInfo.setMsg("登录信息不存在");
+            return tableDataInfo;
+        }
+        SysUser sysUser=loginUser.getUser();
+        if(sysUser==null){
+            tableDataInfo.setMsg("用户信息不存在");
+            return tableDataInfo;
+        }
+        if(sysUser.getUserType().equals("11")){
+            tableDataInfo.setMsg("学员没有权限获取报名人员清单");
+            return tableDataInfo;
+        }
+        startPage();
+        signUp.setUseDataScope(false);
+        List<ActivitiesSignUpVo> list=signUpService.selectSignUpList(signUp);
+        return getDataTable(list);
+    }
+
+    /**
      * 新增预约详情
      */
-    @Log(title = "活动报名", businessType = BusinessType.INSERT)
+    @Log(title = "活动签到", businessType = BusinessType.INSERT)
     @PostMapping("/checkIn/{activityId}")
     public AjaxResult checkIn(@PathVariable("activityId") Long activityId)
     {
@@ -183,11 +219,11 @@ public class ActivitiesController extends BaseController
         if(!activity.getStatus().equals("0")){
             return error("活动已停用,不能签到");
         }
-        if(!activity.getAppored().equals("3")==false){
-            return error("活动处于不可签到状态");
-        }
-        if(!activity.getParentActivityId().equals("0")==false){
-            return error("主活动才能签到");
+        //主活动必须活动中才能签到,子活动忽略状态
+        if(activity.getParentActivityId().equals("0")){
+            if(activity.getAppored().equals("3")==false){
+                return error("主活动进行中才可以签到");
+            }
         }
         LoginUser loginUser=getLoginUser();
         if(loginUser==null){
@@ -204,6 +240,45 @@ public class ActivitiesController extends BaseController
         checkIn.setActivityId(activityId);
         return toAjax(checkinService.insertActivitiesCheckin(checkIn));
     }
+
+    /**
+     * 获取活动签到人员清单
+     */
+    @GetMapping("/getCheckInList")
+    public TableDataInfo getCheckInList(ActivitiesCheckinVo checkIn)
+    {
+        TableDataInfo tableDataInfo=new TableDataInfo();
+        tableDataInfo.setCode(500);
+        tableDataInfo.setTotal(0L);
+        if(checkIn.getActivityId()==null){
+            tableDataInfo.setMsg("活动id不能为空");
+            return tableDataInfo;
+        }
+        Activities activity= activitiesService.selectActivitiesByActivityId(checkIn.getActivityId());
+        if(activity==null){
+            tableDataInfo.setMsg("活动不存在");
+            return tableDataInfo;
+        }
+        LoginUser loginUser=getLoginUser();
+        if(loginUser==null){
+            tableDataInfo.setMsg("登录信息不存在");
+            return tableDataInfo;
+        }
+        SysUser sysUser=loginUser.getUser();
+        if(sysUser==null){
+            tableDataInfo.setMsg("用户信息不存在");
+            return tableDataInfo;
+        }
+        if(sysUser.getUserType().equals("11")){
+            tableDataInfo.setMsg("学员没有权限获取签到人员清单");
+            return tableDataInfo;
+        }
+        startPage();
+        checkIn.setUseDataScope(false);
+        List<ActivitiesCheckinVo> list=checkinService.selectActivitiesCheckinList(checkIn);
+        return getDataTable(list);
+    }
+
 
     /**
      * 查询活动详情
@@ -230,13 +305,46 @@ public class ActivitiesController extends BaseController
     @PostMapping("/publishChildActivities")
     public AjaxResult publishChildActivities(@RequestBody Activities activities)
     {
+        LoginUser loginUser=getLoginUser();
+        if(loginUser==null){
+            return error("登录用户才能发布子活动");
+        }
+        if(loginUser.getUser()==null){
+            return error("游客不能发布子活动");
+        }
+        if(loginUser.getUser().getUserType()=="00"){
+            return error("学员不能发布子活动");
+        }
+        if(activities.getActivityType()==null)
+        {
+            return error("子活动分类不能为空");
+        }
+        activities.setAppored("3");
         return toAjax(activitiesService.insertActivities(activities));
+    }
+
+    /**
+     * 发布子活动
+     */
+    @Log(title = "更新子活动", businessType = BusinessType.UPDATE)
+    @PostMapping("/updateChildActivities")
+    public AjaxResult updateChildActivities(@RequestBody Activities activities)
+    {
+        if(activities.getActivityId()==null)
+        {
+            return error("子活动id不能为空");
+        }
+        if(activities.getActivityType()==null)
+        {
+            return error("子活动分类不能为空");
+        }
+        return toAjax(activitiesService.updateActivities(activities));
     }
 
     /**
      * 停用子活动
      */
-    @Log(title = "活动发布", businessType = BusinessType.UPDATE)
+    @Log(title = "停用活动", businessType = BusinessType.UPDATE)
     @PostMapping("/disableChildActivities")
     public AjaxResult disableChildActivities(@RequestBody Activities activities)
     {
@@ -252,6 +360,12 @@ public class ActivitiesController extends BaseController
     {
         if(activitiesTmsdata.getActivityId()==null){
             return error("活动id不能为空");
+        }
+        if(activitiesTmsdata.getUserId()==null){
+            return error("学员id不能为空");
+        }
+        if(activitiesTmsdata.getDeptId()==null){
+            return error("学员部门id不能为空");
         }
         Activities activity= activitiesService.selectActivitiesByActivityId(activitiesTmsdata.getActivityId());
         if(activity==null){
@@ -275,6 +389,44 @@ public class ActivitiesController extends BaseController
             return error("警官才能上传经颅磁资讯");
         }
         return toAjax(activitiesTmsdataService.insertActivitiesTmsdata(activitiesTmsdata));
+    }
+
+    /**
+     * 现场经颅磁数据上传
+     **/
+    @GetMapping("/getTmsData")
+    public TableDataInfo getTmsData(@RequestBody ActivitiesTmsdataVo activitiesTmsdata)
+    {
+        TableDataInfo tableDataInfo=new TableDataInfo();
+        tableDataInfo.setCode(500);
+        tableDataInfo.setTotal(0L);
+        if(activitiesTmsdata.getActivityId()==null){
+            tableDataInfo.setMsg("活动id不能为空");
+            return tableDataInfo;
+        }
+        Activities activity= activitiesService.selectActivitiesByActivityId(activitiesTmsdata.getActivityId());
+        if(activity==null){
+            tableDataInfo.setMsg("活动不存在");
+            return tableDataInfo;
+        }
+        LoginUser loginUser=getLoginUser();
+        if(loginUser==null){
+            tableDataInfo.setMsg("登录信息不存在");
+            return tableDataInfo;
+        }
+        SysUser sysUser=loginUser.getUser();
+        if(sysUser==null){
+            tableDataInfo.setMsg("用户信息不存在");
+            return tableDataInfo;
+        }
+        if(sysUser.getUserType().equals("11")){
+            tableDataInfo.setMsg("学员没有权限获取经颅磁填报数据");
+            return tableDataInfo;
+        }
+        startPage();
+        activitiesTmsdata.setUseDataScope(false);
+        List<ActivitiesTmsdataVo> list=activitiesTmsdataService.selectActivitiesTmsdataList(activitiesTmsdata);
+        return getDataTable(list);
     }
 
     /**
@@ -302,6 +454,12 @@ public class ActivitiesController extends BaseController
         if(activitiesTech.getActivityId()==null){
             return error("活动id不能为空");
         }
+        if(activitiesTech.getUserId()==null){
+            return error("学员id不能为空");
+        }
+        if(activitiesTech.getDeptId()==null){
+            return error("学员部门id不能为空");
+        }
         Activities activity= activitiesService.selectActivitiesByActivityId(activitiesTech.getActivityId());
         if(activity==null){
             return error("活动不存在");
@@ -325,6 +483,45 @@ public class ActivitiesController extends BaseController
         }
         return toAjax(activitiesTechService.insertActivitiesTech(activitiesTech));
     }
+
+    /**
+     * 现场经颅磁数据上传
+     **/
+    @GetMapping("/getTechData")
+    public TableDataInfo getTmsData(@RequestBody ActivitiesTechVo activitiesTechVo)
+    {
+        TableDataInfo tableDataInfo=new TableDataInfo();
+        tableDataInfo.setCode(500);
+        tableDataInfo.setTotal(0L);
+        if(activitiesTechVo.getActivityId()==null){
+            tableDataInfo.setMsg("活动id不能为空");
+            return tableDataInfo;
+        }
+        Activities activity= activitiesService.selectActivitiesByActivityId(activitiesTechVo.getActivityId());
+        if(activity==null){
+            tableDataInfo.setMsg("活动不存在");
+            return tableDataInfo;
+        }
+        LoginUser loginUser=getLoginUser();
+        if(loginUser==null){
+            tableDataInfo.setMsg("登录信息不存在");
+            return tableDataInfo;
+        }
+        SysUser sysUser=loginUser.getUser();
+        if(sysUser==null){
+            tableDataInfo.setMsg("用户信息不存在");
+            return tableDataInfo;
+        }
+        if(sysUser.getUserType().equals("11")){
+            tableDataInfo.setMsg("学员没有权限获取戒治技术填报数据");
+            return tableDataInfo;
+        }
+        startPage();
+        activitiesTechVo.setUseDataScope(false);
+        List<ActivitiesTechVo> list=activitiesTechService.selectActivitiesTechList(activitiesTechVo);
+        return getDataTable(list);
+    }
+
 
     /**
      * 活动评价
@@ -365,7 +562,7 @@ public class ActivitiesController extends BaseController
      */
     @Log(title = "现场资讯", businessType = BusinessType.INSERT)
     @PostMapping("/liveCommit")
-    public AjaxResult add(@RequestBody ActivitiesLive activitiesLive)
+    public AjaxResult liveCommit(@RequestBody ActivitiesLive activitiesLive)
     {
         if(activitiesLive.getActivityId()==null){
             return error("活动id不能为空");

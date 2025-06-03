@@ -4,6 +4,7 @@ import com.ruoyi.cms.scale.domain.vo.ContextAnswerVo;
 import com.ruoyi.cms.scale.calcdata.strategy.ICalcStrategy;
 import com.ruoyi.cms.scale.service.ILbsCalcService;
 import com.ruoyi.cms.scale.calcdata.strategy.CalcStrategyFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,10 +16,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class LbsCalcServiceImpl implements ILbsCalcService {
 
+    @Autowired
+    private CalcStrategyFactory strategyFactory;
+
     @Override
     public int calcData(ContextAnswerVo contextAnswerVo) {
-        ICalcStrategy strategy = CalcStrategyFactory.getStrategy(
-                contextAnswerVo.getContextId().toString());
+        Long contextId=contextAnswerVo.getContextId();
+        ICalcStrategy strategy = strategyFactory.getStrategy(contextId);
         return strategy.calculate(contextAnswerVo);
     }
 

@@ -3,21 +3,17 @@ package com.ruoyi.wxapp.Controller.scale;
 import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.cms.scale.domain.LbsContexts;
 import com.ruoyi.cms.scale.domain.LbsResults;
-import com.ruoyi.cms.scale.domain.LbsTopics;
 import com.ruoyi.cms.scale.domain.vo.AnswerVo;
 import com.ruoyi.cms.scale.domain.vo.ContextAnswerVo;
 import com.ruoyi.cms.scale.domain.vo.LbsResultsVo;
-import com.ruoyi.cms.scale.domain.vo.LbsTopicsVo;
 import com.ruoyi.cms.scale.report.ITemplateStrategy;
 import com.ruoyi.cms.scale.report.TemplateStrategyFactory;
 import com.ruoyi.cms.scale.service.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -93,7 +89,12 @@ public class ScaleController extends BaseController {
         Long contextId = lbsResults.getContextId();
         ITemplateStrategy strategy = reportFactory.getStrategy(contextId, deviceType);
         if (strategy == null) {
-            return "templates/default/" + contextId + "-" + deviceType + ".html";
+            if(deviceType.equals("pc")){
+                return "templates/pc/default/" + "index.html";
+            }
+            else{
+                return "templates/mobile/default/" + "index.html";
+            }
         }
         return strategy.getTemplate(contextId,deviceType,lbsResults);
     }

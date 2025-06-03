@@ -9,6 +9,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.cms.scale.domain.ContextsTreeSelect;
 import com.ruoyi.cms.scale.domain.vo.ContextVo;
+import com.ruoyi.cms.scale.service.ILbsContextsService;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.cms.scale.mapper.LbsContextsMapper;
 import com.ruoyi.cms.scale.domain.LbsContexts;
-import com.ruoyi.cms.scale.service.ILbsContextsService;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.ruoyi.common.utils.SecurityUtils.*;
@@ -28,7 +28,7 @@ import static com.ruoyi.common.utils.SecurityUtils.*;
  * @date 2025-05-05
  */
 @Service
-public class LbsContextsServiceImpl implements ILbsContextsService 
+public class LbsContextsServiceImpl implements ILbsContextsService
 {
     @Autowired
     private LbsContextsMapper lbsContextsMapper;

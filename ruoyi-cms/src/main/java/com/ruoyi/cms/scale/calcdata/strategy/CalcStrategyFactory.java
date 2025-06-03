@@ -2,20 +2,23 @@ package com.ruoyi.cms.scale.calcdata.strategy;
 
 import com.ruoyi.cms.scale.calcdata.strategy.standard.SASStrategy;
 import com.ruoyi.cms.scale.calcdata.strategy.standard.SDSStrategy;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public  class CalcStrategyFactory {
+@Service
+public class CalcStrategyFactory {
 
-    private static final Map<String, ICalcStrategy> STRATEGY_MAP = new HashMap<>();
+    private final Map<Long, ICalcStrategy> strategyMap = new HashMap<>();
 
-    static {
-        STRATEGY_MAP.put("1", new SDSStrategy());
-        STRATEGY_MAP.put("2", new SASStrategy());
+    public CalcStrategyFactory(){
+        strategyMap.put(7l, new SDSStrategy());
+        strategyMap.put(8L, new SASStrategy());
     }
 
-    public static ICalcStrategy getStrategy(String contextId) {
-        return STRATEGY_MAP.get(contextId);
+    public ICalcStrategy getStrategy(Long contextId) {
+        return strategyMap.get(contextId);
     }
+
 }

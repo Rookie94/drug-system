@@ -7,6 +7,6 @@ public class SDSPcStrategy implements ITemplateStrategy {
     @Override
     public String getTemplate(Long contextId, String deviceType, LbsResultsVo lbsResults)
     {
-        return "templates/cate1/pc/" + contextId + ".html";
+        return "templates/pc/sds.html";
     }
 }

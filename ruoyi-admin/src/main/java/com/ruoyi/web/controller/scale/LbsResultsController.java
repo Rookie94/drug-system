@@ -10,7 +10,10 @@ import com.ruoyi.cms.scale.domain.vo.AnswerVo;
 import com.ruoyi.cms.scale.domain.vo.ContextAnswerVo;
 import com.ruoyi.cms.scale.report.ITemplateStrategy;
 import com.ruoyi.cms.scale.report.TemplateStrategyFactory;
-import com.ruoyi.cms.scale.service.*;
+import com.ruoyi.cms.scale.service.ILbsAnswerService;
+import com.ruoyi.cms.scale.service.ILbsCalcService;
+import com.ruoyi.cms.scale.service.ILbsContextsService;
+import com.ruoyi.cms.scale.service.ILbsResultsService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -163,7 +166,7 @@ public class LbsResultsController extends BaseController
         Long contextId = lbsResults.getContextId();
         ITemplateStrategy strategy = reportFactory.getStrategy(contextId, deviceType);
         if (strategy == null) {
-            return "templates/default/" + contextId + "-" + deviceType + ".html";
+            return "templates/mobile/default/" + contextId + "-" + deviceType + ".html";
         }
         return strategy.getTemplate(contextId,deviceType,lbsResults);
     }

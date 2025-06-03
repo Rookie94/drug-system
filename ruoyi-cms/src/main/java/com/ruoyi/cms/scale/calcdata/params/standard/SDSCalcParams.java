@@ -11,11 +11,12 @@ import java.util.List;
  * rate: 比率因子
  */
 public class SDSCalcParams {
-    @JsonProperty("ascTopic")
-    private List<Integer> ascTopic;
 
-    @JsonProperty("descTopic")
-    private List<Integer> descTopic;
+    @JsonProperty("ascTopicIds")
+    private List<Integer> ascTopicIds;
+
+    @JsonProperty("descTopicIds")
+    private List<Integer> descTopicIds;
 
     @JsonProperty("score")
     private List<Integer> score;
@@ -31,18 +32,18 @@ public class SDSCalcParams {
                          List<Integer> descTopic,
                          List<Integer> score,
                          double rate) {
-        this.ascTopic = ascTopic;
-        this.descTopic = descTopic;
+        this.ascTopicIds = ascTopic;
+        this.descTopicIds = descTopic;
         this.score = score;
         this.rate = rate;
     }
 
     // Getter & Setter
-    public List<Integer> getAscTopic() { return ascTopic; }
-    public void setAscTopic(List<Integer> ascTopic) { this.ascTopic = ascTopic; }
+    public List<Integer> getAscTopic() { return ascTopicIds; }
+    public void setAscTopic(List<Integer> ascTopic) { this.ascTopicIds = ascTopic; }
 
-    public List<Integer> getDescTopic() { return descTopic; }
-    public void setDescTopic(List<Integer> descTopic) { this.descTopic = descTopic; }
+    public List<Integer> getDescTopic() { return descTopicIds; }
+    public void setDescTopic(List<Integer> descTopic) { this.descTopicIds = descTopic; }
 
     public List<Integer> getScore() { return score; }
     public void setScore(List<Integer> score) { this.score = score; }

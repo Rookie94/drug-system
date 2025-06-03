@@ -75,7 +75,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectActivitiesLiveList" parameterType="ActivitiesLive" resultMap="ActivitiesLiveResult">
         <include refid="selectActivitiesLiveVo"/>
-        <where>  
+        <where>
+            <if test="liveId != null"> and live_id = #{liveId}</if>
+            <if test="activityId != null"> and activity_id = #{activityId}</if>
             <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
             <if test="parentActivityName != null  and parentActivityName != ''"> and parent_activity_name like concat('%', #{parentActivityName}, '%')</if>
             <if test="subject != null  and subject != ''"> and subject = #{subject}</if>

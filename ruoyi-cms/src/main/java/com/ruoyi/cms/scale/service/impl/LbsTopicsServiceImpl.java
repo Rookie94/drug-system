@@ -1,26 +1,19 @@
 package com.ruoyi.cms.scale.service.impl;
 
-import java.util.Iterator;
 import java.util.List;
 
-import com.ruoyi.cms.scale.domain.LbsContexts;
 import com.ruoyi.cms.scale.domain.vo.LbsTopicsVo;
-import com.ruoyi.common.annotation.DataScope;
-import com.ruoyi.common.core.domain.TreeSelect;
-import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.cms.scale.service.ILbsTopicsService;
 import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.spring.SpringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import com.ruoyi.common.utils.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 import com.ruoyi.cms.scale.domain.LbsOptions;
 import com.ruoyi.cms.scale.mapper.LbsTopicsMapper;
 import com.ruoyi.cms.scale.domain.LbsTopics;
-import com.ruoyi.cms.scale.service.ILbsTopicsService;
 
 import static com.ruoyi.common.utils.SecurityUtils.*;
 
@@ -31,7 +24,7 @@ import static com.ruoyi.common.utils.SecurityUtils.*;
  * @date 2025-05-05
  */
 @Service
-public class LbsTopicsServiceImpl implements ILbsTopicsService 
+public class LbsTopicsServiceImpl implements ILbsTopicsService
 {
     @Autowired
     private LbsTopicsMapper lbsTopicsMapper;

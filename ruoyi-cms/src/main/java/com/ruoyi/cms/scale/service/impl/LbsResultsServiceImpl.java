@@ -6,7 +6,6 @@ import com.ruoyi.cms.scale.domain.LbsResults;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.service.ISerialNoService;
-import com.ruoyi.system.service.impl.SerialNoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.cms.scale.mapper.LbsResultsMapper;

@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.ruoyi.cms.scale.domain.LbsContexts;
 import com.ruoyi.cms.scale.domain.vo.LbsTopicsVo;
 import com.ruoyi.cms.scale.service.ILbsContextsService;
-import com.ruoyi.common.core.domain.entity.SysDept;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

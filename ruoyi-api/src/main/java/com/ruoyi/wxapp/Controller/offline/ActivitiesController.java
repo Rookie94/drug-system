@@ -127,7 +127,7 @@ public class ActivitiesController extends BaseController
         if(!activity.getAppored().equals("2")&& !activity.getAppored().equals("3")){
             return error("活动没有处于报名中或活动进行中状态,不可报名");
         }
-        if(!activity.getParentActivityId().equals("0")){
+        if(activity.getParentActivityId()!=0){
             return error("主活动才能报名");
         }
         LoginUser loginUser=getLoginUser();
@@ -220,7 +220,7 @@ public class ActivitiesController extends BaseController
             return error("活动已停用,不能签到");
         }
         //主活动必须活动中才能签到,子活动忽略状态
-        if(activity.getParentActivityId().equals("0")){
+        if(activity.getParentActivityId()==0){
             if(activity.getAppored().equals("3")==false){
                 return error("主活动进行中才可以签到");
             }
@@ -485,7 +485,7 @@ public class ActivitiesController extends BaseController
     }
 
     /**
-     * 现场经颅磁数据上传
+     * 现场活动戒治技术资料
      **/
     @GetMapping("/getTechData")
     public TableDataInfo getTmsData(@RequestBody ActivitiesTechVo activitiesTechVo)
@@ -589,6 +589,44 @@ public class ActivitiesController extends BaseController
             return error("警官才能上传现场资讯");
         }
         return toAjax(activitiesLiveService.insertActivitiesLive(activitiesLive));
+    }
+
+    /**
+     * 现场资讯列表
+     **/
+    @GetMapping("/getLiveData")
+    public TableDataInfo getLiveData(@RequestBody ActivitiesLiveVo activitiesLive)
+    {
+        TableDataInfo tableDataInfo=new TableDataInfo();
+        tableDataInfo.setCode(500);
+        tableDataInfo.setTotal(0L);
+        if(activitiesLive.getActivityId()==null){
+            tableDataInfo.setMsg("活动id不能为空");
+            return tableDataInfo;
+        }
+        Activities activity= activitiesService.selectActivitiesByActivityId(activitiesLive.getActivityId());
+        if(activity==null){
+            tableDataInfo.setMsg("活动不存在");
+            return tableDataInfo;
+        }
+        LoginUser loginUser=getLoginUser();
+        if(loginUser==null){
+            tableDataInfo.setMsg("登录信息不存在");
+            return tableDataInfo;
+        }
+        SysUser sysUser=loginUser.getUser();
+        if(sysUser==null){
+            tableDataInfo.setMsg("用户信息不存在");
+            return tableDataInfo;
+        }
+        if(sysUser.getUserType().equals("11")){
+            tableDataInfo.setMsg("学员没有权限获取现场资讯列表数据");
+            return tableDataInfo;
+        }
+        startPage();
+        activitiesLive.setUseDataScope(false);
+        List<ActivitiesLiveVo> list=activitiesLiveService.selectActivitiesLiveList(activitiesLive);
+        return getDataTable(list);
     }
 
 }

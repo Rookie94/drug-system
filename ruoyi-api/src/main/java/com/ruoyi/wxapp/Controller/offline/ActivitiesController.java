@@ -19,6 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 import static com.ruoyi.common.utils.SecurityUtils.getUserId;
@@ -141,6 +145,14 @@ public class ActivitiesController extends BaseController
         if(sysUser.getUserType().equals("11")==false){
             return error("学员才能报名!");
         }
+        ActivitiesSignUpVo signUpCheck=new ActivitiesSignUpVo();
+        signUpCheck.setUserId(sysUser.getUserId());
+        signUpCheck.setActivityId(activityId);
+        signUpCheck.setUseDataScope(false);
+        List<ActivitiesSignUpVo> list= signUpService.selectSignUpList(signUpCheck);
+        if(list!=null && list.size()>0){
+            return error("学员已报名,请勿重复报名!");
+        }
         ActivitiesSignUp signUp=new ActivitiesSignUp();
         signUp.setActivityId(activityId);
         return toAjax(signUpService.insertSignUp(signUp));
@@ -202,6 +214,14 @@ public class ActivitiesController extends BaseController
         return getDataTable(list);
     }
 
+    private int calculateAge(Date birthDate) {
+        LocalDate defaultDate = LocalDate.of(1990, 1, 1);
+        LocalDate birthLocalDate = (birthDate != null) ?
+                birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() :
+                defaultDate;
+        return Period.between(birthLocalDate, LocalDate.now()).getYears();
+    }
+
     /**
      * 新增预约详情
      */
@@ -235,6 +255,56 @@ public class ActivitiesController extends BaseController
         }
         if(sysUser.getUserType().equals("11")==false){
             return error("学员才能签到");
+        }
+        if(activity.getParentActivityId()==null){
+            ActivitiesCheckinVo checkinCheck=new ActivitiesCheckinVo();
+            checkinCheck.setUserId(sysUser.getUserId());
+            checkinCheck.setActivityId(activityId);
+            checkinCheck.setUseDataScope(false);
+            List<ActivitiesCheckinVo> list= checkinService.selectActivitiesCheckinList(checkinCheck);
+            if(list!=null && list.size()>0){
+                return error("学员已签到,请勿重复签到!");
+            }
+        }
+        else{
+            if(activity.getActivityType().equals("0")){
+                //经颅磁
+                ActivitiesTmsdataVo tsmDataCheck=new ActivitiesTmsdataVo();
+                tsmDataCheck.setActivityId(activityId);
+                tsmDataCheck.setUserId(sysUser.getUserId());
+                List<ActivitiesTmsdataVo> list1=activitiesTmsdataService.selectActivitiesTmsdataList(tsmDataCheck);
+                if(list1!=null && list1.size()>0){
+                    return error("学员已签到,请勿重复签到!");
+                }
+                ActivitiesTmsdata tsmData=new ActivitiesTmsdata();
+                tsmData.setActivityId(activityId);
+                tsmData.setUserId(sysUser.getUserId());
+                tsmData.setDeptId(sysUser.getDeptId());
+                tsmData.setStatus("0");
+                tsmData.setName(sysUser.getNickName());
+                tsmData.setSex(sysUser.getSex().equals(0) ? "男":"女");
+                tsmData.setAge(String.valueOf(calculateAge(sysUser.getBirthday())));
+                activitiesTmsdataService.insertActivitiesTmsdata(tsmData);
+            }
+            else{
+                //其它图文
+                ActivitiesTechVo techCheck=new ActivitiesTechVo();
+                techCheck.setActivityId(activityId);
+                techCheck.setUserId(sysUser.getUserId());
+                List<ActivitiesTechVo> list2=activitiesTechService.selectActivitiesTechList(techCheck);
+                if(list2!=null && list2.size()>0){
+                    return error("学员已签到,请勿重复签到!");
+                }
+                ActivitiesTech techData=new ActivitiesTech();
+                techData.setActivityId(activityId);
+                techData.setUserId(sysUser.getUserId());
+                techData.setDeptId(sysUser.getDeptId());
+                techData.setStatus("0");
+                techData.setName(sysUser.getNickName());
+                techData.setSex(sysUser.getSex().equals(0) ? "男":"女");
+                techData.setAge(String.valueOf(calculateAge(sysUser.getBirthday())));
+                activitiesTechService.insertActivitiesTech(techData);
+            }
         }
         ActivitiesCheckin checkIn=new ActivitiesCheckin();
         checkIn.setActivityId(activityId);
@@ -354,10 +424,13 @@ public class ActivitiesController extends BaseController
     /**
      * 现场经颅磁数据上传
      */
-    @Log(title = "现场经颅磁", businessType = BusinessType.INSERT)
+    @Log(title = "现场经颅磁", businessType = BusinessType.UPDATE)
     @PostMapping("/tmsCommit")
     public AjaxResult tmsCommit(@RequestBody ActivitiesTmsdata activitiesTmsdata)
     {
+        if(activitiesTmsdata.getAnalyzeId()==null){
+            return error("经颅磁技术id不能为空");
+        }
         if(activitiesTmsdata.getActivityId()==null){
             return error("活动id不能为空");
         }
@@ -388,14 +461,14 @@ public class ActivitiesController extends BaseController
         if(sysUser.getUserType().equals("00")==false){
             return error("警官才能上传经颅磁资讯");
         }
-        return toAjax(activitiesTmsdataService.insertActivitiesTmsdata(activitiesTmsdata));
+        return toAjax(activitiesTmsdataService.updateActivitiesTmsdata(activitiesTmsdata));
     }
 
     /**
      * 现场经颅磁数据上传
      **/
     @GetMapping("/getTmsData")
-    public TableDataInfo getTmsData(@RequestBody ActivitiesTmsdataVo activitiesTmsdata)
+    public TableDataInfo getTmsData(ActivitiesTmsdataVo activitiesTmsdata)
     {
         TableDataInfo tableDataInfo=new TableDataInfo();
         tableDataInfo.setCode(500);
@@ -447,10 +520,13 @@ public class ActivitiesController extends BaseController
     /**
      * 活动戒治技术资料上传
      */
-    @Log(title = "活动戒治技术资料", businessType = BusinessType.INSERT)
+    @Log(title = "活动戒治技术资料", businessType = BusinessType.UPDATE)
     @PostMapping("/techCommit")
     public AjaxResult techCommit(@RequestBody ActivitiesTech activitiesTech)
     {
+        if(activitiesTech.getTechId()==null){
+            return error("戒治技术id不能为空");
+        }
         if(activitiesTech.getActivityId()==null){
             return error("活动id不能为空");
         }
@@ -481,14 +557,14 @@ public class ActivitiesController extends BaseController
         if(sysUser.getUserType().equals("00")==false){
             return error("警官才能上传戒治技术资料");
         }
-        return toAjax(activitiesTechService.insertActivitiesTech(activitiesTech));
+        return toAjax(activitiesTechService.updateActivitiesTech(activitiesTech));
     }
 
     /**
      * 现场活动戒治技术资料
      **/
     @GetMapping("/getTechData")
-    public TableDataInfo getTmsData(@RequestBody ActivitiesTechVo activitiesTechVo)
+    public TableDataInfo getTmsData(ActivitiesTechVo activitiesTechVo)
     {
         TableDataInfo tableDataInfo=new TableDataInfo();
         tableDataInfo.setCode(500);
@@ -595,7 +671,7 @@ public class ActivitiesController extends BaseController
      * 现场资讯列表
      **/
     @GetMapping("/getLiveData")
-    public TableDataInfo getLiveData(@RequestBody ActivitiesLiveVo activitiesLive)
+    public TableDataInfo getLiveData(ActivitiesLiveVo activitiesLive)
     {
         TableDataInfo tableDataInfo=new TableDataInfo();
         tableDataInfo.setCode(500);

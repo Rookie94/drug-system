@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectActivitiesTechVo"/>
         <where>  
             <if test="techId != null "> and tech_id = #{techId}</if>
-            <if test="activityId != null "> and activity_id = #{activityId}</if>
+            <if test="activityId != null "> and t.activity_id = #{activityId}</if>
             <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
             <if test="startTime != null "> and start_time &gt;= #{startTime}</if>
             <if test="endTime != null "> and end_time &lt;= #{endTime}</if>

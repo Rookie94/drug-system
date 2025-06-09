@@ -256,7 +256,7 @@ public class ActivitiesController extends BaseController
         if(sysUser.getUserType().equals("11")==false){
             return error("学员才能签到");
         }
-        if(activity.getParentActivityId()==null){
+        if(activity.getParentActivityId()==0){
             ActivitiesCheckinVo checkinCheck=new ActivitiesCheckinVo();
             checkinCheck.setUserId(sysUser.getUserId());
             checkinCheck.setActivityId(activityId);
@@ -265,6 +265,9 @@ public class ActivitiesController extends BaseController
             if(list!=null && list.size()>0){
                 return error("学员已签到,请勿重复签到!");
             }
+            ActivitiesCheckin checkIn=new ActivitiesCheckin();
+            checkIn.setActivityId(activityId);
+            return toAjax(checkinService.insertActivitiesCheckin(checkIn));
         }
         else{
             if(activity.getActivityType().equals("0")){
@@ -284,7 +287,7 @@ public class ActivitiesController extends BaseController
                 tsmData.setName(sysUser.getNickName());
                 tsmData.setSex(sysUser.getSex().equals(0) ? "男":"女");
                 tsmData.setAge(String.valueOf(calculateAge(sysUser.getBirthday())));
-                activitiesTmsdataService.insertActivitiesTmsdata(tsmData);
+                return toAjax(activitiesTmsdataService.insertActivitiesTmsdata(tsmData));
             }
             else{
                 //其它图文
@@ -303,12 +306,9 @@ public class ActivitiesController extends BaseController
                 techData.setName(sysUser.getNickName());
                 techData.setSex(sysUser.getSex().equals(0) ? "男":"女");
                 techData.setAge(String.valueOf(calculateAge(sysUser.getBirthday())));
-                activitiesTechService.insertActivitiesTech(techData);
+                return toAjax(activitiesTechService.insertActivitiesTech(techData));
             }
         }
-        ActivitiesCheckin checkIn=new ActivitiesCheckin();
-        checkIn.setActivityId(activityId);
-        return toAjax(checkinService.insertActivitiesCheckin(checkIn));
     }
 
     /**

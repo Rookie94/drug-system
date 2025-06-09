@@ -155,7 +155,31 @@
         SELECT * FROM
             (
                 SELECT
-                    a.*,
+                    a.activity_id,
+                    a.parent_activity_id,
+                    a.order_num,
+                    a.activity_name,
+                    a.img,
+                    a.address,
+                    a.org_name,
+                    a.content,
+                    a.tel,
+                    a.start_time,
+                    a.end_time,
+                    a.activity_type,
+                    a.status,
+                    a.appored,
+                    a.publish_time,
+                    a.del_flag,
+                    b.user_id,
+                    b.dept_id,
+                    a.create_by,
+                    a.create_time,
+                    a.update_by,
+                    a.update_time,
+                    a.remark,
+                    a.appor_by,
+                    a.appor_time,
                     s.dict_label hd_state,
                     CASE WHEN b.user_id IS NULL THEN 0 ELSE 1 END is_signed,
                     CASE WHEN (a.appored in ('2','3') and b.user_id is null) THEN 1 ELSE 0 END can_sign,
@@ -170,9 +194,9 @@
                         select b.dict_label,b.dict_value from sys_dict_type a inner join sys_dict_data b on a.dict_type=b.dict_type
                         where a.dict_type='sys_activities_status' and a.status='0' and b.status='0'
                     ) s on a.appored=s.dict_value
-                        LEFT JOIN ( SELECT activity_id,user_id FROM ofa_activities_signup WHERE user_id = #{userId} ) b ON a.activity_id = b.activity_id
-                        LEFT JOIN ( SELECT activity_id,user_id FROM ofa_activities_checkin WHERE user_id = #{userId} ) c ON a.activity_id = c.activity_id
-                        LEFT JOIN ( SELECT activity_id,user_id FROM ofa_activities_review WHERE user_id = #{userId} ) d ON a.activity_id = d.activity_id
+                        LEFT JOIN ( SELECT activity_id,user_id,dept_id FROM ofa_activities_signup WHERE user_id = #{userId} ) b ON a.activity_id = b.activity_id
+                        LEFT JOIN ( SELECT activity_id,user_id,dept_id FROM ofa_activities_checkin WHERE user_id = #{userId} ) c ON a.activity_id = c.activity_id
+                        LEFT JOIN ( SELECT activity_id,user_id,dept_id FROM ofa_activities_review WHERE user_id = #{userId} ) d ON a.activity_id = d.activity_id
                 WHERE
                     a.parent_activity_id = 0
                   AND a.appored IN ('2','3','4')

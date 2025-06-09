@@ -61,6 +61,7 @@ public class ActivitiesCheckinServiceImpl implements IActivitiesCheckinService
     {
         activitiesCheckin.setUserId(getUserId());
         activitiesCheckin.setDeptId(getDeptId());
+        activitiesCheckin.setCheckinTime(DateUtils.getNowDate());
         activitiesCheckin.setCreateBy(getUsername());
         activitiesCheckin.setCreateTime(DateUtils.getNowDate());
         return activitiesCheckinMapper.insertActivitiesCheckin(activitiesCheckin);

@@ -306,6 +306,7 @@ public class ActivitiesController extends BaseController
                 techData.setName(sysUser.getNickName());
                 techData.setSex(sysUser.getSex().equals(0) ? "男":"女");
                 techData.setAge(String.valueOf(calculateAge(sysUser.getBirthday())));
+                techData.setTechType(activity.getActivityType());
                 return toAjax(activitiesTechService.insertActivitiesTech(techData));
             }
         }

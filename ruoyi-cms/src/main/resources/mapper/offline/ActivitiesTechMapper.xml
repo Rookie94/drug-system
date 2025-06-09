@@ -59,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="age != null  and age != ''"> and age = #{age}</if>
             <if test="doctor != null  and doctor != ''"> and doctor = #{doctor}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userId != null "> and t.user_id = #{userId}</if>
             <if test="userType != null  and userType != ''"> and user_type = #{userType}</if>
             <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
             <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>

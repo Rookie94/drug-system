@@ -57,8 +57,11 @@
     <select id="selectChatMessageList" parameterType="ChatMessage" resultMap="ChatMessageResult">
         <include refid="selectChatMessageVo"/>
         <where>
-            <if test="groupId != null  and groupId != ''"> and t.group_id = #{groupId}</if>
+            <if test="groupId != null"> and t.group_id = #{groupId}</if>
+            <if test="messageId != null"> and t.message_id = #{messageId}</if>
+            <if test="parentMessageId != null"> and t.parent_message_id = #{parentMessageId}</if>
             <if test="title != null  and title != ''"> and t.title like concat('%', #{title}, '%')</if>
+            <if test="userId != null"> and t.user_id = #{userId}</if>
             <if test="userName != null  and userName != ''"> and u.user_name like concat('%', #{userName}, '%')</if>
             <if test="nickName != null  and nickName != ''"> and u.nick_name like concat('%', #{nickName}, '%')</if>
             <if test="deptName != null  and deptName != ''"> and d.dept_name like concat('%', #{deptName}, '%')</if>

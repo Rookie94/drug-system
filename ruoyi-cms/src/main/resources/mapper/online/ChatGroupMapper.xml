@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <sql id="selectChatGroupVo">
         select group_id, order_num, group_name, pic, status,appored, del_flag, create_by, create_time, update_by, update_time,
-               appor_by, appor_time,remark from chat_group
+               appor_by, appor_time,remark from chat_group t
     </sql>
 
     <select id="selectChatGroupList" parameterType="ChatGroup" resultMap="ChatGroupResult">

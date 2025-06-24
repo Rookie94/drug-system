@@ -271,7 +271,7 @@ public class WxLoginController  {
      *
      * @return 用户信息
      */
-    @GetMapping("getInfo")
+    @GetMapping("/getInfo")
     public AjaxResult getInfo()
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();

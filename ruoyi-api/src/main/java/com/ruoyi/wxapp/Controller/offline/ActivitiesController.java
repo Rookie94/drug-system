@@ -29,6 +29,7 @@ import static com.ruoyi.common.utils.SecurityUtils.getUserId;
 
 @RestController
 @RequestMapping("/api/offline")
+@ResponseBody
 public class ActivitiesController extends BaseController
 {
 

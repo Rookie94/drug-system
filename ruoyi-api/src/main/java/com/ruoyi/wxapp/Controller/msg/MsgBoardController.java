@@ -1,5 +1,6 @@
 package com.ruoyi.wxapp.Controller.msg;
 
+import com.ruoyi.cms.offline.domain.Activities;
 import com.ruoyi.cms.online.domain.ChatGroup;
 import com.ruoyi.cms.online.domain.ChatGroupMenbers;
 import com.ruoyi.cms.online.domain.ChatMessage;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/api/msg")
+@ResponseBody
 public class MsgBoardController extends BaseController {
 
     @Autowired

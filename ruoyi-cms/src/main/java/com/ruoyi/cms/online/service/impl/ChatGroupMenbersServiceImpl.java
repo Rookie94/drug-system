@@ -61,7 +61,6 @@ public class ChatGroupMenbersServiceImpl implements IChatGroupMenbersService
      * @return 群工作人员
      */
     @Override
-    @DataScope(deptAlias = "t", userAlias = "t")
     public List<ChatGroupMenbersVo> selectChatGroupMenbersList(ChatGroupMenbersVo chatGroupMenbers)
     {
         return chatGroupMenbersMapper.selectChatGroupMenbersList(chatGroupMenbers);

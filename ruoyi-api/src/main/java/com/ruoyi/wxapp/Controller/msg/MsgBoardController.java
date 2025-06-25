@@ -13,6 +13,8 @@ import com.ruoyi.cms.online.service.IChatService;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +101,12 @@ public class MsgBoardController extends BaseController {
     public TableDataInfo getMessage(ChatMessageVo chatMessage)
     {
         startPage();
+        LoginUser loginUser=getLoginUser();
+        SysUser user=loginUser.getUser();
+        if(user.getUserType().equals("11")){
+            chatMessage.setUserId(user.getUserId());
+            chatMessage.setDeptId(user.getDeptId());
+        }
         List<ChatMessageVo> list = chatMessageService.selectChatMessageList(chatMessage);
         return getDataTable(list);
     }
@@ -107,7 +115,7 @@ public class MsgBoardController extends BaseController {
      * 发送留言信息
      */
     @Log(title = "留言板", businessType = BusinessType.INSERT)
-    @PostMapping("/SendMessage")
+    @PostMapping("/sendMessage")
     public AjaxResult SendMessage(@RequestBody ChatMessage chatMessage)
     {
         return toAjax(chatMessageService.insertChatMessage(chatMessage));

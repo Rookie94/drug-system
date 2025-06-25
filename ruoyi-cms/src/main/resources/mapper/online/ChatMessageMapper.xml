@@ -67,7 +67,6 @@
             <if test="deptName != null  and deptName != ''"> and d.dept_name like concat('%', #{deptName}, '%')</if>
             <if test="status != null  and status != ''"> and t.status = #{status}</if>
             <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and t.create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
-            and u.user_type='11'
             and t.parent_message_id=0
             <!-- 数据范围过滤 -->
             ${params.dataScope}

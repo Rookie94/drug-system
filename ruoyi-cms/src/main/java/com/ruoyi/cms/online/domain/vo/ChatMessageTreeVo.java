@@ -1,9 +1,9 @@
 package com.ruoyi.cms.online.domain.vo;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author admin
  * @date 2025-05-07
  */
-public class ChatMessageVo extends BaseEntity
+public class ChatMessageTreeVo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -69,6 +69,9 @@ public class ChatMessageVo extends BaseEntity
 
     /** 删除标志（0代表存在 2代表删除） */
     private String delFlag;
+
+    // 嵌套子回复（前端展示用）
+    private List<ChatMessageTreeVo> children = new ArrayList<>();
 
     public void setMessageId(Long messageId) 
     {
@@ -206,6 +209,14 @@ public class ChatMessageVo extends BaseEntity
     public String getDelFlag() 
     {
         return delFlag;
+    }
+
+    public List<ChatMessageTreeVo> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<ChatMessageTreeVo> children) {
+        this.children = children;
     }
 
     @Override

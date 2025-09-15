@@ -3,6 +3,7 @@ package com.ruoyi.cms.online.service;
 import java.util.List;
 
 import com.ruoyi.cms.online.domain.ChatMessage;
+import com.ruoyi.cms.online.domain.vo.ChatMessageTreeVo;
 import com.ruoyi.cms.online.domain.vo.ChatMessageVo;
 
 /**
@@ -28,6 +29,15 @@ public interface IChatMessageService
      * @return 留言板集合
      */
     public List<ChatMessageVo> selectChatMessageList(ChatMessageVo chatMessage);
+
+    /**
+     * 查询留言明细
+     *
+     * @param parentMessageId 主留言Id
+     * messagesList 留言清单
+     * @return 留言板
+     */
+    public List<ChatMessageTreeVo> selectChatMessageTree(Long parentMessageId, List<ChatMessageTreeVo> messagesList);
 
     /**
      * 新增留言板

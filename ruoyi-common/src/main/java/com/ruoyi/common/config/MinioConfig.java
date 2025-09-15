@@ -14,6 +14,12 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "minio")
 public class MinioConfig {
+
+    /**
+     * 代理地址
+     */
+    private static String proxyUrl;
+
     /**
      * 服务地址
      */
@@ -38,6 +44,14 @@ public class MinioConfig {
      * 是否启用
      */
     private static boolean useEnable;
+
+    public static String getProxyUrl() {
+        return proxyUrl;
+    }
+
+    public void setProxyUrl(String proxyUrl) {
+        MinioConfig.proxyUrl = proxyUrl;
+    }
 
     public static String getUrl() {
         return url;

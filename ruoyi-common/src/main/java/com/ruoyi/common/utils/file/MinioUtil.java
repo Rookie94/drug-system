@@ -37,6 +37,9 @@ public class MinioUtil
 
     private static String defaultBucketName=MinioConfig.getBucketName();
 
+    private static String endPointUrl=MinioConfig.getUrl();
+    private static String proxyUrl=MinioConfig.getProxyUrl();
+
     /**
      * @description 判断bucket是否存在，不存在则创建
      * @author ze.chen
@@ -152,6 +155,7 @@ public class MinioUtil
         {
             minioClient.putObject(PutObjectArgs.builder().bucket(defaultBucketName).object(fileName).stream(inputStream, multipartFile.getSize(), -1).contentType(multipartFile.getContentType()).build());
             String url = minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder().bucket(defaultBucketName).object(fileName).method(Method.GET).build());
+            url = url.replace(endPointUrl,proxyUrl);
             url = url.substring(0, url.indexOf('?'));
             return ServletUtils.urlDecode(url);
         }
@@ -174,6 +178,7 @@ public class MinioUtil
         {
             minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(fileName).stream(inputStream, multipartFile.getSize(), -1).contentType(multipartFile.getContentType()).build());
             String url = minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder().bucket(bucketName).object(fileName).method(Method.GET).build());
+            url = url.replace(endPointUrl,proxyUrl);
             url = url.substring(0, url.indexOf('?'));
             return ServletUtils.urlDecode(url);
         }

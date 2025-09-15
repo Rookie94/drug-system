@@ -1,8 +1,13 @@
 package com.ruoyi.cms.online.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.ruoyi.cms.online.domain.ChatMessage;
+import com.ruoyi.cms.online.domain.vo.ChatMessageTreeVo;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +54,38 @@ public class ChatMessageServiceImpl implements IChatMessageService
     {
         return chatMessageMapper.selectChatMessageList(chatMessage);
     }
+
+    /**
+     * 查询留言明细
+     *
+     * @param parentMessageId 主留言Id
+     * messagesList 留言清单
+     * @return 留言板树
+     */
+    @Override
+    public List<ChatMessageTreeVo> selectChatMessageTree(Long parentMessageId, List<ChatMessageTreeVo> messagesList)
+    {
+        Map<Long, ChatMessageTreeVo> messageMap = new HashMap<>();
+        for (ChatMessageTreeVo msg : messagesList) {
+            messageMap.put(msg.getMessageId(), msg);
+        }
+        List<ChatMessageTreeVo> rootMessages = new ArrayList<>();
+        for (ChatMessageTreeVo msg : messagesList) {
+            Long parentId = msg.getParentMessageId();
+            if (parentId == null) {
+                // 顶级留言，直接加入根列表
+                rootMessages.add(msg);
+            } else {
+                // 非顶级，找到父节点并添加到其子列表
+                ChatMessageTreeVo parentMsg = messageMap.get(parentId);
+                if (parentMsg != null) {
+                    parentMsg.getChildren().add(msg);
+                }
+            }
+        }
+        return rootMessages;
+    }
+
 
     /**
      * 新增留言板

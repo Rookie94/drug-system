@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.online;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.cms.online.domain.vo.ChatMessageTreeVo;
 import com.ruoyi.cms.online.domain.vo.ChatMessageVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,21 @@ public class ChatMessageController extends BaseController
         List<ChatMessageVo> list = chatMessageService.selectChatMessageList(chatMessage);
         return getDataTable(list);
     }
+
+    /**
+     * 查询留言板列表
+     */
+//    @PreAuthorize("@ss.hasPermi('online:chat:list')")
+//    @GetMapping("/getMessageTree/{parentMessageId}")
+//    public TableDataInfo getMessageTree(@PathVariable("parentMessageId") Long parentMessageId)
+//    {
+//        startPage();
+//        ChatMessageVo cm=new ChatMessageVo();
+//        cm.setParentMessageId(parentMessageId);
+//        List<ChatMessageVo> listTree=chatMessageService.selectChatMessageList(cm);
+//        List<ChatMessageVo> list = chatMessageService.selectChatMessageTree(parentMessageId,listTree);
+//        return getDataTable(list);
+//    }
 
     /**
      * 导出留言板列表

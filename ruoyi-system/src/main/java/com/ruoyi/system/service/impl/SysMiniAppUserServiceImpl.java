@@ -72,6 +72,18 @@ public class SysMiniAppUserServiceImpl implements ISysMiniAppUserService
     }
 
     /**
+     * 新增小程序游客用户
+     *
+     * @param miniAppUser 小程序用户
+     * @return 结果
+     */
+    public int insertMiniAppGuestUser(MiniAppUser miniAppUser)
+    {
+        miniAppUser.setCreateTime(DateUtils.getNowDate());
+        return miniAppUserMapper.insertMiniAppGuestUser(miniAppUser);
+    }
+
+    /**
      * 修改小程序用户
      *
      * @param miniAppUser 小程序用户

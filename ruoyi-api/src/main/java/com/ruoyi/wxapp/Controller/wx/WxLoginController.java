@@ -129,7 +129,7 @@ public class WxLoginController  {
         //AppId,AppSecret
         MiniApp wxApp=appService.selectMiniAppById(id);
         if(wxApp==null){
-            return AjaxResult.error("手机号绑定失败,配置不存在！");
+            return AjaxResult.error("手机号绑定失败,小程序配置不存在！");
         }
 
         String appId=wxApp.getAppid();
@@ -142,7 +142,7 @@ public class WxLoginController  {
         WxParam wxParam=WeChatUtils.getOpenIdAndSessionKey(appId,appSecret,code);
 
         if(wxParam==null){
-            return AjaxResult.error("手机号绑定失败,获取参数失败！");
+            return AjaxResult.error("手机号绑定失败,获取小程序参数失败！");
         }
 
         //获取session_key和openid
@@ -174,7 +174,9 @@ public class WxLoginController  {
                     return AjaxResult.error("手机号绑定失败,参数解析失败！");
                 }
 
-                if (wxParam.getPurePhoneNumber()==""){
+                String phoneNumber=wxParam.getPurePhoneNumber();
+
+                if (phoneNumber==null ||phoneNumber==""){
                     return AjaxResult.error("手机号绑定失败,获取手机号失败！");
                 }
 
@@ -186,13 +188,17 @@ public class WxLoginController  {
 
                 List<MiniAppUser> list1 = miniAppUserService.selectMiniAppUserList(miniAppUser);
                 if (list1 == null && list1.size() == 0) {
-                    return AjaxResult.error("手机号绑定失败,数据写入失败！");
+                    return AjaxResult.error("手机号绑定失败,信息登记失败！");
                 }
-
-                String phoneNumber=list1.get(0).getPhoneNumber();
 
                 //判断手机号匹配情况
                 SysUser wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
+                if(wUser==null) {
+                    //创建游客用户
+                    miniAppUserService.insertMiniAppGuestUser(miniAppUser);
+                }
+
+                wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
                 if(wUser==null) {
                     return AjaxResult.error("手机号绑定失败,用户未注册！");
                 }
@@ -204,14 +210,32 @@ public class WxLoginController  {
                     userService.updateUser(wUser);
                     return AjaxResult.success("手机号绑定成功！");
                 }
+
             }
         }
         else{
-            //二次绑定
-            return AjaxResult.error("手机号已绑定,请勿再次绑定！");
+            String phoneNumber=listTemp.get(0).getPhoneNumber();
+            //判断手机号匹配情况
+            SysUser wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
+            if(wUser==null) {
+                miniAppUser.setPhoneNumber(phoneNumber);
+                //创建游客用户
+                miniAppUserService.insertMiniAppGuestUser(miniAppUser);
+            }
+            wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
+            if(wUser==null) {
+                return AjaxResult.error("手机号绑定失败,用户未注册！");
+            }
+            else{
+                //绑定
+                wUser.setOpenId(openId);
+                wUser.setUpdateBy("sys");
+                wUser.setUpdateTime(DateUtils.getNowDate());
+                userService.updateUser(wUser);
+                return AjaxResult.success("手机号绑定成功！");
+            }
         }
     }
-
 
     /**
      * 微信登录

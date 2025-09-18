@@ -67,6 +67,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
+    <insert id="insertMiniAppGuestUser" parameterType="MiniAppUser" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            dept_id,
+            user_name,
+            nick_name,
+            user_type,
+            <if test="avatar != null">avatar,</if>
+            <if test="phoneNumber != null">phonenumber,</if>
+            <if test="openId != null">open_id,</if>
+            <if test="unionId != null">union_id,</if>
+            <if test="sex != null">sex,</if>
+            password,
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            133,
+            CONCAT('游客',DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),FLOOR(RAND() * 1000)),
+            '游客',
+            '11',
+            <if test="avatar != null">#{avatar},</if>
+            <if test="phoneNumber != null">#{phoneNumber},</if>
+            <if test="openId != null">#{openId},</if>
+            <if test="unionId != null">#{unionId},</if>
+            <if test="sex != null">#{sex},</if>
+            '$2a$10$nstPJQqVOBUgonuGIt.LdeDhbMWDZDLHtqCeZkKmuf2R4QOpCRQR.',
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
     <update id="updateMiniAppUser" parameterType="MiniAppUser">
         update sys_app_user
         <trim prefix="SET" suffixOverrides=",">

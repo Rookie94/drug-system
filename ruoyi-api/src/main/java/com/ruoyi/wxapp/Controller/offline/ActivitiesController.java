@@ -143,7 +143,7 @@ public class ActivitiesController extends BaseController
         if(sysUser==null){
             return error("游客不能报名参加活动");
         }
-        if(sysUser.getUserType().equals("11")==false){
+        if(sysUser.getUserType().equals("00")){
             return error("学员才能报名!");
         }
         ActivitiesSignUpVo signUpCheck=new ActivitiesSignUpVo();
@@ -205,7 +205,7 @@ public class ActivitiesController extends BaseController
             tableDataInfo.setMsg("用户信息不存在");
             return tableDataInfo;
         }
-        if(sysUser.getUserType().equals("11")){
+        if(sysUser.getUserType().equals("00")==false){
             tableDataInfo.setMsg("学员没有权限获取报名人员清单");
             return tableDataInfo;
         }
@@ -254,7 +254,7 @@ public class ActivitiesController extends BaseController
         if(sysUser==null){
             return error("游客不能参加活动");
         }
-        if(sysUser.getUserType().equals("11")==false){
+        if(sysUser.getUserType().equals("00")){
             return error("学员才能签到");
         }
         if(activity.getParentActivityId()==0){
@@ -341,7 +341,7 @@ public class ActivitiesController extends BaseController
             tableDataInfo.setMsg("用户信息不存在");
             return tableDataInfo;
         }
-        if(sysUser.getUserType().equals("11")){
+        if(sysUser.getUserType().equals("00")==false){
             tableDataInfo.setMsg("学员没有权限获取签到人员清单");
             return tableDataInfo;
         }
@@ -384,7 +384,7 @@ public class ActivitiesController extends BaseController
         if(loginUser.getUser()==null){
             return error("游客不能发布子活动");
         }
-        if(loginUser.getUser().getUserType()=="00"){
+        if(loginUser.getUser().getUserType().equals("00")==false){
             return error("学员不能发布子活动");
         }
         if(activities.getActivityType()==null)
@@ -494,7 +494,7 @@ public class ActivitiesController extends BaseController
             tableDataInfo.setMsg("用户信息不存在");
             return tableDataInfo;
         }
-        if(sysUser.getUserType().equals("11")){
+        if(sysUser.getUserType().equals("00")==false){
             tableDataInfo.setMsg("学员没有权限获取经颅磁填报数据");
             return tableDataInfo;
         }
@@ -590,7 +590,7 @@ public class ActivitiesController extends BaseController
             tableDataInfo.setMsg("用户信息不存在");
             return tableDataInfo;
         }
-        if(sysUser.getUserType().equals("11")){
+        if(sysUser.getUserType().equals("00")==false){
             tableDataInfo.setMsg("学员没有权限获取戒治技术填报数据");
             return tableDataInfo;
         }
@@ -629,7 +629,7 @@ public class ActivitiesController extends BaseController
         if(sysUser==null){
             return error("游客不能参加活动评价");
         }
-        if(sysUser.getUserType().equals("11")==false){
+        if(sysUser.getUserType().equals("00")){
             return error("学员才能参加活动评价");
         }
         return toAjax(activitiesReviewService.insertActivitiesReview(activitiesReview));
@@ -697,7 +697,7 @@ public class ActivitiesController extends BaseController
             tableDataInfo.setMsg("用户信息不存在");
             return tableDataInfo;
         }
-        if(sysUser.getUserType().equals("11")){
+        if(!sysUser.getUserType().equals("00")){
             tableDataInfo.setMsg("学员没有权限获取现场资讯列表数据");
             return tableDataInfo;
         }

@@ -88,7 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             133,
             CONCAT('游客',DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),FLOOR(RAND() * 1000)),
             '游客',
-            '11',
+            '33',
             <if test="avatar != null">#{avatar},</if>
             <if test="phoneNumber != null">#{phoneNumber},</if>
             <if test="openId != null">#{openId},</if>

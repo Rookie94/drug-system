@@ -41,6 +41,16 @@ public class ScaleController extends BaseController {
     @Autowired
     private TemplateStrategyFactory reportFactory;
 
+    @GetMapping("/getCategories")
+    public AjaxResult getCategories()
+    {
+        LbsContexts lbsContexts=new LbsContexts();
+        lbsContexts.setParentContextId(1L);
+        lbsContexts.setStatus("0");
+        List<LbsContexts> list = lbsContextsService.selectLbsContextsList(lbsContexts);
+        return success(list);
+    }
+
     @GetMapping("/getContexts")
     public AjaxResult getContexts(LbsContexts lbsContexts)
     {

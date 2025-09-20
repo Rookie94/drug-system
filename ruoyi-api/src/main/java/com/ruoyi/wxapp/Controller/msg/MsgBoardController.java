@@ -103,7 +103,7 @@ public class MsgBoardController extends BaseController {
         startPage();
         LoginUser loginUser=getLoginUser();
         SysUser user=loginUser.getUser();
-        if(user.getUserType().equals("11")){
+        if(user.getUserType().equals("00")==false){
             chatMessage.setUserId(user.getUserId());
             chatMessage.setDeptId(user.getDeptId());
         }

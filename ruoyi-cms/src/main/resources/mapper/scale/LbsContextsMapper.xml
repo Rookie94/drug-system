@@ -64,6 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
         </where>
+        ORDER BY order_num
     </select>
     
     <select id="selectLbsContextsByContextId" parameterType="Long" resultMap="LbsContextsResult">

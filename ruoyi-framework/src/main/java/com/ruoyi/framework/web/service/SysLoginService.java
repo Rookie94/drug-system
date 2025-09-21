@@ -71,12 +71,14 @@ public class SysLoginService
         //loginUser.setUnionId(unionid);
         loginUser.setUser(user);
         loginUser.setUserId(user.getUserId());
+        loginUser.setDeptId(user.getDeptId());
 
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
         recordLoginInfo(loginUser.getUserId());
 
         // 生成token
         return tokenService.createToken(loginUser);
+
     }
 
     /**

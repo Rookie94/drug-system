@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.etl.mapper.EtlSyncdataMapper">
+    
+    <resultMap type="EtlSyncdata" id="EtlSyncdataResult">
+        <result property="syncId"    column="sync_id"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="sourceConfigId"    column="source_config_id"    />
+        <result property="sourceConfigName"    column="source_config_name"    />
+        <result property="targetConfigId"    column="target_config_id"    />
+        <result property="targetConfigName"    column="target_config_name"    />
+        <result property="sqlScript"    column="sql_script"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectEtlSyncdataVo">
+        select a.*,b.config_name source_config_name,c.config_name target_config_name from etl_syncdata a left join etl_datasource b on a.source_config_id=b.config_id left join etl_datasource c on a.target_config_id=c.config_id
+    </sql>
+
+    <select id="selectEtlSyncdataList" parameterType="EtlSyncdata" resultMap="EtlSyncdataResult">
+        <include refid="selectEtlSyncdataVo"/>
+        <where>  
+            <if test="sourceConfigId != null "> and source_config_id = #{sourceConfigId}</if>
+            <if test="targetConfigId != null "> and target_config_id = #{targetConfigId}</if>
+            <if test="sqlScript != null  and sqlScript != ''"> and sql_script = #{sqlScript}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="sourceConfigName != null  and sourceConfigName != ''"> and source_config_name like concat('%', #{sourceConfigName}, '%')</if>
+            <if test="targetConfigName != null  and targetConfigName != ''"> and target_config_name like concat('%', #{targetConfigName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectEtlSyncdataBySyncId" parameterType="Long" resultMap="EtlSyncdataResult">
+        <include refid="selectEtlSyncdataVo"/>
+        where sync_id = #{syncId}
+    </select>
+
+    <insert id="insertEtlSyncdata" parameterType="EtlSyncdata">
+        insert into etl_syncdata
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="syncId != null">sync_id,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="sourceConfigId != null">source_config_id,</if>
+            <if test="targetConfigId != null">target_config_id,</if>
+            <if test="sqlScript != null and sqlScript != ''">sql_script,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="syncId != null">#{syncId},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="sourceConfigId != null">#{sourceConfigId},</if>
+            <if test="targetConfigId != null">#{targetConfigId},</if>
+            <if test="sqlScript != null and sqlScript != ''">#{sqlScript},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEtlSyncdata" parameterType="EtlSyncdata">
+        update etl_syncdata
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="sourceConfigId != null">source_config_id = #{sourceConfigId},</if>
+            <if test="targetConfigId != null">target_config_id = #{targetConfigId},</if>
+            <if test="sqlScript != null and sqlScript != ''">sql_script = #{sqlScript},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where sync_id = #{syncId}
+    </update>
+
+    <delete id="deleteEtlSyncdataBySyncId" parameterType="Long">
+        delete from etl_syncdata where sync_id = #{syncId}
+    </delete>
+
+    <delete id="deleteEtlSyncdataBySyncIds" parameterType="String">
+        delete from etl_syncdata where sync_id in 
+        <foreach item="syncId" collection="array" open="(" separator="," close=")">
+            #{syncId}
+        </foreach>
+    </delete>
+</mapper>

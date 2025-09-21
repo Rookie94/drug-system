@@ -93,11 +93,7 @@ public class SysUserServiceImpl implements ISysUserService
     @DataScope(deptAlias = "d", userAlias = "u")
     public List<SysUser> selectStudentList(SysUser user)
     {
-        String userType=user.getUserType();
-        if(userType.equals("00")){
-            user.setUserType("11");
-        }
-        return userMapper.selectUserList(user);
+        return userMapper.selectStudentList(user);
     }
 
     /**

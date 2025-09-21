@@ -140,7 +140,7 @@ xss:
 # oss配置
 minio:
   # 是否启用Minio
-  useEnable: true
+  useEnable: false
   # proxyUrl地址
   proxyUrl: https://yiti.shunxuan.net.cn:9000
   # oss地址

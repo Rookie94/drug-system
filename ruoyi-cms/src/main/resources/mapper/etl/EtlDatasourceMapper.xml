@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.etl.mapper.EtlDatasourceMapper">
+
+    <resultMap type="EtlDatasource" id="EtlDatasourceResult">
+        <result property="configId"    column="config_id"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="configName"    column="config_name"    />
+        <result property="dbType"    column="db_type"    />
+        <result property="host"    column="host"    />
+        <result property="port"    column="port"    />
+        <result property="dbName"    column="db_name"    />
+        <result property="userName"    column="user_name"    />
+        <result property="password"    column="password"    />
+        <result property="dbParams"    column="db_params"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectEtlDatasourceVo">
+        select config_id, order_num, config_name, db_type, host, port, db_name, user_name, password, db_params, status, create_by, create_time, update_by, update_time, remark from etl_datasource
+    </sql>
+
+    <select id="selectEtlDatasourceList" parameterType="EtlDatasource" resultMap="EtlDatasourceResult">
+        <include refid="selectEtlDatasourceVo"/>
+        <where>
+            <if test="orderNum != null "> and order_num = #{orderNum}</if>
+            <if test="configName != null  and configName != ''"> and config_name like concat('%', #{configName}, '%')</if>
+            <if test="dbType != null  and dbType != ''"> and db_type = #{dbType}</if>
+            <if test="host != null  and host != ''"> and host = #{host}</if>
+            <if test="port != null  and port != ''"> and port = #{port}</if>
+            <if test="dbName != null  and dbName != ''"> and db_name like concat('%', #{dbName}, '%')</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="password != null  and password != ''"> and password = #{password}</if>
+            <if test="dbParams != null  and dbParams != ''"> and db_params = #{dbParams}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectEtlDatasourceByConfigId" parameterType="Long" resultMap="EtlDatasourceResult">
+        <include refid="selectEtlDatasourceVo"/>
+        where config_id = #{configId}
+    </select>
+
+    <insert id="insertEtlDatasource" parameterType="EtlDatasource" useGeneratedKeys="true" keyProperty="configId">
+        insert into etl_datasource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNum != null">order_num,</if>
+            <if test="configName != null and configName != ''">config_name,</if>
+            <if test="dbType != null and dbType != ''">db_type,</if>
+            <if test="host != null and host != ''">host,</if>
+            <if test="port != null">port,</if>
+            <if test="dbName != null">db_name,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="password != null">password,</if>
+            <if test="dbParams != null">db_params,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="configName != null and configName != ''">#{configName},</if>
+            <if test="dbType != null and dbType != ''">#{dbType},</if>
+            <if test="host != null and host != ''">#{host},</if>
+            <if test="port != null">#{port},</if>
+            <if test="dbName != null">#{dbName},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="password != null">#{password},</if>
+            <if test="dbParams != null">#{dbParams},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateEtlDatasource" parameterType="EtlDatasource">
+        update etl_datasource
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="configName != null and configName != ''">config_name = #{configName},</if>
+            <if test="dbType != null and dbType != ''">db_type = #{dbType},</if>
+            <if test="host != null and host != ''">host = #{host},</if>
+            <if test="port != null">port = #{port},</if>
+            <if test="dbName != null">db_name = #{dbName},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="dbParams != null">db_params = #{dbParams},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where config_id = #{configId}
+    </update>
+
+    <delete id="deleteEtlDatasourceByConfigId" parameterType="Long">
+        delete from etl_datasource where config_id = #{configId}
+    </delete>
+
+    <delete id="deleteEtlDatasourceByConfigIds" parameterType="String">
+        delete from etl_datasource where config_id in
+        <foreach item="configId" collection="array" open="(" separator="," close=")">
+            #{configId}
+        </foreach>
+    </delete>
+</mapper>

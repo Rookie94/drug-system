@@ -102,6 +102,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<!-- 数据范围过滤 -->
 		${params.dataScope}
 	</select>
+
+	<select id="selectStudentList" parameterType="SysUser" resultMap="SysUserResult">
+		select u.user_id, u.dept_id, u.nick_name, u.user_name,u.user_type, u.email, u.avatar, u.phonenumber,u.province_id,u.city_id,u.area_id, u.sex,u.birthday,u.entry_date, u.status, u.del_flag, u.union_id, u.open_id, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
+		left join sys_dept d on u.dept_id = d.dept_id
+		where u.del_flag = '0' and u.user_type&lt;&gt;'00'
+		<if test="userId != null and userId != 0">
+			AND u.user_id = #{userId}
+		</if>
+		<if test="userName != null and userName != ''">
+			AND u.user_name like concat('%', #{userName}, '%')
+		</if>
+		<if test="userType != null and userType != ''">
+			AND u.user_type= #{userType}
+		</if>
+		<if test="status != null and status != ''">
+			AND u.status = #{status}
+		</if>
+		<if test="phoneNumber != null and phoneNumber != ''">
+			AND u.phonenumber= #{phoneNumber}
+		</if>
+		<if test="unionId != null and unionId != ''">
+			AND u.union_id= #{unionId}
+		</if>
+		<if test="openId != null and openId != ''">
+			AND u.open_id= #{openId}
+		</if>
+		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+			AND date_format(u.create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
+		</if>
+		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			AND date_format(u.create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
+		</if>
+		<if test="deptId != null and deptId != 0">
+			AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{deptId}, ancestors) ))
+		</if>
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+	</select>
 	
 	<select id="selectAllocatedList" parameterType="SysUser" resultMap="SysUserResult">
 	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber,u.province_id,u.city_id,u.area_id,u.birthday,u.entry_date, u.status, u.create_time

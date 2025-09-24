@@ -26,6 +26,17 @@
         <result property="remark"    column="remark"    />
     </resultMap>
 
+    <resultMap id="ChatMessageTreeResult" type="com.ruoyi.cms.online.domain.vo.ChatMessageTreeVo" extends="ChatMessageResult">
+        <!-- 子回复集合：通过当前消息ID查询子回复 -->
+        <collection
+                property="replies"
+        ofType="com.ruoyi.cms.online.domain.vo.ChatMessageTreeVo"
+        select="selectChildMessages"
+        column="message_id"
+        fetchType="lazy"
+        />
+    </resultMap>
+
     <sql id="selectChatMessageVo">
         SELECT
             t.message_id,
@@ -66,8 +77,11 @@
             <if test="nickName != null  and nickName != ''"> and u.nick_name like concat('%', #{nickName}, '%')</if>
             <if test="deptName != null  and deptName != ''"> and d.dept_name like concat('%', #{deptName}, '%')</if>
             <if test="status != null  and status != ''"> and t.status = #{status}</if>
-            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and t.create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
-            and t.parent_message_id=0
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
+                and t.create_time between #{params.beginCreateTime} and #{params.endCreateTime}
+            </if>
+            <!-- 动态控制是否只查询根消息，默认查询根消息 -->
+            <if test="queryRootOnly == null or queryRootOnly"> and t.parent_message_id = 0</if>
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
@@ -79,6 +93,26 @@
         where message_id = #{messageId}
     </select>
 
+    <select id="selectChildMessages" parameterType="Long" resultMap="ChatMessageTreeResult">
+        <include refid="selectChatMessageVo"/>
+        <where>
+            t.parent_message_id = #{parentMessageId}  <!-- 根据父消息ID查询子消息 -->
+            and t.del_flag = '0'  <!-- 过滤已删除的消息 -->
+            <!-- 可根据需要添加其他条件，如状态过滤等 -->
+        </where>
+        order by t.create_time asc  <!-- 按创建时间排序 -->
+    </select>
+
+    <select id="selectMessageRootTree" parameterType="Long" resultMap="ChatMessageTreeResult">
+        <include refid="selectChatMessageVo"/>
+        <where>
+            t.parent_message_id = 0  <!-- 顶级消息的父ID为0 -->
+            <if test="groupId != null">and t.group_id = #{groupId}</if>  <!-- 可选：按群组过滤 -->
+            and t.del_flag = '0'
+        </where>
+        order by t.create_time desc
+    </select>
+
     <insert id="insertChatMessage" parameterType="ChatMessage">
         insert into chat_message
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -87,6 +121,7 @@
             <if test="userId != null">user_id,</if>
             <if test="groupId != null">group_id,</if>
             <if test="deptId != null">dept_id,</if>
+            <if test="title != null and title != ''">title,</if>
             <if test="message != null">message,</if>
             <if test="status != null">status,</if>
             <if test="delFlag != null">del_flag,</if>
@@ -102,6 +137,7 @@
             <if test="userId != null">#{userId},</if>
             <if test="groupId != null">#{groupId},</if>
             <if test="deptId != null">#{deptId},</if>
+            <if test="title != null and title != ''">#{title},</if>
             <if test="message != null">#{message},</if>
             <if test="status != null">#{status},</if>
             <if test="delFlag != null">#{delFlag},</if>
@@ -120,6 +156,7 @@
             <if test="userId != null">user_id = #{userId},</if>
             <if test="groupId != null">group_id = #{groupId},</if>
             <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="title != null and title != ''">title = #{title},</if>
             <if test="message != null">message = #{message},</if>
             <if test="status != null">status = #{status},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
@@ -129,6 +166,15 @@
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
         </trim>
+        where message_id = #{messageId}
+    </update>
+
+    <!-- 在现有 update 标签后添加 -->
+    <update id="updateMessageStatus" parameterType="ChatMessage">
+        update chat_message
+        set status = #{status}
+        <if test="updateBy != null">, update_by = #{updateBy}</if>
+        <if test="updateTime != null">, update_time = #{updateTime}</if>
         where message_id = #{messageId}
     </update>
 

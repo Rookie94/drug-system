@@ -8,15 +8,15 @@ import com.ruoyi.cms.online.domain.vo.ChatMessageVo;
 
 /**
  * 留言板Service接口
- * 
+ *
  * @author admin
  * @date 2025-05-07
  */
-public interface IChatMessageService 
+public interface IChatMessageService
 {
     /**
      * 查询留言板
-     * 
+     *
      * @param messageId 留言板主键
      * @return 留言板
      */
@@ -24,24 +24,23 @@ public interface IChatMessageService
 
     /**
      * 查询留言板列表
-     * 
+     *
      * @param chatMessage 留言板
      * @return 留言板集合
      */
     public List<ChatMessageVo> selectChatMessageList(ChatMessageVo chatMessage);
 
     /**
-     * 查询留言明细
+     * 查询留言树结构
      *
-     * @param parentMessageId 主留言Id
-     * messagesList 留言清单
-     * @return 留言板
+     * @param parentMessageId 主留言ID
+     * @return 留言树结构
      */
-    public List<ChatMessageTreeVo> selectChatMessageTree(Long parentMessageId, List<ChatMessageTreeVo> messagesList);
+    public List<ChatMessageTreeVo> selectChatMessageTree(Long parentMessageId);
 
     /**
      * 新增留言板
-     * 
+     *
      * @param chatMessage 留言板
      * @return 结果
      */
@@ -49,15 +48,24 @@ public interface IChatMessageService
 
     /**
      * 修改留言板
-     * 
+     *
      * @param chatMessage 留言板
      * @return 结果
      */
     public int updateChatMessage(ChatMessage chatMessage);
 
     /**
+     * 更新主留言状态
+     *
+     * @param messageId 留言ID
+     * @param status 状态
+     * @return 结果
+     */
+    public int updateMainMessageStatus(Long messageId, String status);
+
+    /**
      * 批量删除留言板
-     * 
+     *
      * @param messageIds 需要删除的留言板主键集合
      * @return 结果
      */
@@ -65,7 +73,7 @@ public interface IChatMessageService
 
     /**
      * 删除留言板信息
-     * 
+     *
      * @param messageId 留言板主键
      * @return 结果
      */

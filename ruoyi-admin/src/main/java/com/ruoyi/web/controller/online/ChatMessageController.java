@@ -26,7 +26,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 留言板Controller
- * 
+ *
  * @author admin
  * @date 2025-05-07
  */
@@ -50,19 +50,14 @@ public class ChatMessageController extends BaseController
     }
 
     /**
-     * 查询留言板列表
+     * 查询留言板树结构
      */
-//    @PreAuthorize("@ss.hasPermi('online:chat:list')")
-//    @GetMapping("/getMessageTree/{parentMessageId}")
-//    public TableDataInfo getMessageTree(@PathVariable("parentMessageId") Long parentMessageId)
-//    {
-//        startPage();
-//        ChatMessageVo cm=new ChatMessageVo();
-//        cm.setParentMessageId(parentMessageId);
-//        List<ChatMessageVo> listTree=chatMessageService.selectChatMessageList(cm);
-//        List<ChatMessageVo> list = chatMessageService.selectChatMessageTree(parentMessageId,listTree);
-//        return getDataTable(list);
-//    }
+    @GetMapping("/getMessageTree/{parentMessageId}")
+    public AjaxResult getMessageTree(@PathVariable("parentMessageId") Long parentMessageId)
+    {
+        List<ChatMessageTreeVo> tree = chatMessageService.selectChatMessageTree(parentMessageId);
+        return success(tree);
+    }
 
     /**
      * 导出留言板列表
@@ -90,11 +85,16 @@ public class ChatMessageController extends BaseController
     /**
      * 新增留言板
      */
-    @PreAuthorize("@ss.hasPermi('online:chat:add')")
     @Log(title = "留言板", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ChatMessage chatMessage)
     {
+        // 设置当前用户ID
+        chatMessage.setUserId(getUserId());
+        // 如果是回复，设置主留言状态为已回复
+        if (chatMessage.getParentMessageId() != null) {
+            chatMessageService.updateMainMessageStatus(chatMessage.getParentMessageId(), "1");
+        }
         return toAjax(chatMessageService.insertChatMessage(chatMessage));
     }
 
@@ -114,20 +114,9 @@ public class ChatMessageController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('online:chat:remove')")
     @Log(title = "留言板", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{messageIds}")
+    @DeleteMapping("/{messageIds}")
     public AjaxResult remove(@PathVariable Long[] messageIds)
     {
         return toAjax(chatMessageService.deleteChatMessageByMessageIds(messageIds));
     }
-
-    /**
-     * 发送留言信息
-     */
-    @Log(title = "留言板", businessType = BusinessType.INSERT)
-    @PostMapping("/SendMessage")
-    public AjaxResult SendMessage(@RequestBody ChatMessage chatMessage)
-    {
-        return toAjax(chatMessageService.insertChatMessage(chatMessage));
-    }
-
 }

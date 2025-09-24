@@ -44,6 +44,12 @@ public class ResExpert extends BaseEntity
     @Excel(name = "专家状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
+    /** 服务用户ID */
+    private Long serviceUserId;
+
+    /** 服务部门ID */
+    private Long serviceDeptId;
+
     /** 审批状态（0待审批 1已发布） */
     @Excel(name = "审批状态", readConverterExp = "0=待审批,1=已发布")
     private String appored;
@@ -142,6 +148,22 @@ public class ResExpert extends BaseEntity
         this.appored = appored;
     }
 
+    public Long getServiceUserId() {
+        return serviceUserId;
+    }
+
+    public void setServiceUserId(Long serviceUserId) {
+        this.serviceUserId = serviceUserId;
+    }
+
+    public Long getServiceDeptId() {
+        return serviceDeptId;
+    }
+
+    public void setServiceDeptId(Long serviceDeptId) {
+        this.serviceDeptId = serviceDeptId;
+    }
+
     public String getAppored() 
     {
         return appored;
@@ -193,6 +215,8 @@ public class ResExpert extends BaseEntity
             .append("expertType", getExpertType())
             .append("content", getContent())
             .append("status", getStatus())
+            .append("serviceUserId", getServiceUserId())
+            .append("serviceDeptId", getServiceDeptId())
             .append("publishTime", getPublishTime())
             .append("appored", getAppored())
             .append("userId", getUserId())

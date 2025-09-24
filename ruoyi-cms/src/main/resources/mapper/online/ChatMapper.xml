@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.cms.online.mapper.ChatMapper">
-    
+
+    <!-- 群组结果映射（包含树形消息节点） -->
     <resultMap type="ChatGroupVo" id="ChatGroupResult">
         <result property="groupId"    column="group_id"    />
         <result property="orderNum"    column="order_num"    />
@@ -20,27 +21,89 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="apporBy"    column="appor_by"    />
         <result property="apporTime"    column="appor_time"    />
         <result property="remark"    column="remark"    />
+
+    </resultMap>
+
+    <!-- 树形消息节点映射 -->
+    <resultMap type="ChatMessageTreeVo" id="ChatMessageTreeResult">
+        <result property="messageId"    column="message_id"    />
+        <result property="parentMessageId"    column="parent_message_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="message"    column="message"    />
+        <result property="createTime"    column="create_time"    />
+
+        <!-- 递归子节点 -->
+        <collection property="replies" ofType="ChatMessageTreeVo" column="message_id" select="selectChatMessageTreeByParentId"/>
     </resultMap>
 
     <sql id="selectChatGroupVo">
-        select group_id, order_num, group_name, pic, status,appored,'0' join_group_state, del_flag, create_by, create_time, update_by, update_time,
-               appor_by, appor_time,remark from chat_group
+        select
+            group_id,
+            order_num,
+            group_name,
+            pic,
+            status,
+            appored,
+            '0' as join_group_state,
+            del_flag,
+            create_by,
+            create_time,
+            update_by,
+            update_time,
+            appor_by,
+            appor_time,
+            remark
+        from chat_group
+    </sql>
+
+    <!-- 基础消息查询SQL -->
+    <sql id="selectChatMessageTreeVo">
+        select
+            t.message_id,
+            t.parent_message_id,
+            t.user_id,
+            u.user_name,
+            u.nick_name,
+            t.group_id,
+            t.message,
+            t.create_time
+        from chat_message t
+                 left join sys_user u on t.user_id = u.user_id
+        where t.del_flag = '0'
     </sql>
 
     <select id="selectChatGroupList" parameterType="ChatGroup" resultMap="ChatGroupResult">
         <include refid="selectChatGroupVo"/>
-        <where>  
+        <where>
             <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
-            and status='0'
-            and appored='2'
-            and del_flag='0'
+            and status = '0'
+            and appored = '2'
+            and del_flag = '0'
         </where>
+        order by order_num asc, create_time desc
     </select>
-    
-    <select id="selectChatGroupByGroupId" parameterType="ChatGroupMenbers" resultMap="ChatGroupResult">
+
+    <select id="selectChatGroupByGroupId" parameterType="Long" resultMap="ChatGroupResult">
         <include refid="selectChatGroupVo"/>
         where group_id = #{groupId}
     </select>
 
+    <!-- 根据群组ID查询根消息（构建消息树） -->
+    <select id="selectChatMessageTreeByGroupId" parameterType="Long" resultMap="ChatMessageTreeResult">
+        <include refid="selectChatMessageTreeVo"/>
+        and t.group_id = #{groupId}
+        and t.parent_message_id = 0  <!-- 根消息 -->
+        order by t.create_time asc
+    </select>
+
+    <!-- 根据父消息ID查询子消息（递归） -->
+    <select id="selectChatMessageTreeByParentId" parameterType="Long" resultMap="ChatMessageTreeResult">
+        <include refid="selectChatMessageTreeVo"/>
+        and t.parent_message_id = #{messageId}  <!-- 子消息 -->
+        order by t.create_time asc
+    </select>
 
 </mapper>

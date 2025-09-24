@@ -70,6 +70,20 @@ public class ChatMessageVo extends BaseEntity
     /** 删除标志（0代表存在 2代表删除） */
     private String delFlag;
 
+    // 新增的查询条件属性
+    private Boolean queryRootOnly;
+
+    // getter方法（布尔类型通常用isXXX命名，更符合规范）
+    public Boolean isQueryRootOnly() {
+        return queryRootOnly;
+    }
+
+    // setter方法
+    public void setQueryRootOnly(Boolean queryRootOnly) {
+        this.queryRootOnly = queryRootOnly;
+    }
+
+
     public void setMessageId(Long messageId) 
     {
         this.messageId = messageId;

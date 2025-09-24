@@ -1,246 +1,124 @@
 package com.ruoyi.cms.online.domain.vo;
 
-import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.BaseEntity;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
-import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
+import java.util.Date;
 import java.util.List;
 
 /**
- * 留言板对象 v_chat_message
- * 
- * @author admin
- * @date 2025-05-07
+ * 聊天消息树形结构VO（包含子回复层级）
  */
-public class ChatMessageTreeVo extends BaseEntity
-{
-    private static final long serialVersionUID = 1L;
+@Data
+@JsonInclude(JsonInclude.Include.NON_EMPTY) // 忽略空集合，减少无用数据
+public class ChatMessageTreeVo  extends ChatMessageVo {
 
-    /** 留言id */
+    /**
+     * 消息ID
+     */
     private Long messageId;
 
-    /** 父留言ID */
+    /**
+     * 父消息ID（根消息为0）
+     */
     private Long parentMessageId;
 
-    /** 学员id */
+    /**
+     * 发送用户ID
+     */
     private Long userId;
 
-    /** 用户账号 */
-    @Excel(name = "用户账号")
+    /**
+     * 用户名
+     */
     private String userName;
 
-    /** 用户昵称 */
-    @Excel(name = "用户昵称")
+    /**
+     * 用户昵称
+     */
     private String nickName;
 
-    /** 用户类型（00系统用户） */
-    @Excel(name = "用户类型", readConverterExp = "0=0系统用户")
+    /**
+     * 用户类型
+     */
     private String userType;
 
-    /** 群组id */
-    @Excel(name = "群组id")
+    /**
+     * 所属群组ID
+     */
     private Long groupId;
 
-    /** 群组名称 */
-    @Excel(name = "群组名称")
+    /**
+     * 群组名称
+     */
     private String groupName;
 
-    /** 部门id */
-    @Excel(name = "部门id")
+    /**
+     * 部门ID
+     */
     private Long deptId;
 
-    /** 部门名称 */
-    @Excel(name = "部门名称")
+    /**
+     * 部门名称
+     */
     private String deptName;
 
-    /** 聊天消息 */
-    @Excel(name = "留言主题")
+    /**
+     * 消息标题
+     */
     private String title;
 
-    /** 聊天消息 */
-    @Excel(name = "留言内容")
+    /**
+     * 消息内容
+     */
     private String message;
 
-    /** 状态（0未回复 1已回复） */
-    @Excel(name = "状态", readConverterExp = "0=未回复,1=已回复")
+    /**
+     * 消息状态
+     */
     private String status;
 
-    /** 删除标志（0代表存在 2代表删除） */
+    /**
+     * 删除标志（0正常 1删除）
+     */
     private String delFlag;
 
-    // 嵌套子回复（前端展示用）
-    private List<ChatMessageTreeVo> children = new ArrayList<>();
+    /**
+     * 创建者
+     */
+    private String createBy;
 
-    public void setMessageId(Long messageId) 
-    {
-        this.messageId = messageId;
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 更新者
+     */
+    private String updateBy;
+
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 子回复集合（用于存储当前消息的所有子回复）
+     * 对应方法：setReplies() / getReplies()
+     */
+    private List<ChatMessageTreeVo> replies;
+
+    // getter/setter
+    public List<ChatMessageTreeVo> getReplies() {
+        return replies;
+    }
+    public void setReplies(List<ChatMessageTreeVo> replies) {
+        this.replies = replies;
     }
 
-    public Long getMessageId() 
-    {
-        return messageId;
-    }
-
-    public void setParentMessageId(Long parentMessageId) 
-    {
-        this.parentMessageId = parentMessageId;
-    }
-
-    public Long getParentMessageId() 
-    {
-        return parentMessageId;
-    }
-
-    public void setUserId(Long userId) 
-    {
-        this.userId = userId;
-    }
-
-    public Long getUserId() 
-    {
-        return userId;
-    }
-
-    public void setUserName(String userName) 
-    {
-        this.userName = userName;
-    }
-
-    public String getUserName() 
-    {
-        return userName;
-    }
-
-    public void setNickName(String nickName) 
-    {
-        this.nickName = nickName;
-    }
-
-    public String getNickName() 
-    {
-        return nickName;
-    }
-
-    public void setUserType(String userType) 
-    {
-        this.userType = userType;
-    }
-
-    public String getUserType() 
-    {
-        return userType;
-    }
-
-    public void setGroupId(Long groupId) 
-    {
-        this.groupId = groupId;
-    }
-
-    public Long getGroupId() 
-    {
-        return groupId;
-    }
-
-    public void setGroupName(String groupName) 
-    {
-        this.groupName = groupName;
-    }
-
-    public String getGroupName() 
-    {
-        return groupName;
-    }
-
-    public void setDeptId(Long deptId) 
-    {
-        this.deptId = deptId;
-    }
-
-    public Long getDeptId() 
-    {
-        return deptId;
-    }
-
-    public void setDeptName(String deptName) 
-    {
-        this.deptName = deptName;
-    }
-
-    public String getDeptName() 
-    {
-        return deptName;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setMessage(String message) 
-    {
-        this.message = message;
-    }
-
-    public String getMessage() 
-    {
-        return message;
-    }
-
-    public void setStatus(String status) 
-    {
-        this.status = status;
-    }
-
-    public String getStatus() 
-    {
-        return status;
-    }
-
-    public void setDelFlag(String delFlag) 
-    {
-        this.delFlag = delFlag;
-    }
-
-    public String getDelFlag() 
-    {
-        return delFlag;
-    }
-
-    public List<ChatMessageTreeVo> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<ChatMessageTreeVo> children) {
-        this.children = children;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("messageId", getMessageId())
-            .append("parentMessageId", getParentMessageId())
-            .append("userId", getUserId())
-            .append("userName", getUserName())
-            .append("nickName", getNickName())
-            .append("userType", getUserType())
-            .append("groupId", getGroupId())
-            .append("groupName", getGroupName())
-            .append("deptId", getDeptId())
-            .append("deptName", getDeptName())
-            .append("title", getTitle())
-            .append("message", getMessage())
-            .append("status", getStatus())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("remark", getRemark())
-            .toString();
-    }
 }

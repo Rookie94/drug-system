@@ -38,6 +38,7 @@
         <spring-framework.version>5.3.39</spring-framework.version>
         <jedis.version>3.3.0</jedis.version>
         <minio.version>8.2.2</minio.version>
+        <esdk-obs-java.version>3.23.3</esdk-obs-java.version>
         <okhttp3.version>4.9.1</okhttp3.version>
         <hutool-all.version>5.8.8</hutool-all.version>
     </properties>
@@ -244,6 +245,12 @@
                         <artifactId>okhttp</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.huaweicloud</groupId>
+                <artifactId>esdk-obs-java</artifactId>
+                <version>${esdk-obs-java.version}</version>
             </dependency>
 
             <dependency>

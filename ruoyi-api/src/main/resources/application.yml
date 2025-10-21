@@ -23,10 +23,12 @@ server:
   ssl:
     key-store: classpath:yiti.shunxuan.net.cn.jks
     key-store-password: 4c1c4h4x
-    key-store-type: PKCS12
-    certificate: yiti.shunxuan.net.cn.pem
-    certificate-private-key: yiti.shunxuan.net.cn.key
-    enabled: false
+    key-store-type: JKS
+    #certificate: yiti.shunxuan.net.cn.pem
+    #certificate-private-key: yiti.shunxuan.net.cn.key
+    enabled: true
+    enabled-protocols: TLSv1.1,TLSv1.2,TLSv1.3
+    ciphers: ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4:!DH:!DHE
 
   servlet:
     # 应用的访问路径
@@ -140,11 +142,26 @@ xss:
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
 
-# oss配置
+# minio配置
 minio:
   # 是否启用Minio
   useEnable: true
-  # proxy地址
+  # proxyUrl地址
+  proxyUrl: https://yiti.shunxuan.net.cn:9000
+  # oss地址
+  url: http://192.168.0.100:9000
+  # osskey
+  accessKey: utOGh5X1fv7d7Kiwbzm5
+  # oss秘钥
+  secretKey: 8KhucwRkd8f8QiimshP3Uz7SNBlaaIB895GDeBjS
+  # 默认bucket
+  bucketName: public
+
+# huawei OBS配置
+huawei:
+  # 是否启用huawei OBS
+  useEnable: true
+  # proxyUrl地址
   proxyUrl: https://yiti.shunxuan.net.cn:9000
   # oss地址
   url: http://192.168.0.100:9000

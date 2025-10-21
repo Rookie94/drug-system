@@ -35,7 +35,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectResExpertList" parameterType="ResExpert" resultMap="ResExpertResult">
         <include refid="selectResExpertVo"/>
         <where>  
-            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="title != null  and title != ''">
+                and title like concat('%', #{title}, '%')
+            </if>
             <if test="expertType != null  and expertType != ''"> and expert_type = #{expertType}</if>
             <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
@@ -60,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="content != null">content,</if>
             <if test="status != null">status,</if>
             <if test="serviceUserId != null">service_user_id,</if>
-            <if test="ServcieDeptId != null">service_dept_id,</if>
+            <if test="serviceDeptId != null">service_dept_id,</if>
             <if test="appored != null">appored,</if>
             <if test="publishTime != null">publish_time,</if>
             <if test="userId != null">user_id,</if>
@@ -81,7 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="content != null">#{content},</if>
             <if test="status != null">#{status},</if>
             <if test="serviceUserId != null">#{serviceUserId},</if>
-            <if test="ServcieDeptId != null">#{ServcieDeptId},</if>
+            <if test="serviceDeptId != null">#{ServiceDeptId},</if>
             <if test="appored != null">#{appored},</if>
             <if test="publishTime != null">#{publishTime},</if>
             <if test="userId != null">#{userId},</if>

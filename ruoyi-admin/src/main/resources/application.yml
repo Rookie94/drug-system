@@ -137,14 +137,29 @@ xss:
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
 
-# oss配置
+# minio配置
 minio:
   # 是否启用Minio
-  useEnable: false
+  useEnable: true
   # proxyUrl地址
   proxyUrl: https://yiti.shunxuan.net.cn:9000
   # oss地址
   url: http://112.86.226.241:9000
+  # osskey
+  accessKey: utOGh5X1fv7d7Kiwbzm5
+  # oss秘钥
+  secretKey: 8KhucwRkd8f8QiimshP3Uz7SNBlaaIB895GDeBjS
+  # 默认bucket
+  bucketName: public
+
+# huawei OBS配置
+huawei:
+  # 是否启用huawei OBS
+  useEnable: false
+  # proxyUrl地址
+  proxyUrl: https://yiti.shunxuan.net.cn:9000
+  # oss地址
+  url: http://192.168.0.100:9000
   # osskey
   accessKey: utOGh5X1fv7d7Kiwbzm5
   # oss秘钥

@@ -34,7 +34,7 @@
     <select id="selectResSkillList" parameterType="ResSkill" resultMap="ResSkillResult">
         <include refid="selectResSkillVo"/>
         <where>
-            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
             <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="appored != null  and appored != ''"> and appored = #{appored}</if>

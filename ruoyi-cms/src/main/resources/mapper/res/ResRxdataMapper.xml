@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectResRxdataList" parameterType="ResRxdata" resultMap="ResRxdataResult">
         <include refid="selectResRxdataVo"/>
         <where>  
-            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
             <if test="rxType != null  and rxType != ''"> and rx_type = #{rxType}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="appored != null  and appored != ''"> and appored = #{appored}</if>

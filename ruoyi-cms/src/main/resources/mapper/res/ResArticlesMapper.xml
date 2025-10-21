@@ -55,7 +55,9 @@
     <select id="selectResArticlesList" parameterType="ResArticles" resultMap="ResArticlesResult">
         <include refid="selectResArticlesVo"/>
         <where>
-            <if test="title != null  and title != ''"> and t.title = #{title}</if>
+            <if test="title != null  and title != ''">
+                and t.title like concat('%', #{title}, '%')
+            </if>
             <if test="categoryId != null "> and t.category_id = #{categoryId}</if>
             <if test="typeId != null "> and t.type_id = #{typeId}</if>
             <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>

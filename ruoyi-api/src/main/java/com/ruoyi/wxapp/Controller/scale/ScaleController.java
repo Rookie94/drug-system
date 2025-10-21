@@ -92,6 +92,25 @@ public class ScaleController extends BaseController {
         return toAjax(result);
     }
 
+    /*
+	@GetMapping("/getReportList")
+    public String getReportList(@RequestParam Long userId)
+    {
+        LbsResultsVo lbsResults = lbsResultsService.selectLbsResultsByResultId(resultId);
+        Long contextId = lbsResults.getContextId();
+        ITemplateStrategy strategy = reportFactory.getStrategy(contextId, deviceType);
+        if (strategy == null) {
+            if(deviceType.equals("pc")){
+                return "templates/pc/default/" + "index.html";
+            }
+            else{
+                return "templates/mobile/default/" + "index.html";
+            }
+        }
+        return strategy.getTemplate(contextId,deviceType,lbsResults);
+    }
+    */
+
     @GetMapping("/getReport")
     public String renderTemplate(@RequestParam Long resultId,@RequestParam(defaultValue = "pc") String deviceType)
     {

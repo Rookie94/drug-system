@@ -149,6 +149,12 @@
             <artifactId>minio</artifactId>
         </dependency>
 
+        <!-- 华为云 OBS SDK -->
+        <dependency>
+            <groupId>com.huaweicloud</groupId>
+            <artifactId>esdk-obs-java</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>

@@ -70,7 +70,7 @@ public class ResArticlesServiceImpl implements IResArticlesService
      */
     @Override
     @DataScope(deptAlias = "t", userAlias = "t")
-    public List<ResArticles> selectResArticlesList(ResArticles resArticles)
+    public List<ResArticlesVo> selectResArticlesList(ResArticles resArticles)
     {
         return resArticlesMapper.selectResArticlesList(resArticles);
     }

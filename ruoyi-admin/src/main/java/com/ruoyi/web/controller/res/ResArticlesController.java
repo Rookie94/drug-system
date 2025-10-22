@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.cms.res.domain.ResArticlesVo;
 import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.cms.res.domain.ResCase;
 import com.ruoyi.cms.res.domain.ResCategoryInfo;
@@ -62,7 +63,7 @@ public class ResArticlesController extends BaseController
     public TableDataInfo list(ResArticles resArticles)
     {
         startPage();
-        List<ResArticles> list = resArticlesService.selectResArticlesList(resArticles);
+        List<ResArticlesVo> list = resArticlesService.selectResArticlesList(resArticles);
         return getDataTable(list);
     }
 
@@ -74,8 +75,8 @@ public class ResArticlesController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, ResArticles resArticles)
     {
-        List<ResArticles> list = resArticlesService.selectResArticlesList(resArticles);
-        ExcelUtil<ResArticles> util = new ExcelUtil<ResArticles>(ResArticles.class);
+        List<ResArticlesVo> list = resArticlesService.selectResArticlesList(resArticles);
+        ExcelUtil<ResArticlesVo> util = new ExcelUtil<ResArticlesVo>(ResArticlesVo.class);
         util.exportExcel(response, list, "资讯发布数据");
     }
 

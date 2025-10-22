@@ -21,5 +21,22 @@
         update ofa_activities set appored='5' where appored in ('2','3','4') and DATE_ADD(end_time, INTERVAL 3 DAY)&lt;=NOW();
     </update>
 
+    <update id="updateEtlReport1">
+        UPDATE etl_report1 SET org = (SELECT COUNT(*) FROM res_orginfo), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET resource = (SELECT COUNT(*) FROM res_articles), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET expert = (SELECT COUNT(*) FROM res_expert), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET cases = (SELECT COUNT(*) FROM res_case), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET scale = (SELECT COUNT(*) FROM lbs_contexts WHERE parent_context_id&gt; 1), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET survey = (SELECT COUNT(*) FROM doc_survey), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET rxdata = (SELECT COUNT(*) FROM res_rxdata), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET activities = (SELECT COUNT(*) FROM ofa_activities where parent_activity_id=0), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET chat = (SELECT COUNT(*) FROM chat_message where parent_message_id=0), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET jobinfo = (SELECT COUNT(*) FROM res_jobinfo), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET skill = (SELECT COUNT(*) FROM res_skill), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET notice = (SELECT COUNT(*) FROM sys_notice), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET police = (SELECT COUNT(*) FROM sys_user where user_type='00'), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET user = (SELECT COUNT(*) FROM sys_user where user_type!='00'), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+    </update>
+
 
 </mapper>

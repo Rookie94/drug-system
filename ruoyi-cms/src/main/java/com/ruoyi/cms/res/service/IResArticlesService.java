@@ -42,7 +42,7 @@ public interface IResArticlesService
      * @param resArticles 资讯发布
      * @return 资讯发布集合
      */
-    public List<ResArticles> selectResArticlesList(ResArticles resArticles);
+    public List<ResArticlesVo> selectResArticlesList(ResArticles resArticles);
 
     /**
      * 新增资讯发布

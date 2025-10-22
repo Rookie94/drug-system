@@ -29,4 +29,13 @@ public class MyTaskServiceImpl implements IMyTaskService
        return myTaskMapper.publishResources();
     }
 
+    /**
+     * 更新资源概览
+     */
+    @Override
+    public int updateEtlReport1()
+    {
+        return myTaskMapper.updateEtlReport1();
+    }
+
 }

@@ -159,9 +159,15 @@ public class DecryptionFilter implements Filter {
      * URL白名单匹配
      */
     private boolean isUrlMatchFilterUrls(String requestUrl) {
+        //if (filterUrls == null) return false;
+        //return filterUrls.stream().anyMatch(pattern ->
+        //        requestUrl.matches(pattern.replace("*", ".*")));
+
         if (filterUrls == null) return false;
-        return filterUrls.stream().anyMatch(pattern ->
-                requestUrl.matches(pattern.replace("*", ".*")));
+        boolean inConfig = filterUrls.stream()
+                .anyMatch(pattern -> requestUrl.matches(pattern.replace("*", ".*")));
+        boolean isExport = requestUrl.matches("^.+/export(/.*)?$");
+        return inConfig || isExport;
     }
 
     @Override

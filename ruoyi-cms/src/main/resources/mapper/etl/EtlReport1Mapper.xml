@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.etl.mapper.EtlReport1Mapper">
+    
+    <resultMap type="EtlReport1" id="EtlReport1Result">
+        <result property="id"    column="id"    />
+        <result property="org"    column="org"    />
+        <result property="resource"    column="resource"    />
+        <result property="expert"    column="expert"    />
+        <result property="cases"    column="cases"    />
+        <result property="scale"    column="scale"    />
+        <result property="survey"    column="survey"    />
+        <result property="rxdata"    column="rxdata"    />
+        <result property="activities"    column="activities"    />
+        <result property="chat"    column="chat"    />
+        <result property="jobinfo"    column="jobinfo"    />
+        <result property="skill"    column="skill"    />
+        <result property="notice"    column="notice"    />
+        <result property="user"    column="user"    />
+        <result property="police"    column="police"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectEtlReport1Vo">
+        select id, org, resource, expert, cases, scale, survey, rxdata, activities, chat, jobinfo, skill, notice, user, police, update_time from etl_report1
+    </sql>
+
+    <select id="selectEtlReport1List" parameterType="EtlReport1" resultMap="EtlReport1Result">
+        <include refid="selectEtlReport1Vo"/>
+        <where>  
+            <if test="org != null "> and org = #{org}</if>
+            <if test="resource != null "> and resource = #{resource}</if>
+            <if test="expert != null "> and expert = #{expert}</if>
+            <if test="cases != null "> and cases = #{cases}</if>
+            <if test="scale != null "> and scale = #{scale}</if>
+            <if test="survey != null "> and survey = #{survey}</if>
+            <if test="rxdata != null "> and rxdata = #{rxdata}</if>
+            <if test="activities != null "> and activities = #{activities}</if>
+            <if test="chat != null "> and chat = #{chat}</if>
+            <if test="jobinfo != null "> and jobinfo = #{jobinfo}</if>
+            <if test="skill != null "> and skill = #{skill}</if>
+            <if test="notice != null "> and notice = #{notice}</if>
+            <if test="user != null "> and user = #{user}</if>
+            <if test="police != null "> and police = #{police}</if>
+        </where>
+    </select>
+    
+    <select id="selectEtlReport1ById" parameterType="Long" resultMap="EtlReport1Result">
+        <include refid="selectEtlReport1Vo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectLoginTrend" resultType="map">
+        <if test="_databaseId == 'mysql'">
+            SELECT DATE_FORMAT(login_time,'%c/%e') AS day, COUNT(DISTINCT user_name) AS cnt
+            FROM sys_logininfor
+            WHERE status = '0' AND login_time >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
+            GROUP BY day ORDER BY day
+        </if>
+        <if test="_databaseId == 'kingbase'">
+            SELECT TO_CHAR(login_time,'FMMM/FMDD') AS day, COUNT(DISTINCT user_name) AS cnt
+            FROM sys_logininfor
+            WHERE status = '0' AND login_time >= CURRENT_DATE - INTERVAL '29 days'
+            GROUP BY day ORDER BY day
+        </if>
+    </select>
+
+    <insert id="insertEtlReport1" parameterType="EtlReport1" useGeneratedKeys="true" keyProperty="id">
+        insert into etl_report1
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="org != null">org,</if>
+            <if test="resource != null">resource,</if>
+            <if test="expert != null">expert,</if>
+            <if test="cases != null">cases,</if>
+            <if test="scale != null">scale,</if>
+            <if test="survey != null">survey,</if>
+            <if test="rxdata != null">rxdata,</if>
+            <if test="activities != null">activities,</if>
+            <if test="chat != null">chat,</if>
+            <if test="jobinfo != null">jobinfo,</if>
+            <if test="skill != null">skill,</if>
+            <if test="notice != null">notice,</if>
+            <if test="user != null">user,</if>
+            <if test="police != null">police,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="org != null">#{org},</if>
+            <if test="resource != null">#{resource},</if>
+            <if test="expert != null">#{expert},</if>
+            <if test="cases != null">#{cases},</if>
+            <if test="scale != null">#{scale},</if>
+            <if test="survey != null">#{survey},</if>
+            <if test="rxdata != null">#{rxdata},</if>
+            <if test="activities != null">#{activities},</if>
+            <if test="chat != null">#{chat},</if>
+            <if test="jobinfo != null">#{jobinfo},</if>
+            <if test="skill != null">#{skill},</if>
+            <if test="notice != null">#{notice},</if>
+            <if test="user != null">#{user},</if>
+            <if test="police != null">#{police},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEtlReport1" parameterType="EtlReport1">
+        update etl_report1
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="org != null">org = #{org},</if>
+            <if test="resource != null">resource = #{resource},</if>
+            <if test="expert != null">expert = #{expert},</if>
+            <if test="cases != null">cases = #{cases},</if>
+            <if test="scale != null">scale = #{scale},</if>
+            <if test="survey != null">survey = #{survey},</if>
+            <if test="rxdata != null">rxdata = #{rxdata},</if>
+            <if test="activities != null">activities = #{activities},</if>
+            <if test="chat != null">chat = #{chat},</if>
+            <if test="jobinfo != null">jobinfo = #{jobinfo},</if>
+            <if test="skill != null">skill = #{skill},</if>
+            <if test="notice != null">notice = #{notice},</if>
+            <if test="user != null">user = #{user},</if>
+            <if test="police != null">police = #{police},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEtlReport1ById" parameterType="Long">
+        delete from etl_report1 where id = #{id}
+    </delete>
+
+    <delete id="deleteEtlReport1ByIds" parameterType="String">
+        delete from etl_report1 where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

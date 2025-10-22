@@ -1,12 +1,11 @@
 package com.ruoyi.framework.config;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import javax.sql.DataSource;
 import org.apache.ibatis.io.VFS;
+import org.apache.ibatis.mapping.DatabaseIdProvider;
+import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
@@ -36,6 +35,17 @@ public class MyBatisConfig
     private Environment env;
 
     static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
+
+    @Bean
+    public DatabaseIdProvider databaseIdProvider() {
+        VendorDatabaseIdProvider provider = new VendorDatabaseIdProvider();
+        Properties p = new Properties();
+        /* key = 数据库 productName（大小写不敏感） */
+        p.setProperty("MySQL", "mysql");
+        p.setProperty("KingbaseES", "kingbase");   // 人大金仓 MySQL 模式
+        provider.setProperties(p);
+        return provider;
+    }
 
     public static String setTypeAliasesPackage(String typeAliasesPackage)
     {
@@ -127,6 +137,7 @@ public class MyBatisConfig
         sessionFactory.setTypeAliasesPackage(typeAliasesPackage);
         sessionFactory.setMapperLocations(resolveMapperLocations(StringUtils.split(mapperLocations, ",")));
         sessionFactory.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
+        sessionFactory.setDatabaseIdProvider(databaseIdProvider());
         return sessionFactory.getObject();
     }
 }

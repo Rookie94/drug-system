@@ -1,5 +1,6 @@
 package com.ruoyi.wxapp.Controller.res;
 
+import com.ruoyi.cms.res.domain.ResArticlesVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -184,7 +185,7 @@ public class ResController extends BaseController
         resArticles.setUseDataScope(false);
         resArticles.setAppored("2");
         resArticles.setStatus("0");
-        List<ResArticles> list = resArticlesService.selectResArticlesList(resArticles);
+        List<ResArticlesVo> list = resArticlesService.selectResArticlesList(resArticles);
         return getDataTable(list);
     }
 

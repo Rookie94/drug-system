@@ -21,4 +21,9 @@ public class MyTask
         return myTaskService.publishResources();
     }
 
+    public int updateEtlReport1()
+    {
+        return myTaskService.updateEtlReport1();
+    }
+
 }

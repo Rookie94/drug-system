@@ -17,6 +17,11 @@ public interface MyTaskMapper
      */
     public int publishResources();
 
+    /**
+     * 更新资源概览
+     *
+     */
+    public int updateEtlReport1();
 
 
 }

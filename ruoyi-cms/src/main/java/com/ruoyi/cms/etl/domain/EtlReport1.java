@@ -68,7 +68,7 @@ public class EtlReport1 extends BaseEntity
 
     /** 学员数量 */
     @Excel(name = "学员数量")
-    private Long user;
+    private Long users;
 
     /** 警官数量 */
     @Excel(name = "警官数量")
@@ -204,14 +204,14 @@ public class EtlReport1 extends BaseEntity
         return notice;
     }
 
-    public void setUser(Long user) 
+    public void setUsers(Long users)
     {
-        this.user = user;
+        this.users = users;
     }
 
-    public Long getUser() 
+    public Long getUsers()
     {
-        return user;
+        return users;
     }
 
     public void setPolice(Long police) 
@@ -240,7 +240,7 @@ public class EtlReport1 extends BaseEntity
             .append("jobinfo", getJobinfo())
             .append("skill", getSkill())
             .append("notice", getNotice())
-            .append("user", getUser())
+            .append("users", getUsers())
             .append("police", getPolice())
             .append("updateTime", getUpdateTime())
             .toString();

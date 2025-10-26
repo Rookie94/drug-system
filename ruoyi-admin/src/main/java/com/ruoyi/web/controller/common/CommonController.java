@@ -4,8 +4,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.ruoyi.common.exception.file.FileSizeLimitExceededException;
+import com.ruoyi.common.exception.file.InvalidExtensionException;
+import com.ruoyi.common.utils.file.MimeTypeUtils;
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +50,79 @@ public class CommonController
     private static final Logger log = LoggerFactory.getLogger(CommonController.class);
 
     @Autowired
+    private FileStorageService fileStorageService;
+
+    @Autowired
     private ServerConfig serverConfig;
 
     @Autowired
     private ISysFileInfoService sysFileInfoService;
+
+    /** 单文件上传（保持原有 URL，前端无感） */
+    @PostMapping("/upload")
+    public AjaxResult uploadFile(MultipartFile file) {
+        try {
+            // 按日期分目录
+            String path = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")) + "/";
+
+            //返回带直链的 FileInfo
+            FileInfo fileInfo = fileStorageService.of(file).setPath(path).upload();
+
+            SysFileInfo sysFileInfo = new SysFileInfo();
+            String fileName=fileInfo.getUrl();
+            int newFileNameSeparatorIndex = fileName.lastIndexOf("/");
+            String newFileName = fileName.substring(newFileNameSeparatorIndex + 1).toLowerCase();
+            int separatorIndex = newFileName.lastIndexOf(".");
+            String suffix = newFileName.substring(separatorIndex + 1).toLowerCase();
+            LoginUser loginUser = SecurityUtils.getLoginUser();
+            // 计算文件大小信息
+            long size = file.getSize();
+            String fileSizeInfo = "0kB";
+            if (size!=0){
+                String[] unitNames = new String[]{"B", "kB", "MB", "GB", "TB", "EB"};
+                int digitGroups = Math.min(unitNames.length-1, (int) (Math.log10(size) / Math.log10(1024)));
+                fileSizeInfo = new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + " " + unitNames[digitGroups];
+            }
+            sysFileInfo.setFileOriginName(file.getOriginalFilename());
+            sysFileInfo.setFileSuffix(suffix);
+            sysFileInfo.setFileSizeInfo(fileSizeInfo);
+            sysFileInfo.setFileObjectName(newFileName);
+            sysFileInfo.setFilePath(fileName);
+            sysFileInfo.setDelFlag("N");
+            sysFileInfo.setCreateBy(loginUser.getUsername());
+            sysFileInfoService.insertSysFileInfo(sysFileInfo);
+
+            return AjaxResult.success()
+                    .put("url", fileInfo.getUrl())              // 直链
+                    .put("fileName", fileInfo.getUrl())
+                    .put("newFileName", fileInfo.getUrl())
+                    .put("originalFilename", file.getOriginalFilename());
+        } catch (Exception e) {
+            return AjaxResult.error(e.getMessage());
+        }
+    }
+
+    /** 多文件上传同理，循环调用即可 */
+    @PostMapping("/uploads")
+    public AjaxResult uploadFiles(MultipartFile[] files) {
+        if(files == null || files.length == 0){
+            return AjaxResult.error("不能上传空文件");
+        }
+        try {
+            List<String> urls = new ArrayList<>();
+            for (MultipartFile file : files) {
+                FileInfo info = fileStorageService.of(file)
+                        .setPath("batch/")
+                        .upload();
+                urls.add(info.getUrl());
+            }
+            return AjaxResult.success().put("urls", urls);
+        }
+        catch (Exception e)
+        {
+            return AjaxResult.error(e.getMessage());
+        }
+    }
 
     /**
      * 通用下载请求
@@ -90,60 +168,6 @@ public class CommonController
      * 通用上传请求
      */
 
-    @PostMapping("/upload")
-    public AjaxResult uploadFile(MultipartFile file) throws Exception
-    {
-        try
-        {
-            // 上传文件路径
-            String filePath = RuoYiConfig.getUploadPath();
-            // 上传并返回新文件名称
-            String fileName = FileUploadUtils.upload(filePath, file);
-            String url = serverConfig.getUrl() + fileName;
-            AjaxResult ajax = AjaxResult.success();
-            ajax.put("fileName", fileName);
-            ajax.put("url", url);
-
-            /*2021-12-29 新增文件管理*/
-            SysFileInfo sysFileInfo = new SysFileInfo();
-            int newFileNameSeparatorIndex = fileName.lastIndexOf("/");
-            String newFileName = fileName.substring(newFileNameSeparatorIndex + 1).toLowerCase();
-            int separatorIndex = newFileName.lastIndexOf(".");
-            String suffix = newFileName.substring(separatorIndex + 1).toLowerCase();
-
-            LoginUser loginUser = SecurityUtils.getLoginUser();
-
-            // 计算文件大小信息
-            long size = file.getSize();
-            String fileSizeInfo = "0kB";
-            if (size!=0){
-                String[] unitNames = new String[]{"B", "kB", "MB", "GB", "TB", "EB"};
-                int digitGroups = Math.min(unitNames.length-1, (int) (Math.log10(size) / Math.log10(1024)));
-                fileSizeInfo = new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + " " + unitNames[digitGroups];
-            }
-
-            sysFileInfo.setFileOriginName(file.getOriginalFilename());
-            sysFileInfo.setFileSuffix(suffix);
-            sysFileInfo.setFileSizeInfo(fileSizeInfo);
-            sysFileInfo.setFileObjectName(newFileName);
-            sysFileInfo.setFilePath(fileName);
-            sysFileInfo.setDelFlag("N");
-            sysFileInfo.setCreateBy(loginUser.getUsername());
-            sysFileInfoService.insertSysFileInfo(sysFileInfo);
-            Long fileId = sysFileInfo.getFileId();
-            ajax.put("fileId", fileId);
-            ajax.put("fileOriginName", file.getOriginalFilename());
-            ajax.put("fileSuffix", suffix);
-            ajax.put("fileSize", fileSizeInfo);
-            /*结束*/
-
-            return ajax;
-        }
-        catch (Exception e)
-        {
-            return AjaxResult.error(e.getMessage());
-        }
-    }
 
     /**
      * 本地资源通用下载
@@ -171,87 +195,6 @@ public class CommonController
         catch (Exception e)
         {
             log.error("下载文件失败", e);
-        }
-    }
-
-    /**
-     * Minio 服务器上传请求（单文件上传）
-     */
-    @PostMapping("/minio-upload")
-    public AjaxResult uploadFileMinio(MultipartFile file) throws Exception
-    {
-        if(file == null){
-            return AjaxResult.error("不能上传空文件");
-        }
-        try
-        {
-            // 上传并返回新文件名称
-            String fileName = FileUploadUtils.uploadMinio(file);
-            AjaxResult ajax = AjaxResult.success();
-            ajax.put("url", fileName);
-            ajax.put("fileName", fileName);
-            ajax.put("newFileName", FileUtils.getName(fileName));
-            ajax.put("originalFilename", file.getOriginalFilename());
-
-            SysFileInfo sysFileInfo = new SysFileInfo();
-            int newFileNameSeparatorIndex = fileName.lastIndexOf("/");
-            String newFileName = fileName.substring(newFileNameSeparatorIndex + 1).toLowerCase();
-            int separatorIndex = newFileName.lastIndexOf(".");
-            String suffix = newFileName.substring(separatorIndex + 1).toLowerCase();
-
-            LoginUser loginUser = SecurityUtils.getLoginUser();
-
-            // 计算文件大小信息
-            long size = file.getSize();
-            String fileSizeInfo = "0kB";
-            if (size!=0){
-                String[] unitNames = new String[]{"B", "kB", "MB", "GB", "TB", "EB"};
-                int digitGroups = Math.min(unitNames.length-1, (int) (Math.log10(size) / Math.log10(1024)));
-                fileSizeInfo = new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + " " + unitNames[digitGroups];
-            }
-
-            sysFileInfo.setFileOriginName(file.getOriginalFilename());
-            sysFileInfo.setFileSuffix(suffix);
-            sysFileInfo.setFileSizeInfo(fileSizeInfo);
-            sysFileInfo.setFileObjectName(newFileName);
-            sysFileInfo.setFilePath(fileName);
-            sysFileInfo.setDelFlag("N");
-            sysFileInfo.setCreateBy(loginUser.getUsername());
-            sysFileInfoService.insertSysFileInfo(sysFileInfo);
-
-            Long fileId = sysFileInfo.getFileId();
-            ajax.put("fileId", fileId);
-            ajax.put("fileOriginName", file.getOriginalFilename());
-            ajax.put("fileSuffix", suffix);
-            ajax.put("fileSize", fileSizeInfo);
-
-            return ajax;
-        }
-        catch (Exception e)
-        {
-            return AjaxResult.error(e.getMessage());
-        }
-    }
-
-    /**
-     * Minio 服务器上传请求（多文件上传）
-     * @author ze.chen
-     * @date 2022/4/2 18:01
-     * @param files 文件资源
-     * @return 结果 文件名
-     **/
-    @PostMapping("/minio-uploads")
-    public AjaxResult uploadFilesMinio(MultipartFile[] files){
-        if(files == null || files.length == 0){
-            return AjaxResult.error("不能上传空文件");
-        }
-        try {
-            List<Map<String, Object>> upload = FileUploadUtils.uploadMinio(files);
-            return AjaxResult.success(upload);
-        }
-        catch (Exception e)
-        {
-            return AjaxResult.error(e.getMessage());
         }
     }
 

@@ -114,7 +114,7 @@ token:
 mybatis:
   # 数据库类型 mysql,kingbase
   configuration:
-    database-id: mysql
+    database-id: kingbase
   # 搜索指定包别名
   typeAliasesPackage: com.ruoyi.**.domain
   # 配置mapper的扫描，找到所有的mapper.xml映射文件
@@ -145,35 +145,20 @@ xss:
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
 
-# minio配置
-minio:
-  # 是否启用Minio
-  useEnable: true
-  # proxyUrl地址
-  proxyUrl: https://yiti.shunxuan.net.cn:9000
-  # oss地址
-  url: http://192.168.0.100:9000
-  # osskey
-  accessKey: utOGh5X1fv7d7Kiwbzm5
-  # oss秘钥
-  secretKey: 8KhucwRkd8f8QiimshP3Uz7SNBlaaIB895GDeBjS
-  # 默认bucket
-  bucketName: public
-
-# huawei OBS配置
-huawei:
-  # 是否启用huawei OBS
-  useEnable: true
-  # proxyUrl地址
-  proxyUrl: https://yiti.shunxuan.net.cn:9000
-  # oss地址
-  url: http://192.168.0.100:9000
-  # osskey
-  accessKey: utOGh5X1fv7d7Kiwbzm5
-  # oss秘钥
-  secretKey: 8KhucwRkd8f8QiimshP3Uz7SNBlaaIB895GDeBjS
-  # 默认bucket
-  bucketName: public
+# 文件上传
+dromara:
+  x-file-storage:
+    default-platform: minio-1        # 必须和下方 platform 一致
+    thumbnail-suffix: ".min.jpg"
+    minio:
+      - platform: minio-1            # 标识，可自定义
+        enable-storage: true
+        access-key: utOGh5X1fv7d7Kiwbzm5
+        secret-key: "8KhucwRkd8f8QiimshP3Uz7SNBlaaIB895GDeBjS"
+        end-point: http://112.86.226.241:9000
+        bucket-name: public
+        domain: https://yiti.shunxuan.net.cn:9000/public/   # 直链域名，末尾 /
+        base-path:          # 可选虚拟目录
 
 encrypt:
   ## 开关控制

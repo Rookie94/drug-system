@@ -143,6 +143,12 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <!-- 统一文件存储 -->
+        <dependency>
+            <groupId>org.dromara.x-file-storage</groupId>
+            <artifactId>x-file-storage-spring</artifactId>
+        </dependency>
+
         <!-- minio-->
         <dependency>
             <groupId>io.minio</groupId>

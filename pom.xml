@@ -19,7 +19,7 @@
         <java.version>1.8</java.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
         <spring-boot.version>2.5.15</spring-boot.version>
-        <druid.version>1.2.23</druid.version>
+        <druid.version>1.2.8</druid.version>
         <bitwalker.version>1.21</bitwalker.version>
         <swagger.version>3.0.0</swagger.version>
         <kaptcha.version>2.3.3</kaptcha.version>
@@ -37,6 +37,7 @@
         <spring-security.version>5.7.12</spring-security.version>
         <spring-framework.version>5.3.39</spring-framework.version>
         <jedis.version>3.3.0</jedis.version>
+        <x-file-storage-spring.version>2.2.1</x-file-storage-spring.version>
         <minio.version>8.2.2</minio.version>
         <esdk-obs-java.version>3.23.3</esdk-obs-java.version>
         <okhttp3.version>4.9.1</okhttp3.version>
@@ -232,6 +233,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.dromara.x-file-storage</groupId>
+                <artifactId>x-file-storage-spring</artifactId>
+                <version>${x-file-storage-spring.version}</version>
             </dependency>
 
             <!-- minio-->

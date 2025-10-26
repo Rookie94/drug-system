@@ -13,11 +13,11 @@ import java.io.PrintWriter;
 @RestController
 public class QrCodeController {
 
-    @RequestMapping(value = "/5yt9I0tojY.txt") // 路径与微信配置的校验文件URL一致
+    @RequestMapping(value = "/R2F7juVgcS.txt") // 路径与微信配置的校验文件URL一致
     public void handleValidationFile(HttpServletResponse response) {
         response.setContentType("text/plain"); // 设置响应类型为纯文本
         try {
-            Resource resource = new ClassPathResource("5yt9I0tojY.txt"); // 从resources加载文件
+            Resource resource = new ClassPathResource("R2F7juVgcS.txt"); // 从resources加载文件
             BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
             PrintWriter writer = response.getWriter();
             writer.write(reader.readLine()); // 读取文件内容并写入响应

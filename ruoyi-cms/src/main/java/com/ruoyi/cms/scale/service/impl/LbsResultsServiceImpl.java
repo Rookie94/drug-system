@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.cms.scale.domain.LbsResults;
 import com.ruoyi.common.annotation.DataScope;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.service.ISerialNoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,13 @@ public class LbsResultsServiceImpl implements ILbsResultsService
     @DataScope(deptAlias = "t", userAlias = "t")
     public List<LbsResultsVo> selectLbsResultsList(LbsResultsVo lbsResults)
     {
+        LoginUser user=getLoginUser();
+        if(!user.getUser().getUserType().trim().equals("00")){
+            lbsResults.setUserId(user.getUserId());
+        }
+        else{
+            lbsResults.setUserId(null);
+        }
         return lbsResultsMapper.selectLbsResultsList(lbsResults);
     }
 

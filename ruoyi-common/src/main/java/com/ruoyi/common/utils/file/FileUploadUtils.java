@@ -3,10 +3,21 @@ package com.ruoyi.common.utils.file;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.utils.SecurityUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.FileStorageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.config.MinioConfig;
 import com.ruoyi.common.config.RuoYiConfig;
@@ -23,6 +34,7 @@ import com.ruoyi.common.utils.uuid.Seq;
  *
  * @author ruoyi
  */
+@Component
 public class FileUploadUtils
 {
     /**
@@ -54,6 +66,13 @@ public class FileUploadUtils
     public static String getDefaultBaseDir()
     {
         return defaultBaseDir;
+    }
+
+    private static FileStorageService fileStorageService;
+
+    @Autowired
+    public void setFileStorageService(FileStorageService service) {
+        fileStorageService = service;   // ② 把依赖放进静态字段
     }
 
     /**
@@ -235,104 +254,28 @@ public class FileUploadUtils
      * @return 文件名称
      * @throws IOException 写入异常
      */
-    public static String uploadMinio(MultipartFile file) throws IOException
-    {
-        try
-        {
-            //String _bucketName = MinioConfig.getBucketName();
+    public static String uploadAvatarFile(MultipartFile file)  throws IOException {
+        try {
+            if (fileStorageService == null) {
+                throw new IllegalStateException("");
+            }
+            // 按日期分目录
+            String path = "avatar/" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")) + "/";
+
             int fileNameLength = file.getOriginalFilename().length();
             if (fileNameLength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH)
             {
                 throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
             }
-            assertAllowed(file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
-            String fileName = extractFilename(file);
-            return MinioUtil.uploadFile(fileName, file);
-        }
-        catch (Exception e)
-        {
-            throw new IOException(e.getMessage(), e);
-        }
-    }
 
+            assertAllowed(file, MimeTypeUtils.IMAGE_EXTENSION);
 
-    /**
-     * 以默认BucketName配置上传多个文件到Minio服务器
-     *
-     * @param files 上传的文件
-     * @return 文件名称
-     * @throws IOException 写入异常
-     */
-    public static List<Map<String, Object>> uploadMinio(MultipartFile[] files) throws IOException
-    {
-        try
-        {
-            for(MultipartFile file : files){
-                int fileNameLength = file.getOriginalFilename().length();
-                if (fileNameLength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH)
-                {
-                    throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
-                }
-                assertAllowed(file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
-            }
-            return MinioUtil.uploadFile(files);
-        }
-        catch (Exception e)
-        {
-            throw new IOException(e.getMessage(), e);
-        }
-    }
+            //返回带直链的 FileInfo
 
-    /**
-     * 以默认BucketName配置上传到Minio服务器
-     *
-     * @param file 上传的文件
-     * @return 文件名称
-     * @throws IOException 写入异常
-     */
-    public static String uploadMinio(String bucketName,MultipartFile file) throws IOException
-    {
-        try
-        {
-            //String _bucketName = MinioConfig.getBucketName();
-            int fileNameLength = file.getOriginalFilename().length();
-            if (fileNameLength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH)
-            {
-                throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
-            }
-            assertAllowed(file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
-            String fileName = extractFilename(file);
-            return MinioUtil.uploadFile(bucketName,fileName, file);
-        }
-        catch (Exception e)
-        {
-            throw new IOException(e.getMessage(), e);
-        }
-    }
+            FileInfo fileInfo = fileStorageService.of(file).setPath(path).upload();
+            return fileInfo.getUrl();
 
-    /**
-     * 以默认BucketName配置上传多个文件到Minio服务器
-     *
-     * @param files 上传的文件
-     * @return 文件名称
-     * @throws IOException 写入异常
-     */
-    public static List<Map<String, Object>> uploadMinio(String bucketName,MultipartFile[] files) throws IOException
-    {
-        try
-        {
-            for(MultipartFile file : files){
-                int fileNameLength = file.getOriginalFilename().length();
-                if (fileNameLength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH)
-                {
-                    throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
-                }
-                assertAllowed(file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
-            }
-            return MinioUtil.uploadFile(bucketName,files);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new IOException(e.getMessage(), e);
         }
     }

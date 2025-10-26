@@ -2,15 +2,13 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.cms.res.mapper.ResRxdataMapper">
+<mapper namespace="com.ruoyi.cms.res.mapper.ResSliderMapper">
     
-    <resultMap type="ResRxdata" id="ResRxdataResult">
-        <result property="rxId"    column="rx_id"    />
+    <resultMap type="ResSlider" id="ResSliderResult">
+        <result property="sliderId"    column="slider_id"    />
         <result property="orderNum"    column="order_num"    />
-        <result property="title"    column="title"    />
         <result property="pic"    column="pic"    />
-        <result property="rxType"    column="rx_type"    />
-        <result property="content"    column="content"    />
+        <result property="sliderType"    column="slider_type"    />
         <result property="status"    column="status"    />
         <result property="publishTime"    column="publish_time"    />
         <result property="appored"    column="appored"    />
@@ -25,34 +23,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
     </resultMap>
 
-    <sql id="selectResRxdataVo">
-        select rx_id, order_num, title, pic, rx_type, content, status, publish_time, appored, user_id, dept_id, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_rxdata
+    <sql id="selectResSliderVo">
+        select slider_id, order_num, pic, slider_type, status, publish_time, appored, user_id, dept_id, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_slider
     </sql>
 
-    <select id="selectResRxdataList" parameterType="ResRxdata" resultMap="ResRxdataResult">
-        <include refid="selectResRxdataVo"/>
+    <select id="selectResSliderList" parameterType="ResSlider" resultMap="ResSliderResult">
+        <include refid="selectResSliderVo"/>
         <where>  
-            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
-            <if test="rxType != null  and rxType != ''"> and rx_type = #{rxType}</if>
+            <if test="orderNum != null "> and order_num = #{orderNum}</if>
+            <if test="pic != null  and pic != ''"> and pic = #{pic}</if>
+            <if test="sliderType != null  and sliderType != ''"> and slider_type = #{sliderType}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
             <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
+            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
         </where>
     </select>
     
-    <select id="selectResRxdataByRxId" parameterType="Long" resultMap="ResRxdataResult">
-        <include refid="selectResRxdataVo"/>
-        where rx_id = #{rxId}
+    <select id="selectResSliderBySliderId" parameterType="Long" resultMap="ResSliderResult">
+        <include refid="selectResSliderVo"/>
+        where slider_id = #{sliderId}
     </select>
 
-    <insert id="insertResRxdata" parameterType="ResRxdata" useGeneratedKeys="true" keyProperty="rxId">
-        insert into res_rxdata
+    <insert id="insertResSlider" parameterType="ResSlider" useGeneratedKeys="true" keyProperty="sliderId">
+        insert into res_slider
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="orderNum != null">order_num,</if>
-            <if test="title != null">title,</if>
             <if test="pic != null">pic,</if>
-            <if test="rxType != null">rx_type,</if>
-            <if test="content != null">content,</if>
+            <if test="sliderType != null">slider_type,</if>
             <if test="status != null">status,</if>
             <if test="publishTime != null">publish_time,</if>
             <if test="appored != null">appored,</if>
@@ -68,10 +65,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderNum != null">#{orderNum},</if>
-            <if test="title != null">#{title},</if>
             <if test="pic != null">#{pic},</if>
-            <if test="rxType != null">#{rxType},</if>
-            <if test="content != null">#{content},</if>
+            <if test="sliderType != null">#{sliderType},</if>
             <if test="status != null">#{status},</if>
             <if test="publishTime != null">#{publishTime},</if>
             <if test="appored != null">#{appored},</if>
@@ -87,14 +82,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateResRxdata" parameterType="ResRxdata">
-        update res_rxdata
+    <update id="updateResSlider" parameterType="ResSlider">
+        update res_slider
         <trim prefix="SET" suffixOverrides=",">
             <if test="orderNum != null">order_num = #{orderNum},</if>
-            <if test="title != null">title = #{title},</if>
             <if test="pic != null">pic = #{pic},</if>
-            <if test="rxType != null">rx_type = #{rxType},</if>
-            <if test="content != null">content = #{content},</if>
+            <if test="sliderType != null">slider_type = #{sliderType},</if>
             <if test="status != null">status = #{status},</if>
             <if test="publishTime != null">publish_time = #{publishTime},</if>
             <if test="appored != null">appored = #{appored},</if>
@@ -108,46 +101,45 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="apporTime != null">appor_time = #{apporTime},</if>
             <if test="remark != null">remark = #{remark},</if>
         </trim>
-        where rx_id = #{rxId}
+        where slider_id = #{sliderId}
     </update>
 
-    <delete id="deleteResRxdataByRxId" parameterType="Long">
-        delete from res_rxdata where rx_id = #{rxId}
+    <delete id="deleteResSliderBySliderId" parameterType="Long">
+        delete from res_slider where slider_id = #{sliderId}
     </delete>
 
-    <delete id="deleteResRxdataByRxIds" parameterType="String">
-        delete from res_rxdata where rx_id in 
-        <foreach item="rxId" collection="array" open="(" separator="," close=")">
-            #{rxId}
+    <delete id="deleteResSliderBySliderIds" parameterType="String">
+        delete from res_slider where slider_id in 
+        <foreach item="sliderId" collection="array" open="(" separator="," close=")">
+            #{sliderId}
         </foreach>
     </delete>
 
-
     <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
-        select rx_id from res_rxdata where appored in ('1','2') and rx_id in
-        <foreach item="rxId" collection="array" open="(" separator="," close=")">
-            #{rxId}
+        select slider_id from res_slider where appored in ('1','2') and slider_id in
+        <foreach item="sliderId" collection="array" open="(" separator="," close=")">
+            #{sliderId}
         </foreach>
     </select>
 
-    <update id="updateStatus" parameterType="ResRxdata">
-        update res_rxdata
+    <update id="updateStatus" parameterType="ResSlider">
+        update res_slider
         <trim prefix="SET" suffixOverrides=",">
             <if test="status != null">status = #{status},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
-        where rx_id = #{rxId}
+        where slider_id = #{sliderId}
     </update>
 
     <update id="apporByIds"  parameterType="ResApporParam">
-        update res_rxdata
+        update res_slider
         <trim prefix="SET" suffixOverrides=",">
             <if test="flag != null">appored = #{flag},</if>
             <if test="apporBy != null">appor_by = #{apporBy},</if>
             <if test="apporTime != null">appor_time = #{apporTime},</if>
             <if test="publishTime != null">publish_time = #{publishTime}</if>
-            where rx_id in
+            where slider_id in
             <foreach item="id" collection="ids" open="(" separator="," close=")">
                 #{id}
             </foreach>
@@ -155,24 +147,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <update id="unApporById" parameterType="Long">
-        update res_rxdata
+        update res_slider
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
             publish_time=NULL,
             appor_by=NULL,
             appor_time = NULL,
         </trim>
-        where rx_id = #{rxId}
+        where slider_id = #{sliderId}
     </update>
 
     <update id="unApporByIds" parameterType="String">
-        update res_rxdata
+        update res_slider
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
             publish_time=NULL,
             appor_by=NULL,
             appor_time=NULL
-            where rx_id in
+            where slider_id in
             <foreach item="id" collection="array" open="(" separator="," close=")">
                 #{id}
             </foreach>

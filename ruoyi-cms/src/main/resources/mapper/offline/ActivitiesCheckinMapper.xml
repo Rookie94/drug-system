@@ -30,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                c.user_name,c.nick_name,c.phonenumber,t.dept_id,d.dept_name,t.create_by,t.create_time,t.update_by,
                t.update_time,t.remark from ofa_activities_checkin t
                    left join ofa_activities b on t.activity_id=b.activity_id
-                   left join sys_user c on t.user_id=c.user_id left join sys_dept d  on t.dept_id=d.dept_id
+                   left join sys_userinfo c on t.user_id=c.user_id left join sys_dept d  on t.dept_id=d.dept_id
     </sql>
 
     <select id="selectActivitiesCheckinList" parameterType="ActivitiesCheckin" resultMap="ActivitiesCheckinResult">

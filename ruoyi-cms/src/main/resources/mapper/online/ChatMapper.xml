@@ -71,7 +71,7 @@
             t.message,
             t.create_time
         from chat_message t
-                 left join sys_user u on t.user_id = u.user_id
+                 left join sys_userinfo u on t.user_id = u.user_id
         where t.del_flag = '0'
     </sql>
 

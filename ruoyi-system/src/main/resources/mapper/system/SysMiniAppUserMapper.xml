@@ -68,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <insert id="insertMiniAppGuestUser" parameterType="MiniAppUser" useGeneratedKeys="true" keyProperty="id">
-        insert into sys_user
+        insert into sys_userinfo
         <trim prefix="(" suffix=")" suffixOverrides=",">
             dept_id,
             user_name,

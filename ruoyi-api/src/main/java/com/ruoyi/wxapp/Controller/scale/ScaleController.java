@@ -1,6 +1,10 @@
 package com.ruoyi.wxapp.Controller.scale;
 
+import cn.hutool.core.date.DateTime;
 import com.alibaba.fastjson.JSONArray;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.cms.scale.domain.LbsContexts;
 import com.ruoyi.cms.scale.domain.LbsResults;
 import com.ruoyi.cms.scale.domain.vo.AnswerVo;
@@ -74,8 +78,25 @@ public class ScaleController extends BaseController {
 
     @Log(title = "测评报告", businessType = BusinessType.INSERT)
     @PostMapping(value = "/commitResult")
-    public AjaxResult commitResult(@RequestBody LbsResults lbsResults)
+    public AjaxResult commitResult(@RequestBody JsonNode jsonNode)
     {
+        //System.out.println(jsonNode);
+        LbsResults lbsResults=new LbsResults();
+        lbsResults.setContextId(jsonNode.get("scaleId").asLong());
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonResult="";
+        String thinJsonResult ="";
+        try {
+            jsonResult = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode);
+            thinJsonResult = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode.get("answers"));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("答案解析失败!", e);
+        }
+        lbsResults.setJsonResult(jsonResult);
+        lbsResults.setThinJsonResult(thinJsonResult);
+
+        lbsResults.setStatus("0");
         int result=lbsResultsService.insertLbsResults(lbsResults);
         try{
             Long resultId=lbsResults.getResultId();
@@ -87,29 +108,19 @@ public class ScaleController extends BaseController {
             lbsAnswerService.batchInsertAnswer(list);
             lbsCalcService.calcData(contextAnswerVo);
         }catch (Exception ex){
-            //
+            System.out.println(ex.getMessage());
         }
         return toAjax(result);
     }
 
-    /*
+
 	@GetMapping("/getReportList")
-    public String getReportList(@RequestParam Long userId)
+    public AjaxResult getReportList()
     {
-        LbsResultsVo lbsResults = lbsResultsService.selectLbsResultsByResultId(resultId);
-        Long contextId = lbsResults.getContextId();
-        ITemplateStrategy strategy = reportFactory.getStrategy(contextId, deviceType);
-        if (strategy == null) {
-            if(deviceType.equals("pc")){
-                return "templates/pc/default/" + "index.html";
-            }
-            else{
-                return "templates/mobile/default/" + "index.html";
-            }
-        }
-        return strategy.getTemplate(contextId,deviceType,lbsResults);
+        LbsResultsVo lbsResults=new LbsResultsVo();
+        List<LbsResultsVo> list = lbsResultsService.selectLbsResultsList(lbsResults);
+        return success(list);
     }
-    */
 
     @GetMapping("/getReport")
     public String renderTemplate(@RequestParam Long resultId,@RequestParam(defaultValue = "pc") String deviceType)

@@ -5,10 +5,18 @@ spring:
         driverClassName: com.mysql.cj.jdbc.Driver
         druid:
             # 主库数据源
+            # master:
+            #    url: jdbc:mysql://192.168.0.100:3306/dtcare?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+            #    username: root
+            #    password: Szsolid.com2005
+
+            # 主库数据源
             master:
-                url: jdbc:mysql://192.168.0.100:3306/dtcare?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-                username: root
-                password: Szsolid.com2005
+                driver-class-name: com.kingbase8.Driver
+                url: jdbc:kingbase8://192.168.0.100:54321/dtcare?currentSchema=public&allowEncodingChanges=true&clientEncoding=UTF8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+                username: kingbase
+                password: King@Base2025!#
+
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭

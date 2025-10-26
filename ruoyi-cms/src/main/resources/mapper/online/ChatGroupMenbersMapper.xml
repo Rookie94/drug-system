@@ -55,7 +55,7 @@
         FROM
             chat_groupmbrs t
                 LEFT JOIN chat_group c ON t.group_id = c.group_id
-                LEFT JOIN sys_user u ON t.user_id = u.user_id
+                LEFT JOIN sys_userinfo u ON t.user_id = u.user_id
                 LEFT JOIN sys_dept d ON t.dept_id = d.dept_id
     </sql>
 

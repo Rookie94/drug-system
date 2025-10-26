@@ -27,6 +27,9 @@ public class ResController extends BaseController
 {
 
     @Autowired
+    private IResSliderService resSliderService;
+
+    @Autowired
     private IResOrginfoService resOrginfoService;
 
     @Autowired
@@ -53,6 +56,21 @@ public class ResController extends BaseController
 
     @Autowired
     private IResRxdataService resRxdataService;
+
+
+    /**
+     * 查询首页轮播图列表
+     */
+    @GetMapping("/getslider")
+    public TableDataInfo listSlider(ResSlider resSlider)
+    {
+        startPage();
+        resSlider.setUseDataScope(false);
+        resSlider.setAppored("2");
+        resSlider.setStatus("0");
+        List<ResSlider> list = resSliderService.selectResSliderList(resSlider);
+        return getDataTable(list);
+    }
 
     /**
      * 查询戒治机构列表

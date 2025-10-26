@@ -18,13 +18,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="jobinfo"    column="jobinfo"    />
         <result property="skill"    column="skill"    />
         <result property="notice"    column="notice"    />
-        <result property="user"    column="user"    />
+        <result property="users"    column="users"    />
         <result property="police"    column="police"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectEtlReport1Vo">
-        select id, org, resource, expert, cases, scale, survey, rxdata, activities, chat, jobinfo, skill, notice, user, police, update_time from etl_report1
+        select id, org, resource, expert, cases, scale, survey, rxdata, activities, chat, jobinfo, skill, notice, users, police, update_time from etl_report1
     </sql>
 
     <select id="selectEtlReport1List" parameterType="EtlReport1" resultMap="EtlReport1Result">
@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="jobinfo != null "> and jobinfo = #{jobinfo}</if>
             <if test="skill != null "> and skill = #{skill}</if>
             <if test="notice != null "> and notice = #{notice}</if>
-            <if test="user != null "> and user = #{user}</if>
+            <if test="users != null "> and users = #{users}</if>
             <if test="police != null "> and police = #{police}</if>
         </where>
     </select>
@@ -60,10 +60,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             GROUP BY day ORDER BY day
         </if>
         <if test="_databaseId == 'kingbase'">
-            SELECT TO_CHAR(login_time,'FMMM/FMDD') AS day, COUNT(DISTINCT user_name) AS cnt
+            SELECT TO_CHAR(login_time, 'MM/DD') AS day,
+            COUNT(DISTINCT user_name) AS cnt
             FROM sys_logininfor
-            WHERE status = '0' AND login_time >= CURRENT_DATE - INTERVAL '29 days'
-            GROUP BY day ORDER BY day
+            WHERE status = '0'
+            AND login_time >= CURRENT_DATE - INTERVAL '29 days'
+            GROUP BY 1
+            ORDER BY 1
         </if>
     </select>
 
@@ -82,7 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="jobinfo != null">jobinfo,</if>
             <if test="skill != null">skill,</if>
             <if test="notice != null">notice,</if>
-            <if test="user != null">user,</if>
+            <if test="users != null">users,</if>
             <if test="police != null">police,</if>
             <if test="updateTime != null">update_time,</if>
          </trim>
@@ -99,7 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="jobinfo != null">#{jobinfo},</if>
             <if test="skill != null">#{skill},</if>
             <if test="notice != null">#{notice},</if>
-            <if test="user != null">#{user},</if>
+            <if test="users != null">#{users},</if>
             <if test="police != null">#{police},</if>
             <if test="updateTime != null">#{updateTime},</if>
          </trim>
@@ -120,7 +123,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="jobinfo != null">jobinfo = #{jobinfo},</if>
             <if test="skill != null">skill = #{skill},</if>
             <if test="notice != null">notice = #{notice},</if>
-            <if test="user != null">user = #{user},</if>
+            <if test="users != null">user = #{users},</if>
             <if test="police != null">police = #{police},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>

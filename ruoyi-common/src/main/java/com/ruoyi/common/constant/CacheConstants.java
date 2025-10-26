@@ -20,7 +20,7 @@ public class CacheConstants
     /**
      * 参数管理 cache key
      */
-    public static final String SYS_CONFIG_KEY = "sys_config:";
+    public static final String SYS_CONFIG_KEY = "sys_configs:";
 
     /**
      * 字典管理 cache key

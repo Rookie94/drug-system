@@ -61,12 +61,13 @@
             lbs_results AS t
                 LEFT JOIN lbs_contexts AS c ON t.context_id = c.context_id
                 LEFT JOIN sys_dept AS d ON t.dept_id = d.dept_id
-                LEFT JOIN sys_user AS u ON t.user_id = u.user_id
+                LEFT JOIN sys_userinfo AS u ON t.user_id = u.user_id
     </sql>
 
     <select id="selectLbsResultsList" parameterType="LbsResultsVo" resultMap="LbsResultsResult">
         <include refid="selectLbsResultsVo"/>
         <where>
+            <if test="userId != null "> and t.user_id = #{userId}</if>
             <if test="resultNo != null "> and t.result_no = #{resultNo}</if>
             <if test="contextId != null "> and t.context_id = #{contextId}</if>
             <if test="contextNo != null  and contextNo != ''"> and context_no like concat('%', #{contextNo}, '%')</if>

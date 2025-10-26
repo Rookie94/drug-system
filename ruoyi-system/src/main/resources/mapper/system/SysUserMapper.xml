@@ -59,14 +59,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select u.user_id, u.dept_id, u.user_name, u.nick_name,u.user_type, u.email, u.avatar, u.phonenumber,u.province_id,u.city_id,u.area_id, u.password, u.sex,u.birthday,u.entry_date, u.status, u.del_flag, u.union_id, u.open_id, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,
         d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.status as dept_status,
         r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
-        from sys_user u
+        from sys_userinfo u
 		    left join sys_dept d on u.dept_id = d.dept_id
 		    left join sys_user_role ur on u.user_id = ur.user_id
-		    left join sys_role r on r.role_id = ur.role_id
+		    left join sys_roleinfo r on r.role_id = ur.role_id
     </sql>
     
     <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
-		select u.user_id, u.dept_id, u.nick_name, u.user_name,u.user_type, u.email, u.avatar, u.phonenumber,u.province_id,u.city_id,u.area_id, u.sex,u.birthday,u.entry_date, u.status, u.del_flag, u.union_id, u.open_id, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
+		select u.user_id, u.dept_id, u.nick_name, u.user_name,u.user_type, u.email, u.avatar, u.phonenumber,u.province_id,u.city_id,u.area_id, u.sex,u.birthday,u.entry_date, u.status, u.del_flag, u.union_id, u.open_id, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_userinfo u
 		left join sys_dept d on u.dept_id = d.dept_id
 		where u.del_flag = '0'
 		<if test="userId != null and userId != 0">
@@ -104,7 +104,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<select id="selectStudentList" parameterType="SysUser" resultMap="SysUserResult">
-		select u.user_id, u.dept_id, u.nick_name, u.user_name,u.user_type, u.email, u.avatar, u.phonenumber,u.province_id,u.city_id,u.area_id, u.sex,u.birthday,u.entry_date, u.status, u.del_flag, u.union_id, u.open_id, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
+		select u.user_id, u.dept_id, u.nick_name, u.user_name,u.user_type, u.email, u.avatar, u.phonenumber,u.province_id,u.city_id,u.area_id, u.sex,u.birthday,u.entry_date, u.status, u.del_flag, u.union_id, u.open_id, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_userinfo u
 		left join sys_dept d on u.dept_id = d.dept_id
 		where u.del_flag = '0' and u.user_type&lt;&gt;'00'
 		<if test="userId != null and userId != 0">
@@ -143,10 +143,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="selectAllocatedList" parameterType="SysUser" resultMap="SysUserResult">
 	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber,u.province_id,u.city_id,u.area_id,u.birthday,u.entry_date, u.status, u.create_time
-	    from sys_user u
+	    from sys_userinfo u
 			 left join sys_dept d on u.dept_id = d.dept_id
 			 left join sys_user_role ur on u.user_id = ur.user_id
-			 left join sys_role r on r.role_id = ur.role_id
+			 left join sys_roleinfo r on r.role_id = ur.role_id
 	    where u.del_flag = '0' and u.user_type='00' and r.role_id = #{roleId}
 	    <if test="userName != null and userName != ''">
 			AND u.user_name like concat('%', #{userName}, '%')
@@ -160,12 +160,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="selectUnallocatedList" parameterType="SysUser" resultMap="SysUserResult">
 	    select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber,u.province_id,u.city_id,u.area_id,u.birthday,u.entry_date, u.status, u.create_time
-	    from sys_user u
+	    from sys_userinfo u
 			 left join sys_dept d on u.dept_id = d.dept_id
 			 left join sys_user_role ur on u.user_id = ur.user_id
-			 left join sys_role r on r.role_id = ur.role_id
+			 left join sys_roleinfo r on r.role_id = ur.role_id
 	    where u.del_flag = '0' and u.user_type='00' and (r.role_id != #{roleId} or r.role_id IS NULL)
-	    and u.user_id not in (select u.user_id from sys_user u inner join sys_user_role ur on u.user_id = ur.user_id and ur.role_id = #{roleId})
+	    and u.user_id not in (select u.user_id from sys_userinfo u inner join sys_user_role ur on u.user_id = ur.user_id and ur.role_id = #{roleId})
 	    <if test="userName != null and userName != ''">
 			AND u.user_name like concat('%', #{userName}, '%')
 		</if>
@@ -187,7 +187,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="checkUserNameUnique" parameterType="String" resultMap="SysUserResult">
-		select user_id, user_name from sys_user where user_name = #{userName} and del_flag = '0' limit 1
+		select user_id, user_name from sys_userinfo where user_name = #{userName} and del_flag = '0' limit 1
 	</select>
 
 	<select id="selectWxUserByOpenId" parameterType="String" resultMap="SysUserResult">
@@ -201,15 +201,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="checkPhoneUnique" parameterType="String" resultMap="SysUserResult">
-		select user_id, phonenumber from sys_user where phonenumber = #{phonenumber} and del_flag = '0' limit 1
+		select user_id, phonenumber from sys_userinfo where phonenumber = #{phonenumber} and del_flag = '0' limit 1
 	</select>
 	
 	<select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
-		select user_id, email from sys_user where email = #{email} and del_flag = '0' limit 1
+		select user_id, email from sys_userinfo where email = #{email} and del_flag = '0' limit 1
 	</select>
 	
 	<insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
- 		insert into sys_user(
+ 		insert into sys_userinfo(
  			<if test="userId != null and userId != 0">user_id,</if>
  			<if test="deptId != null and deptId != 0">dept_id,</if>
  			<if test="userName != null and userName != ''">user_name,</if>
@@ -252,12 +252,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="openId != null and openId != ''">#{openId},</if>
  			<if test="createBy != null and createBy != ''">#{createBy},</if>
  			<if test="remark != null and remark != ''">#{remark},</if>
- 			sysdate()
+			now()
  		)
 	</insert>
 	
 	<update id="updateUser" parameterType="SysUser">
- 		update sys_user
+ 		update sys_userinfo
  		<set>
  			<if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>
  			<if test="userName != null and userName != ''">user_name = #{userName},</if>
@@ -279,43 +279,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="loginDate != null">login_date = #{loginDate},</if>
  			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
  			<if test="remark != null">remark = #{remark},</if>
- 			update_time = sysdate()
+ 			update_time = now()
  		</set>
  		where user_id = #{userId}
 	</update>
 	
 	<update id="updateUserStatus" parameterType="SysUser">
- 		update sys_user set status = #{status} where user_id = #{userId}
+ 		update sys_userinfo set status = #{status} where user_id = #{userId}
 	</update>
 	
 	<update id="updateUserAvatar" parameterType="SysUser">
- 		update sys_user set avatar = #{avatar} where user_name = #{userName}
+ 		update sys_userinfo set avatar = #{avatar} where user_name = #{userName}
 	</update>
 	
 	<update id="resetUserPwd" parameterType="SysUser">
- 		update sys_user set password = #{password} where user_name = #{userName}
+ 		update sys_userinfo set password = #{password} where user_name = #{userName}
 	</update>
 	
 	<delete id="deleteUserById" parameterType="Long">
- 		update sys_user set del_flag = '2' where user_id = #{userId}
+ 		update sys_userinfo set del_flag = '2' where user_id = #{userId}
  	</delete>
  	
  	<delete id="deleteUserByIds" parameterType="Long">
- 		update sys_user set del_flag = '2' where user_id in
+ 		update sys_userinfo set del_flag = '2' where user_id in
  		<foreach collection="array" item="userId" open="(" separator="," close=")">
  			#{userId}
         </foreach> 
  	</delete>
 
 	<update id="updateUserStatusByIds" parameterType="Long">
-		update sys_user set status = '1' where user_id in
+		update sys_userinfo set status = '1' where user_id in
 		<foreach collection="array" item="userId" open="(" separator="," close=")">
 			#{userId}
 		</foreach>
 	</update>
 
 	<delete id="unBindWxUser" parameterType="SysUser">
-		update sys_user set open_id = null where user_id = #{userId};
+		update sys_userinfo set open_id = null where user_id = #{userId};
 		delete from sys_app_user where open_id = #{openId};
 	</delete>
 	

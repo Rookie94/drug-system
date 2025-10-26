@@ -8,40 +8,32 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 戒治处方对象 res_rxdata
+ * 轮播图对象 res_slider
  * 
  * @author admin
- * @date 2025-05-08
+ * @date 2025-10-23
  */
-public class ResRxdata extends BaseEntity
+public class ResSlider extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 处方id */
-    private Long rxId;
+    /** id */
+    private Long sliderId;
 
     /** 序号 */
     @Excel(name = "序号")
     private Long orderNum;
 
-    /** 标题 */
-    @Excel(name = "标题")
-    private String title;
-
-    /** 封面图片 */
-    @Excel(name = "封面图片")
+    /** 轮播图片 */
+    @Excel(name = "轮播图片")
     private String pic;
 
-    /** 处方类型 */
-    @Excel(name = "处方类型")
-    private String rxType;
+    /** 轮播类型 */
+    @Excel(name = "轮播类型")
+    private String sliderType;
 
-    /** 处方详情 */
-    @Excel(name = "处方详情")
-    private String content;
-
-    /** 处方状态（0正常 1停用） */
-    @Excel(name = "处方状态", readConverterExp = "0=正常,1=停用")
+    /** 轮播状态（0正常 1停用） */
+    @Excel(name = "轮播状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
     /** 发布时间 */
@@ -54,11 +46,9 @@ public class ResRxdata extends BaseEntity
     private String appored;
 
     /** 用户ID */
-    @Excel(name = "用户ID")
     private Long userId;
 
     /** 部门ID */
-    @Excel(name = "部门ID")
     private Long deptId;
 
     /** 更新者 */
@@ -70,14 +60,14 @@ public class ResRxdata extends BaseEntity
     @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date apporTime;
 
-    public void setRxId(Long rxId) 
+    public void setSliderId(Long sliderId) 
     {
-        this.rxId = rxId;
+        this.sliderId = sliderId;
     }
 
-    public Long getRxId() 
+    public Long getSliderId() 
     {
-        return rxId;
+        return sliderId;
     }
 
     public void setOrderNum(Long orderNum) 
@@ -90,16 +80,6 @@ public class ResRxdata extends BaseEntity
         return orderNum;
     }
 
-    public void setTitle(String title) 
-    {
-        this.title = title;
-    }
-
-    public String getTitle() 
-    {
-        return title;
-    }
-
     public void setPic(String pic) 
     {
         this.pic = pic;
@@ -110,24 +90,14 @@ public class ResRxdata extends BaseEntity
         return pic;
     }
 
-    public void setRxType(String rxType) 
+    public void setSliderType(String sliderType) 
     {
-        this.rxType = rxType;
+        this.sliderType = sliderType;
     }
 
-    public String getRxType() 
+    public String getSliderType() 
     {
-        return rxType;
-    }
-
-    public void setContent(String content) 
-    {
-        this.content = content;
-    }
-
-    public String getContent() 
-    {
-        return content;
+        return sliderType;
     }
 
     public void setStatus(String status) 
@@ -203,12 +173,10 @@ public class ResRxdata extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("rxId", getRxId())
+            .append("sliderId", getSliderId())
             .append("orderNum", getOrderNum())
-            .append("title", getTitle())
             .append("pic", getPic())
-            .append("rxType", getRxType())
-            .append("content", getContent())
+            .append("sliderType", getSliderType())
             .append("status", getStatus())
             .append("publishTime", getPublishTime())
             .append("appored", getAppored())

@@ -40,6 +40,8 @@
         <x-file-storage-spring.version>2.2.1</x-file-storage-spring.version>
         <minio.version>8.2.2</minio.version>
         <esdk-obs-java.version>3.23.3</esdk-obs-java.version>
+        <sms4j-spring-boot-starter.version>3.3.5</sms4j-spring-boot-starter.version>
+        <jasypt-spring-boot-starter.version>3.0.5</jasypt-spring-boot-starter.version>
         <okhttp3.version>4.9.1</okhttp3.version>
         <hutool-all.version>5.8.8</hutool-all.version>
     </properties>
@@ -214,6 +216,18 @@
                 <groupId>pro.fessional</groupId>
                 <artifactId>kaptcha</artifactId>
                 <version>${kaptcha.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.dromara.sms4j</groupId>
+                <artifactId>sms4j-spring-boot-starter</artifactId>
+                <version>${sms4j-spring-boot-starter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-spring-boot-starter</artifactId>
+                <version>${jasypt-spring-boot-starter.version}</version>
             </dependency>
 
             <!--      小程序需要的      -->

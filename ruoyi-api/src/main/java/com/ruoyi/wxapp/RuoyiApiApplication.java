@@ -1,14 +1,19 @@
 package com.ruoyi.wxapp;
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+import org.dromara.x.file.storage.spring.EnableFileStorage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication
+
 @ComponentScan("com.ruoyi.framework")
 @ComponentScan("com.ruoyi.common")
 @ComponentScan("com.ruoyi.system")
 @ComponentScan("com.ruoyi.cms")
+@EnableFileStorage
+@EnableEncryptableProperties // 启用 Jasypt 加密
+@SpringBootApplication
 public class RuoyiApiApplication {
 
     public static void main(String[] args) {

@@ -87,7 +87,7 @@ spring:
     # 数据库索引
     database: 0
     # 密码
-    password: 123456
+    password: ENC(DT3rPM2wuvCWvGrTqDH3rlwEyIde5PsaEDJT/fLdRrtYayXShq6yasVE+O2e5XKG)
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -154,17 +154,63 @@ dromara:
       - platform: minio-1            # 标识，可自定义
         enable-storage: true
         access-key: utOGh5X1fv7d7Kiwbzm5
-        secret-key: "8KhucwRkd8f8QiimshP3Uz7SNBlaaIB895GDeBjS"
+        secret-key: ENC(KyTRAXoc6V9f4OiWHVFYe6KCz9iFmKAMOl59NRctBx087lDZm7EHHc/Sq5NaCn1MSEAxnJTX9IDwFczWe3GrW0KEPtg1JtPAFu3r14HFffE=)
         end-point: http://112.86.226.241:9000
         bucket-name: public
         domain: https://yiti.shunxuan.net.cn:9000/public/   # 直链域名，末尾 /
         base-path:          # 可选虚拟目录
 
+#短信配置
+sms:
+  # 标注从yml读取配置
+  config-type: yaml
+  HttpLog: true
+  corePoolSize: 2
+  maxPoolSize: 6
+  queueCapacity: 200
+  blends:
+    # 自定义的标识configId
+    alibaba:
+      #框架定义的厂商名称标识
+      supplier: alibaba
+      #accessKey
+      access-key-id:
+      #accessSecret
+      access-key-secret:
+      #短信签名
+      signature:
+      #模板ID
+      template-id:
+      # 随机权重，负载均衡的权重值依赖于此，默认为1，如不需要负载均衡可不进行配置
+      weight: 1
+      #配置标识名称 如果你使用的yml进行配置，则blends下层配置的就是这个，可为空，如果你使用的接口类配置，则需要设置值
+      #需要注意的是，不同的配置之间config-id不能重复，否则会发生配置丢失的问题
+      config-id: alibaba
+      #短信自动重试间隔时间  默认五秒
+      retry-interval: 10
+      # 短信重试次数，默认0次不重试
+      max-retries: 2
+
+jasypt:
+  encryptor:
+    # 核心：高级算法
+    algorithm: PBEWITHHMACSHA512ANDAES_256
+    # 必须随机初始化向量
+    iv-generator-classname: org.jasypt.iv.RandomIvGenerator
+    # 盐生成器
+    salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
+    # 输出格式
+    string-output-type: base64
+    # 迭代次数（可选，默认 1000）
+    key-obtention-iterations: 1000
+    # 密钥通过环境变量传入，绝不下文件
+    password: ${JASYPT_ENCRYPTOR_PASSWORD}
+
 encrypt:
   ## 开关控制
   enabled: false
   ## 密钥，与前端保持一致
-  key: 0123456789abcdef0123456789abcdef
+  key: ENC(8RIv4Ajxnxd1t5Y9gQrGh2nh61dcOc/jrXzUyKItWVjCRUxFJa7qluDbjh4rMBqSK0FMmK+DoOnsI+bpTJ0GRQAxALHpb16j5p1G4+Vt710=)
   ## 忽略url，不做处理
   filterUrls: /common/*,/profile/upload/*,/captchaImage
 

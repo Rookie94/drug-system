@@ -13,9 +13,9 @@ spring:
             # 主库数据源
             master:
                 driver-class-name: com.kingbase8.Driver
-                url: jdbc:kingbase8://192.168.0.100:54321/dtcare?currentSchema=public&allowEncodingChanges=true&clientEncoding=UTF8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+                url: jdbc:kingbase8://127.0.0.1:54321/dtcare?currentSchema=public&allowEncodingChanges=true&clientEncoding=UTF8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
                 username: system
-                password: King@Base2025!#
+                password: ENC(zBgFrZVjrpdSxhFRP/8Dl5zgnB1VvfTtti05af2+XiFsv/ruY3wqXM61OQEJ4QFd)
 
             # 从库数据源
             slave:
@@ -55,8 +55,8 @@ spring:
                 allow:
                 url-pattern: /druid/*
                 # 控制台管理用户名和密码
-                login-username: dtcms
-                login-password: 123456
+                login-username:
+                login-password:
             filter:
                 stat:
                     enabled: true

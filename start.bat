@@ -3,9 +3,11 @@
 rem jar平级目录
 set AppName=ruoyi-admin.jar
 
-rem JVM参数
-set JVM_OPTS="-Dname=%AppName%  -Duser.timezone=Asia/Shanghai -Xms512m -Xmx1024m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -XX:+PrintGCDateStamps  -XX:+PrintGCDetails -XX:NewRatio=1 -XX:SurvivorRatio=30 -XX:+UseParallelGC -XX:+UseParallelOldGC"
+rem Jasypt 加密密钥（不要加引号）
+set JASYPT_ENCRYPTOR_PASSWORD=t8Zr#kP2!mV@wQ5$xH9&nL4*eS7)uF1(+
 
+rem JVM参数
+set JVM_OPTS=-Dname=%AppName% -Duser.timezone=Asia/Shanghai -Xms512m -Xmx1024m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:NewRatio=1 -XX:SurvivorRatio=30 -XX:+UseParallelGC -XX:+UseParallelOldGC -Djasypt.encryptor.password=%JASYPT_ENCRYPTOR_PASSWORD%
 
 ECHO.
 	ECHO.  [1] 启动%AppName%

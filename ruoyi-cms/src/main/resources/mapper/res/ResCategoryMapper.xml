@@ -31,6 +31,14 @@
         </where>
     </select>
 
+    <select id="selectResCategoryListByIds"  parameterType="String" resultMap="ResCategoryResult">
+        <include refid="selectResCategoryVo"/>
+        where id IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <select id="selectResCategoryById" parameterType="Long" resultMap="ResCategoryResult">
         <include refid="selectResCategoryVo"/>
         where id = #{id}

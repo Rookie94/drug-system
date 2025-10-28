@@ -28,6 +28,15 @@ public interface IResCategoryService
     public List<ResCategory> selectResCategoryList(ResCategory resCategory);
 
     /**
+     * 查询资源分类列表
+     *
+     * @param ids 资源id
+     * @return 资源分类集合
+     */
+    public List<ResCategory> selectResCategoryListByIds(Long[] ids);
+
+
+    /**
      * 新增资源分类
      *
      * @param resCategory 资源分类

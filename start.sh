@@ -2,7 +2,7 @@
 # ./ry.sh start 启动 stop 停止 restart 重启 status 状态
 AppName=ruoyi-admin.jar
 
-# 1. Jasypt 加密密钥（写死版本）
+# 1. Jasypt 加密密钥
 JASYPT_ENCRYPTOR_PASSWORD="t8Zr#kP2!mV@wQ5$xH9&nL4*eS7)uF1(+"   # <-- 改这里即可换密钥
 
 # 2. JVM 参数：把密钥作为系统属性传入

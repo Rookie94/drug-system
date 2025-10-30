@@ -13,6 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="scale"    column="scale"    />
         <result property="survey"    column="survey"    />
         <result property="rxdata"    column="rxdata"    />
+        <result property="tech"    column="tech"    />
         <result property="activities"    column="activities"    />
         <result property="chat"    column="chat"    />
         <result property="jobinfo"    column="jobinfo"    />
@@ -24,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectEtlReport1Vo">
-        select id, org, resource, expert, cases, scale, survey, rxdata, activities, chat, jobinfo, skill, notice, users, police, update_time from etl_report1
+        select id, org, resource, expert, cases, scale, survey, rxdata,tech, activities, chat, jobinfo, skill, notice, users, police, update_time from etl_report1
     </sql>
 
     <select id="selectEtlReport1List" parameterType="EtlReport1" resultMap="EtlReport1Result">
@@ -37,6 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="scale != null "> and scale = #{scale}</if>
             <if test="survey != null "> and survey = #{survey}</if>
             <if test="rxdata != null "> and rxdata = #{rxdata}</if>
+            <if test="tech != null "> and tech = #{tech}</if>
             <if test="activities != null "> and activities = #{activities}</if>
             <if test="chat != null "> and chat = #{chat}</if>
             <if test="jobinfo != null "> and jobinfo = #{jobinfo}</if>
@@ -64,9 +66,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             COUNT(DISTINCT user_name) AS cnt
             FROM sys_logininfor
             WHERE status = '0'
-            AND login_time >= CURRENT_DATE - INTERVAL '29 days'
-            GROUP BY 1
-            ORDER BY 1
+            AND login_time >= CURRENT_DATE - 29
+            GROUP BY TO_CHAR(login_time, 'MM/DD')
+            ORDER BY TO_CHAR(login_time, 'MM/DD')
         </if>
     </select>
 
@@ -80,6 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="scale != null">scale,</if>
             <if test="survey != null">survey,</if>
             <if test="rxdata != null">rxdata,</if>
+            <if test="tech != null">tech,</if>
             <if test="activities != null">activities,</if>
             <if test="chat != null">chat,</if>
             <if test="jobinfo != null">jobinfo,</if>
@@ -97,6 +100,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="scale != null">#{scale},</if>
             <if test="survey != null">#{survey},</if>
             <if test="rxdata != null">#{rxdata},</if>
+            <if test="tech != null">#{tech},</if>
             <if test="activities != null">#{activities},</if>
             <if test="chat != null">#{chat},</if>
             <if test="jobinfo != null">#{jobinfo},</if>
@@ -118,6 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="scale != null">scale = #{scale},</if>
             <if test="survey != null">survey = #{survey},</if>
             <if test="rxdata != null">rxdata = #{rxdata},</if>
+            <if test="tech != null">rxdata = #{tech},</if>
             <if test="activities != null">activities = #{activities},</if>
             <if test="chat != null">chat = #{chat},</if>
             <if test="jobinfo != null">jobinfo = #{jobinfo},</if>

@@ -46,6 +46,10 @@ public class EtlReport1 extends BaseEntity
     @Excel(name = "处方数量")
     private Long rxdata;
 
+    /** 处方数量 */
+    @Excel(name = "戒治技术数量")
+    private Long tech;
+
     /** 活动数量 */
     @Excel(name = "活动数量")
     private Long activities;
@@ -154,6 +158,14 @@ public class EtlReport1 extends BaseEntity
         return rxdata;
     }
 
+    public Long getTech() {
+        return tech;
+    }
+
+    public void setTech(Long tech) {
+        this.tech = tech;
+    }
+
     public void setActivities(Long activities) 
     {
         this.activities = activities;
@@ -235,6 +247,7 @@ public class EtlReport1 extends BaseEntity
             .append("scale", getScale())
             .append("survey", getSurvey())
             .append("rxdata", getRxdata())
+            .append("tech", getTech())
             .append("activities", getActivities())
             .append("chat", getChat())
             .append("jobinfo", getJobinfo())

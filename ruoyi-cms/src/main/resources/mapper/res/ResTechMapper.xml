@@ -2,14 +2,14 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.cms.res.mapper.ResRxdataMapper">
+<mapper namespace="com.ruoyi.cms.res.mapper.ResTechMapper">
     
-    <resultMap type="ResRxdata" id="ResRxdataResult">
-        <result property="rxId"    column="rx_id"    />
+    <resultMap type="ResTech" id="ResTechResult">
+        <result property="techId"    column="tech_id"    />
         <result property="orderNum"    column="order_num"    />
         <result property="title"    column="title"    />
         <result property="pic"    column="pic"    />
-        <result property="rxType"    column="rx_type"    />
+        <result property="techType"    column="tech_type"    />
         <result property="content"    column="content"    />
         <result property="status"    column="status"    />
         <result property="publishTime"    column="publish_time"    />
@@ -25,36 +25,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
     </resultMap>
 
-    <sql id="selectResRxdataVo">
-        select rx_id, order_num, title, pic, rx_type, content, status, publish_time, appored, user_id, dept_id, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_rxdata
+    <sql id="selectResTechVo">
+        select tech_id, order_num, title, pic, tech_type, content, status, publish_time, appored, user_id, dept_id, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_tech t
     </sql>
 
-    <select id="selectResRxdataList" parameterType="ResRxdata" resultMap="ResRxdataResult">
-        <include refid="selectResRxdataVo"/>
-        <where>  
+    <select id="selectResTechList" parameterType="ResTech" resultMap="ResTechResult">
+        <include refid="selectResTechVo"/>
+        <where>
             <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
-            <if test="rxType != null  and rxType != ''"> and rx_type = #{rxType}</if>
+            <if test="techType != null  and techType != ''"> and tech_type = #{techType}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
             <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
+            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
+            <if test="apporBy != null  and apporBy != ''"> and appor_by = #{apporBy}</if>
+            <if test="apporTime != null "> and appor_time = #{apporTime}</if>
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
-        order by t.order_num
+        order by order_num
     </select>
     
-    <select id="selectResRxdataByRxId" parameterType="Long" resultMap="ResRxdataResult">
-        <include refid="selectResRxdataVo"/>
-        where rx_id = #{rxId}
+    <select id="selectResTechByTechId" parameterType="Long" resultMap="ResTechResult">
+        <include refid="selectResTechVo"/>
+        where tech_id = #{techId}
     </select>
 
-    <insert id="insertResRxdata" parameterType="ResRxdata" useGeneratedKeys="true" keyProperty="rxId">
-        insert into res_rxdata
+    <insert id="insertResTech" parameterType="ResTech">
+        insert into res_tech
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="techId != null">tech_id,</if>
             <if test="orderNum != null">order_num,</if>
             <if test="title != null">title,</if>
             <if test="pic != null">pic,</if>
-            <if test="rxType != null">rx_type,</if>
+            <if test="techType != null">tech_type,</if>
             <if test="content != null">content,</if>
             <if test="status != null">status,</if>
             <if test="publishTime != null">publish_time,</if>
@@ -70,10 +73,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="techId != null">#{techId},</if>
             <if test="orderNum != null">#{orderNum},</if>
             <if test="title != null">#{title},</if>
             <if test="pic != null">#{pic},</if>
-            <if test="rxType != null">#{rxType},</if>
+            <if test="techType != null">#{techType},</if>
             <if test="content != null">#{content},</if>
             <if test="status != null">#{status},</if>
             <if test="publishTime != null">#{publishTime},</if>
@@ -90,13 +94,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateResRxdata" parameterType="ResRxdata">
-        update res_rxdata
+    <update id="updateResTech" parameterType="ResTech">
+        update res_tech
         <trim prefix="SET" suffixOverrides=",">
             <if test="orderNum != null">order_num = #{orderNum},</if>
             <if test="title != null">title = #{title},</if>
             <if test="pic != null">pic = #{pic},</if>
-            <if test="rxType != null">rx_type = #{rxType},</if>
+            <if test="techType != null">tech_type = #{techType},</if>
             <if test="content != null">content = #{content},</if>
             <if test="status != null">status = #{status},</if>
             <if test="publishTime != null">publish_time = #{publishTime},</if>
@@ -111,46 +115,45 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="apporTime != null">appor_time = #{apporTime},</if>
             <if test="remark != null">remark = #{remark},</if>
         </trim>
-        where rx_id = #{rxId}
+        where tech_id = #{techId}
     </update>
 
-    <delete id="deleteResRxdataByRxId" parameterType="Long">
-        delete from res_rxdata where rx_id = #{rxId}
+    <delete id="deleteResTechByTechId" parameterType="Long">
+        delete from res_tech where tech_id = #{techId}
     </delete>
 
-    <delete id="deleteResRxdataByRxIds" parameterType="String">
-        delete from res_rxdata where rx_id in 
-        <foreach item="rxId" collection="array" open="(" separator="," close=")">
-            #{rxId}
+    <delete id="deleteResTechByTechIds" parameterType="String">
+        delete from res_tech where tech_id in 
+        <foreach item="techId" collection="array" open="(" separator="," close=")">
+            #{techId}
         </foreach>
     </delete>
 
-
     <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
-        select rx_id from res_rxdata where appored in ('1','2') and rx_id in
-        <foreach item="rxId" collection="array" open="(" separator="," close=")">
-            #{rxId}
+        select tech_id from res_tech where appored in ('1','2') and tech_id in
+        <foreach item="techId" collection="array" open="(" separator="," close=")">
+            #{techId}
         </foreach>
     </select>
 
-    <update id="updateStatus" parameterType="ResRxdata">
-        update res_rxdata
+    <update id="updateStatus" parameterType="ResTech">
+        update res_tech
         <trim prefix="SET" suffixOverrides=",">
             <if test="status != null">status = #{status},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
-        where rx_id = #{rxId}
+        where tech_id = #{techId}
     </update>
 
     <update id="apporByIds"  parameterType="ResApporParam">
-        update res_rxdata
+        update res_tech
         <trim prefix="SET" suffixOverrides=",">
             <if test="flag != null">appored = #{flag},</if>
             <if test="apporBy != null">appor_by = #{apporBy},</if>
             <if test="apporTime != null">appor_time = #{apporTime},</if>
             <if test="publishTime != null">publish_time = #{publishTime}</if>
-            where rx_id in
+            where tech_id in
             <foreach item="id" collection="ids" open="(" separator="," close=")">
                 #{id}
             </foreach>
@@ -158,24 +161,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <update id="unApporById" parameterType="Long">
-        update res_rxdata
+        update res_tech
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
             publish_time=NULL,
             appor_by=NULL,
             appor_time = NULL,
         </trim>
-        where rx_id = #{rxId}
+        where tech_id = #{techId}
     </update>
 
     <update id="unApporByIds" parameterType="String">
-        update res_rxdata
+        update res_tech
         <trim prefix="SET" suffixOverrides=",">
             appored='0',
             publish_time=NULL,
             appor_by=NULL,
             appor_time=NULL
-            where rx_id in
+            where tech_id in
             <foreach item="id" collection="array" open="(" separator="," close=")">
                 #{id}
             </foreach>

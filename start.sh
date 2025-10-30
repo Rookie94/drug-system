@@ -1,9 +1,13 @@
 #!/bin/sh
+
+# 禁用历史扩展
+set +H
+
 # ./ry.sh start 启动 stop 停止 restart 重启 status 状态
 AppName=ruoyi-admin.jar
 
 # 1. Jasypt 加密密钥
-JASYPT_ENCRYPTOR_PASSWORD="t8Zr#kP2!mV@wQ5$xH9&nL4*eS7)uF1(+"   # <-- 改这里即可换密钥
+JASYPT_ENCRYPTOR_PASSWORD='t8Zr#kP2!mV@wQ5$xH9&nL4*eS7)uF1(+'
 
 # 2. JVM 参数：把密钥作为系统属性传入
 JVM_OPTS="-Dname=$AppName \
@@ -18,7 +22,13 @@ JVM_OPTS="-Dname=$AppName \
           -XX:SurvivorRatio=30 \
           -XX:+UseParallelGC \
           -XX:+UseParallelOldGC \
-          -Djasypt.encryptor.password=$JASYPT_ENCRYPTOR_PASSWORD"
+          -Djasypt.encryptor.algorithm=PBEWITHHMACSHA512ANDAES_256 \
+          -Djasypt.encryptor.provider-name=SunJCE \
+          -Djasypt.encryptor.key-obtention-iterations=1000 \
+          -Djasypt.encryptor.pool-size=4 \
+          -Djasypt.encryptor.salt-generator-classname=org.jasypt.salt.RandomSaltGenerator \
+          -Djasypt.encryptor.iv-generator-classname=org.jasypt.iv.RandomIvGenerator \
+          -Djasypt.encryptor.string-output-type=base64"
 
 APP_HOME=`pwd`
 LOG_PATH=$APP_HOME/logs/$AppName.log
@@ -39,8 +49,22 @@ function start(){
     if [ x"$PID" != x"" ]; then
         echo "$AppName is running..."
     else
-        nohup java $JVM_OPTS -jar $AppName > /dev/null 2>&1 &
-        echo "Start $AppName success..."
+        echo "Starting with explicit Jasypt configuration..."
+        # 显示完整的启动命令
+        echo "Command: java $JVM_OPTS -jar $AppName"
+        
+        # 启动并捕获详细日志
+        java $JVM_OPTS -jar $AppName > debug_startup.log 2>&1 &
+        START_PID=$!
+        
+        # 等待并检查进程状态
+        sleep 10
+        if ps -p $START_PID > /dev/null; then
+            echo "Application started successfully with PID: $START_PID"
+        else
+            echo "Application failed to start. Check debug_startup.log for details:"
+            cat debug_startup.log
+        fi
     fi
 }
 

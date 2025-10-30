@@ -24,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectResSliderVo">
-        select slider_id, order_num, pic, slider_type, status, publish_time, appored, user_id, dept_id, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_slider
+        select slider_id, order_num, pic, slider_type, status, publish_time, appored, user_id, dept_id, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_slider t
     </sql>
 
     <select id="selectResSliderList" parameterType="ResSlider" resultMap="ResSliderResult">
@@ -36,7 +36,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
             <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
         </where>
+        order by t.order_num
     </select>
     
     <select id="selectResSliderBySliderId" parameterType="Long" resultMap="ResSliderResult">

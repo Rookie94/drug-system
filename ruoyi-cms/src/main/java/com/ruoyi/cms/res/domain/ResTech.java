@@ -8,17 +8,17 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 戒治处方对象 res_rxdata
+ * 戒治技术宣传对象 res_tech
  * 
  * @author admin
- * @date 2025-05-08
+ * @date 2025-10-29
  */
-public class ResRxdata extends BaseEntity
+public class ResTech extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 处方id */
-    private Long rxId;
+    /** 技术Id */
+    private Long techId;
 
     /** 序号 */
     @Excel(name = "序号")
@@ -32,16 +32,16 @@ public class ResRxdata extends BaseEntity
     @Excel(name = "封面图片")
     private String pic;
 
-    /** 处方类型 */
-    @Excel(name = "处方类型")
-    private String rxType;
+    /** 技术类型 */
+    @Excel(name = "技术类型")
+    private String techType;
 
-    /** 处方详情 */
-    @Excel(name = "处方详情")
+    /** 技术简介 */
+    @Excel(name = "技术简介")
     private String content;
 
-    /** 处方状态（0正常 1停用） */
-    @Excel(name = "处方状态", readConverterExp = "0=正常,1=停用")
+    /** 状态 */
+    @Excel(name = "状态")
     private String status;
 
     /** 发布时间 */
@@ -54,30 +54,28 @@ public class ResRxdata extends BaseEntity
     private String appored;
 
     /** 用户ID */
-    @Excel(name = "用户ID")
     private Long userId;
 
     /** 部门ID */
-    @Excel(name = "部门ID")
     private Long deptId;
 
-    /** 更新者 */
+    /** 审核者 */
     @Excel(name = "审核者")
     private String apporBy;
 
-    /** 更新时间 */
+    /** 审核时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "审核时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date apporTime;
 
-    public void setRxId(Long rxId) 
+    public void setTechId(Long techId) 
     {
-        this.rxId = rxId;
+        this.techId = techId;
     }
 
-    public Long getRxId() 
+    public Long getTechId() 
     {
-        return rxId;
+        return techId;
     }
 
     public void setOrderNum(Long orderNum) 
@@ -110,14 +108,14 @@ public class ResRxdata extends BaseEntity
         return pic;
     }
 
-    public void setRxType(String rxType) 
+    public void setTechType(String techType) 
     {
-        this.rxType = rxType;
+        this.techType = techType;
     }
 
-    public String getRxType() 
+    public String getTechType() 
     {
-        return rxType;
+        return techType;
     }
 
     public void setContent(String content) 
@@ -203,11 +201,11 @@ public class ResRxdata extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("rxId", getRxId())
+            .append("techId", getTechId())
             .append("orderNum", getOrderNum())
             .append("title", getTitle())
             .append("pic", getPic())
-            .append("rxType", getRxType())
+            .append("techType", getTechType())
             .append("content", getContent())
             .append("status", getStatus())
             .append("publishTime", getPublishTime())

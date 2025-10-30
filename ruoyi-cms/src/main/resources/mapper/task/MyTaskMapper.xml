@@ -16,6 +16,7 @@
             update res_articles set appored='2' where appored='1' and publish_time &lt;= NOW();
             update sys_notice set appored='2' where appored='1' and publish_time &lt;= NOW();
             update res_rxdata set appored='2' where appored='1' and publish_time &lt;= NOW();
+            update res_tech set appored='2' where appored='1' and publish_time &lt;= NOW();
             update ofa_activities set appored='2' where appored='1' and publish_time &lt;= NOW();
             update ofa_activities set appored='3' where appored='2' and start_time &lt;= NOW() and end_time &gt;= NOW();
             update ofa_activities set appored='4' where appored in ('2','3') and end_time &lt;= NOW();
@@ -32,6 +33,7 @@
             update res_articles set appored='2' where appored='1' and publish_time &lt;= CURRENT_TIMESTAMP;
             update sys_notice set appored='2' where appored='1' and publish_time &lt;= CURRENT_TIMESTAMP;
             update res_rxdata set appored='2' where appored='1' and publish_time &lt;= CURRENT_TIMESTAMP;
+            update res_tech set appored='2' where appored='1' and publish_time &lt;= CURRENT_TIMESTAMP;
             update ofa_activities set appored='2' where appored='1' and publish_time &lt;= CURRENT_TIMESTAMP;
             update ofa_activities set appored='3' where appored='2' and start_time &lt;= CURRENT_TIMESTAMP and end_time &gt;= CURRENT_TIMESTAMP;
             update ofa_activities set appored='4' where appored in ('2','3') and end_time &lt;= CURRENT_TIMESTAMP;
@@ -47,6 +49,7 @@
         UPDATE etl_report1 SET scale = (SELECT COUNT(*) FROM lbs_contexts WHERE parent_context_id&gt; 1), update_time = CURRENT_TIMESTAMP WHERE id = 1;
         UPDATE etl_report1 SET survey = (SELECT COUNT(*) FROM doc_survey), update_time = CURRENT_TIMESTAMP WHERE id = 1;
         UPDATE etl_report1 SET rxdata = (SELECT COUNT(*) FROM res_rxdata), update_time = CURRENT_TIMESTAMP WHERE id = 1;
+        UPDATE etl_report1 SET tech = (SELECT COUNT(*) FROM res_tech), update_time = CURRENT_TIMESTAMP WHERE id = 1;
         UPDATE etl_report1 SET activities = (SELECT COUNT(*) FROM ofa_activities where parent_activity_id=0), update_time = CURRENT_TIMESTAMP WHERE id = 1;
         UPDATE etl_report1 SET chat = (SELECT COUNT(*) FROM chat_message where parent_message_id=0), update_time = CURRENT_TIMESTAMP WHERE id = 1;
         UPDATE etl_report1 SET jobinfo = (SELECT COUNT(*) FROM res_jobinfo), update_time = CURRENT_TIMESTAMP WHERE id = 1;

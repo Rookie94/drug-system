@@ -77,38 +77,88 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<select id="selectDbTableList" parameterType="GenTable" resultMap="GenTableResult">
-		select table_name, table_comment, create_time, update_time from information_schema.tables
-		where table_schema = (select database())
-		AND table_name NOT LIKE 'qrtz\_%' AND table_name NOT LIKE 'gen\_%'
-		AND table_name NOT IN (select table_name from gen_table)
+		SELECT table_name, table_comment, create_time, update_time
+		FROM information_schema.tables
+		WHERE table_schema =
+		<choose>
+			<when test="_databaseId == 'mysql'">database()</when>
+			<when test="_databaseId == 'kingbase'">current_schema()</when>
+		</choose>
+		AND table_name NOT LIKE 'qrtz\_%'
+		AND table_name NOT LIKE 'gen\_%'
+		AND table_name NOT IN (SELECT table_name FROM gen_table)
+
+		<!-- 表名模糊查询 -->
 		<if test="tableName != null and tableName != ''">
-			AND lower(table_name) like lower(concat('%', #{tableName}, '%'))
+			AND lower(table_name) LIKE
+			<choose>
+				<when test="_databaseId == 'mysql'">lower(concat('%', #{tableName}, '%'))</when>
+				<when test="_databaseId == 'kingbase'">'%' || lower(#{tableName}) || '%'</when>
+			</choose>
 		</if>
+
+		<!-- 表注释模糊查询 -->
 		<if test="tableComment != null and tableComment != ''">
-			AND lower(table_comment) like lower(concat('%', #{tableComment}, '%'))
+			AND lower(table_comment) LIKE
+			<choose>
+				<when test="_databaseId == 'mysql'">lower(concat('%', #{tableComment}, '%'))</when>
+				<when test="_databaseId == 'kingbase'">'%' || lower(#{tableComment}) || '%'</when>
+			</choose>
 		</if>
-		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-			AND date_format(create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
+
+		<!-- 开始时间 -->
+		<if test="params.beginTime != null and params.beginTime != ''">
+			<choose>
+				<when test="_databaseId == 'mysql'">
+					AND date_format(create_time, '%Y%m%d') &gt;= date_format(#{params.beginTime}, '%Y%m%d')
+				</when>
+				<when test="_databaseId == 'kingbase'">
+					AND to_char(create_time, 'YYYYMMDD') &gt;= to_char(#{params.beginTime}::date, 'YYYYMMDD')
+				</when>
+			</choose>
 		</if>
-		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-			AND date_format(create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
+
+		<!-- 结束时间 -->
+		<if test="params.endTime != null and params.endTime != ''">
+			<choose>
+				<when test="_databaseId == 'mysql'">
+					AND date_format(create_time, '%Y%m%d') &lt;= date_format(#{params.endTime}, '%Y%m%d')
+				</when>
+				<when test="_databaseId == 'kingbase'">
+					AND to_char(create_time, 'YYYYMMDD') &lt;= to_char(#{params.endTime}::date, 'YYYYMMDD')
+				</when>
+			</choose>
 		</if>
-        order by create_time desc
+
+		ORDER BY create_time DESC
 	</select>
-	
+
 	<select id="selectDbTableListByNames" resultMap="GenTableResult">
-		select table_name, table_comment, create_time, update_time from information_schema.tables
-		where table_name NOT LIKE 'qrtz\_%' and table_name NOT LIKE 'gen\_%' and table_schema = (select database())
-		and table_name in
-	    <foreach collection="array" item="name" open="(" separator="," close=")">
- 			#{name}
-        </foreach> 
+		SELECT table_name, table_comment, create_time, update_time
+		FROM information_schema.tables
+		WHERE table_name NOT LIKE 'qrtz\_%'
+		AND table_name NOT LIKE 'gen\_%'
+		AND table_schema =
+		<choose>
+			<when test="_databaseId == 'mysql'">database()</when>
+			<when test="_databaseId == 'kingbase'">current_schema()</when>
+		</choose>
+		AND table_name IN
+		<foreach collection="array" item="name" open="(" separator="," close=")">
+			#{name}
+		</foreach>
 	</select>
-	
+
 	<select id="selectTableByName" parameterType="String" resultMap="GenTableResult">
-		select table_name, table_comment, create_time, update_time from information_schema.tables
-		where table_comment <![CDATA[ <> ]]> '' and table_schema = (select database())
-		and table_name = #{tableName}
+		SELECT table_name, table_comment, create_time, update_time
+		FROM information_schema.tables
+		WHERE table_comment <![CDATA[ <> ]]>''
+		AND table_schema =
+		<choose>
+			<when test="_databaseId == 'mysql'">database()</when>
+			<when test="_databaseId == 'kingbase'">current_schema()</when>
+		</choose>
+		AND table_name = #{tableName}
 	</select>
 	
 	<select id="selectGenTableById" parameterType="Long" resultMap="GenTableResult">

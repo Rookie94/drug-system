@@ -55,6 +55,7 @@ public class SerialNoServiceImpl implements ISerialNoService
     @Override
     public int insertSerialNo(SerialNo serialNo)
     {
+        serialNo.setLastResetDate(java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd")));
         serialNo.setCreateTime(DateUtils.getNowDate());
         return serialNoMapper.insertSerialNo(serialNo);
     }

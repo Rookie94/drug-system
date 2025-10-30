@@ -57,6 +57,8 @@ public class ResController extends BaseController
     @Autowired
     private IResRxdataService resRxdataService;
 
+    @Autowired
+    private IResTechService resTechService;
 
     /**
      * 查询首页轮播图列表
@@ -219,6 +221,20 @@ public class ResController extends BaseController
         resRxdata.setAppored("2");
         resRxdata.setStatus("0");
         List<ResRxdata> list = resRxdataService.selectResRxdataList(resRxdata);
+        return getDataTable(list);
+    }
+
+    /**
+     * 获取戒治处方
+     */
+    @GetMapping("/gettech")
+    public TableDataInfo listTech(ResTech resTech)
+    {
+        startPage();
+        resTech.setUseDataScope(false);
+        resTech.setAppored("2");
+        resTech.setStatus("0");
+        List<ResTech> list = resTechService.selectResTechList(resTech);
         return getDataTable(list);
     }
 

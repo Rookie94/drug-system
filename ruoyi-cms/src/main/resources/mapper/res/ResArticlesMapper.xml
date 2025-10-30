@@ -66,6 +66,7 @@
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
+        order by t.category_id,t.type_id,t.order_num
     </select>
 
     <select id="selectResArticlesByArticleId" parameterType="Long" resultMap="ResArticlesResult">

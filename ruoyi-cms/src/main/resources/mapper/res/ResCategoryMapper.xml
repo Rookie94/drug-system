@@ -19,7 +19,7 @@
     </resultMap>
 
     <sql id="selectResCategoryVo">
-        select id, category_name, parent_id, sort_order, status, del_flag, create_by, create_time, update_by, update_time, remark from res_category
+        select id, category_name, parent_id, sort_order, status, del_flag, create_by, create_time, update_by, update_time, remark from res_category t
     </sql>
 
     <select id="selectResCategoryList" parameterType="ResCategory" resultMap="ResCategoryResult">
@@ -29,6 +29,7 @@
             <if test="sortOrder != null "> and sort_order = #{sortOrder}</if>
             <if test="status != null "> and status = #{status}</if>
         </where>
+        order by t.sort_order
     </select>
 
     <select id="selectResCategoryListByIds"  parameterType="String" resultMap="ResCategoryResult">

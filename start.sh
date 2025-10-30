@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # 禁用历史扩展
-set +H
+# set +H
 
 # ./ry.sh start 启动 stop 停止 restart 重启 status 状态
 AppName=ruoyi-admin.jar
@@ -12,9 +12,9 @@ JASYPT_ENCRYPTOR_PASSWORD='t8Zr#kP2!mV@wQ5$xH9&nL4*eS7)uF1(+'
 # 2. JVM 参数：把密钥作为系统属性传入
 JVM_OPTS="-Dname=$AppName \
           -Duser.timezone=Asia/Shanghai \
-          -Xms512m -Xmx1024m \
-          -XX:MetaspaceSize=128m \
-          -XX:MaxMetaspaceSize=512m \
+          -Xms4096m -Xmx8192m \
+          -XX:MetaspaceSize=1024m \
+          -XX:MaxMetaspaceSize=4096m \
           -XX:+HeapDumpOnOutOfMemoryError \
           -XX:+PrintGCDateStamps \
           -XX:+PrintGCDetails \
@@ -22,13 +22,7 @@ JVM_OPTS="-Dname=$AppName \
           -XX:SurvivorRatio=30 \
           -XX:+UseParallelGC \
           -XX:+UseParallelOldGC \
-          -Djasypt.encryptor.algorithm=PBEWITHHMACSHA512ANDAES_256 \
-          -Djasypt.encryptor.provider-name=SunJCE \
-          -Djasypt.encryptor.key-obtention-iterations=1000 \
-          -Djasypt.encryptor.pool-size=4 \
-          -Djasypt.encryptor.salt-generator-classname=org.jasypt.salt.RandomSaltGenerator \
-          -Djasypt.encryptor.iv-generator-classname=org.jasypt.iv.RandomIvGenerator \
-          -Djasypt.encryptor.string-output-type=base64"
+		  -Djasypt.encryptor.password=$JASYPT_ENCRYPTOR_PASSWORD"
 
 APP_HOME=`pwd`
 LOG_PATH=$APP_HOME/logs/$AppName.log
@@ -54,7 +48,7 @@ function start(){
         echo "Command: java $JVM_OPTS -jar $AppName"
         
         # 启动并捕获详细日志
-        java $JVM_OPTS -jar $AppName > debug_startup.log 2>&1 &
+        nohup java $JVM_OPTS -jar $AppName > /var/app/logs/debug_startup.log 2>&1 &
         START_PID=$!
         
         # 等待并检查进程状态

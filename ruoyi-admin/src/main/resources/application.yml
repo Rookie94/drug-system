@@ -22,9 +22,14 @@ server:
   # HTTPS
   ssl:
     key-store: classpath:yiti.shunxuan.net.cn.jks
-    key-store-password: 123456
-    key-store-type: PKCS12
-    enabled: false
+    key-store-password: 4c1c4h4x
+    key-store-type: JKS
+    #certificate: yiti.shunxuan.net.cn.pem
+    #certificate-private-key: yiti.shunxuan.net.cn.key
+    enabled: true
+    enabled-protocols: TLSv1.1,TLSv1.2,TLSv1.3
+    ciphers: ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4:!DH:!DHE
+
   servlet:
     # 应用的访问路径
     context-path: /
@@ -82,7 +87,7 @@ spring:
     # 数据库索引
     database: 0
     # 密码
-    password: ENC(DT3rPM2wuvCWvGrTqDH3rlwEyIde5PsaEDJT/fLdRrtYayXShq6yasVE+O2e5XKG)
+    password: ENC(J4VTLh3Duo8h13+u/By9rzs8/c1lf9loxBX0KAqzsy/HfwHeuDM+Gy+qbW3/j6zU)
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -149,7 +154,7 @@ dromara:
       - platform: minio-1            # 标识，可自定义
         enable-storage: true
         access-key: utOGh5X1fv7d7Kiwbzm5
-        secret-key: ENC(KyTRAXoc6V9f4OiWHVFYe6KCz9iFmKAMOl59NRctBx087lDZm7EHHc/Sq5NaCn1MSEAxnJTX9IDwFczWe3GrW0KEPtg1JtPAFu3r14HFffE=)
+        secret-key: ENC(jlCfjlD5uqxdkBOIui+0F5Ad4N8GE25fUtnzcdQTCW3HnY6m78u5yDQV0UaWURc9+8FUPWTbZLym+OqQeIxWiSstjrRzTL6YT0HiybaQorg=)
         end-point: http://192.168.0.100:9000
         bucket-name: public
         domain: https://yiti.shunxuan.net.cn:9000/public/   # 直链域名，末尾 /
@@ -205,6 +210,6 @@ encrypt:
   ## 开关控制
   enabled: true
   ## 密钥，与前端保持一致
-  key: ENC(8RIv4Ajxnxd1t5Y9gQrGh2nh61dcOc/jrXzUyKItWVjCRUxFJa7qluDbjh4rMBqSK0FMmK+DoOnsI+bpTJ0GRQAxALHpb16j5p1G4+Vt710=)
+  key: ENC(jQ3yP19TLcTKLvM22w/te5Op8csOkRdhD06L7MoeLs4ToUOwdF2Jvev8erffJsFRaRJ4CZWzecU1ct7Dxatcsjfq8yMMFhoD7mbwEykfGrA=)
   ## 忽略url，不做处理
   filterUrls: /common/*,/profile/upload/*,/captchaImage

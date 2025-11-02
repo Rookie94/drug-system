@@ -44,22 +44,11 @@ public class Survey extends BaseEntity {
     private String surveyStatus;
 
     /**
-     * 创建人
-     */
-    @Excel(name = "创建人")
-    private Long userId;
-
-    /**
      * 数据状态（1：有效，0：无效）
      */
     @Excel(name = "数据状态", readConverterExp = "1=：有效，0：无效")
     private String status;
 
-    /**
-     * 帐套编码
-     */
-    @Excel(name = "帐套编码")
-    private String bookCode;
 
     public void setSurveyId(Long surveyId) {
         this.surveyId = surveyId;
@@ -101,13 +90,6 @@ public class Survey extends BaseEntity {
         return surveyStatus;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
 
     public void setStatus(String status) {
         this.status = status;
@@ -115,14 +97,6 @@ public class Survey extends BaseEntity {
 
     public String getStatus() {
         return status;
-    }
-
-    public void setBookCode(String bookCode) {
-        this.bookCode = bookCode;
-    }
-
-    public String getBookCode() {
-        return bookCode;
     }
 
     @Override
@@ -133,10 +107,12 @@ public class Survey extends BaseEntity {
                 .append("surveyDesc", getSurveyDesc())
                 .append("surveyType", getSurveyType())
                 .append("surveyStatus", getSurveyStatus())
-                .append("createTime", getCreateTime())
-                .append("userId", getUserId())
                 .append("status", getStatus())
-                .append("bookCode", getBookCode())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("remark", getRemark())
                 .toString();
     }
 }

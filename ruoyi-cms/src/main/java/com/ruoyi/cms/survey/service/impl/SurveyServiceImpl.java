@@ -1,5 +1,6 @@
 package com.ruoyi.cms.survey.service.impl;
 
+import com.ruoyi.cms.survey.domain.vo.SurveyVo;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.cms.survey.domain.Survey;
 import com.ruoyi.cms.survey.mapper.SurveyMapper;
@@ -40,6 +41,12 @@ public class SurveyServiceImpl implements ISurveyService {
     @Override
     public List<Survey> selectSurveyList(Survey survey) {
         return surveyMapper.selectSurveyList(survey);
+    }
+
+    @Override
+    public SurveyVo selectFullSurveyById(Long surveyId) {
+        SurveyVo survey = surveyMapper.selectFullSurveyById(surveyId);
+        return survey;
     }
 
     /**

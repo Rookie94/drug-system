@@ -1,9 +1,9 @@
 package com.ruoyi.cms.survey.service.impl;
 
 import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.cms.survey.domain.Answer;
-import com.ruoyi.cms.survey.mapper.AnswerMapper;
-import com.ruoyi.cms.survey.service.IAnswerService;
+import com.ruoyi.cms.survey.domain.Answers;
+import com.ruoyi.cms.survey.mapper.AnswersMapper;
+import com.ruoyi.cms.survey.service.IAnswersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +16,9 @@ import java.util.List;
  * @date 2021-10-18
  */
 @Service
-public class AnswerServiceImpl implements IAnswerService {
+public class AnswersServiceImpl implements IAnswersService {
     @Autowired
-    private AnswerMapper answerMapper;
+    private AnswersMapper answersMapper;
 
     /**
      * 查询问卷答案结果
@@ -27,42 +27,42 @@ public class AnswerServiceImpl implements IAnswerService {
      * @return 问卷答案结果
      */
     @Override
-    public Answer selectAnswerByAnswerId(Long answerId) {
-        return answerMapper.selectAnswerByAnswerId(answerId);
+    public Answers selectAnswersById(Long answerId) {
+        return answersMapper.selectAnswersById(answerId);
     }
 
     /**
      * 查询问卷答案结果列表
      *
-     * @param answer 问卷答案结果
+     * @param answers 问卷答案结果
      * @return 问卷答案结果
      */
     @Override
-    public List<Answer> selectAnswerList(Answer answer) {
-        return answerMapper.selectAnswerList(answer);
+    public List<Answers> selectAnswersList(Answers answers) {
+        return answersMapper.selectAnswersList(answers);
     }
 
     /**
      * 新增问卷答案结果
      *
-     * @param answer 问卷答案结果
+     * @param answers 问卷答案结果
      * @return 结果
      */
     @Override
-    public int insertAnswer(Answer answer) {
-        answer.setCreateTime(DateUtils.getNowDate());
-        return answerMapper.insertAnswer(answer);
+    public int insertAnswers(Answers answers) {
+        answers.setCreateTime(DateUtils.getNowDate());
+        return answersMapper.insertAnswers(answers);
     }
 
     /**
      * 修改问卷答案结果
      *
-     * @param answer 问卷答案结果
+     * @param answers 问卷答案结果
      * @return 结果
      */
     @Override
-    public int updateAnswer(Answer answer) {
-        return answerMapper.updateAnswer(answer);
+    public int updateAnswers(Answers answers) {
+        return answersMapper.updateAnswers(answers);
     }
 
     /**
@@ -72,8 +72,8 @@ public class AnswerServiceImpl implements IAnswerService {
      * @return 结果
      */
     @Override
-    public int deleteAnswerByAnswerIds(Long[] answerIds) {
-        return answerMapper.deleteAnswerByAnswerIds(answerIds);
+    public int deleteAnswersByIds(Long[] answerIds) {
+        return answersMapper.deleteAnswersByIds(answerIds);
     }
 
     /**
@@ -83,8 +83,8 @@ public class AnswerServiceImpl implements IAnswerService {
      * @return 结果
      */
     @Override
-    public int deleteAnswerByAnswerId(Long answerId) {
-        return answerMapper.deleteAnswerByAnswerId(answerId);
+    public int deleteAnswersById(Long answerId) {
+        return answersMapper.deleteAnswersById(answerId);
     }
 
     /**
@@ -94,7 +94,7 @@ public class AnswerServiceImpl implements IAnswerService {
      * @return
      */
     @Override
-    public int deleteAnswerBySurveyIds(Long[] surveyIds) {
-        return answerMapper.deleteAnswerBySurveyIds(surveyIds);
+    public int deleteAnswersBySurveyIds(Long[] surveyIds) {
+        return answersMapper.deleteAnswersBySurveyIds(surveyIds);
     }
 }

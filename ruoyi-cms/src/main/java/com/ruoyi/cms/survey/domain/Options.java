@@ -103,11 +103,6 @@ public class Options extends BaseEntity {
     @Excel(name = "问卷主键")
     private Long surveyId;
 
-    /**
-     * 帐套编码
-     */
-    @Excel(name = "帐套编码")
-    private String bookCode;
 
     public void setOptionId(Long optionId) {
         this.optionId = optionId;
@@ -229,18 +224,12 @@ public class Options extends BaseEntity {
         return surveyId;
     }
 
-    public void setBookCode(String bookCode) {
-        this.bookCode = bookCode;
-    }
-
-    public String getBookCode() {
-        return bookCode;
-    }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("optionId", getOptionId())
+                .append("surveyId", getSurveyId())
                 .append("questionId", getQuestionId())
                 .append("optionCode", getOptionCode())
                 .append("optionText", getOptionText())
@@ -255,8 +244,11 @@ public class Options extends BaseEntity {
                 .append("isExtend", getIsExtend())
                 .append("createTime", getCreateTime())
                 .append("logicSymbol", getLogicSymbol())
-                .append("surveyId", getSurveyId())
-                .append("bookCode", getBookCode())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("remark", getRemark())
                 .toString();
     }
 }

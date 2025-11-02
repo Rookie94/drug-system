@@ -1,9 +1,11 @@
 package com.ruoyi.cms.survey.mapper;
 
 import com.ruoyi.cms.survey.domain.Survey;
+import com.ruoyi.cms.survey.domain.vo.SurveyVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+
 
 /**
  * 问卷Mapper接口
@@ -28,6 +30,12 @@ public interface SurveyMapper {
      * @return 问卷集合
      */
     public List<Survey> selectSurveyList(Survey survey);
+
+
+    /**
+     * 获取完整问卷详情（包含所有题目和选项）
+     */
+    public SurveyVo selectFullSurveyById(Long surveyId);
 
     /**
      * 新增问卷

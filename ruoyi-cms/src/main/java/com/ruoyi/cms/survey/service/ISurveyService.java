@@ -1,6 +1,7 @@
 package com.ruoyi.cms.survey.service;
 
 import com.ruoyi.cms.survey.domain.Survey;
+import com.ruoyi.cms.survey.domain.vo.SurveyVo;
 
 import java.util.List;
 
@@ -26,6 +27,12 @@ public interface ISurveyService {
      * @return 问卷集合
      */
     public List<Survey> selectSurveyList(Survey survey);
+
+
+    /**
+     * 获取完整问卷详情（包含所有题目和选项）
+     */
+    public SurveyVo selectFullSurveyById(Long surveyId);
 
     /**
      * 新增问卷

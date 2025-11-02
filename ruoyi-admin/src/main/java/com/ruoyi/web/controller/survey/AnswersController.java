@@ -6,8 +6,8 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.cms.survey.domain.Answer;
-import com.ruoyi.cms.survey.service.IAnswerService;
+import com.ruoyi.cms.survey.domain.Answers;
+import com.ruoyi.cms.survey.service.IAnswersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,19 +21,19 @@ import java.util.List;
  * @date 2021-10-18
  */
 @RestController
-@RequestMapping("/survey/answer")
-public class AnswerController extends BaseController {
+@RequestMapping("/survey/answers")
+public class AnswersController extends BaseController {
     @Autowired
-    private IAnswerService answerService;
+    private IAnswersService answersService;
 
     /**
      * 查询问卷答案结果列表
      */
     @PreAuthorize("@ss.hasPermi('survey:answer:list')")
     @GetMapping("/list")
-    public TableDataInfo list(Answer answer) {
+    public TableDataInfo list(Answers answers) {
         startPage();
-        List<Answer> list = answerService.selectAnswerList(answer);
+        List<Answers> list = answersService.selectAnswersList(answers);
         return getDataTable(list);
     }
 
@@ -43,9 +43,9 @@ public class AnswerController extends BaseController {
     @PreAuthorize("@ss.hasPermi('survey:answer:export')")
     @Log(title = "问卷答案结果", businessType = BusinessType.EXPORT)
     @GetMapping("/export")
-    public AjaxResult export(Answer answer) {
-        List<Answer> list = answerService.selectAnswerList(answer);
-        ExcelUtil<Answer> util = new ExcelUtil<Answer>(Answer.class);
+    public AjaxResult export(Answers answers) {
+        List<Answers> list = answersService.selectAnswersList(answers);
+        ExcelUtil<Answers> util = new ExcelUtil<Answers>(Answers.class);
         return util.exportExcel(list, "问卷答案结果数据");
     }
 
@@ -55,7 +55,7 @@ public class AnswerController extends BaseController {
     @PreAuthorize("@ss.hasPermi('survey:answer:query')")
     @GetMapping(value = "/{answerId}")
     public AjaxResult getInfo(@PathVariable("answerId") Long answerId) {
-        return AjaxResult.success(answerService.selectAnswerByAnswerId(answerId));
+        return AjaxResult.success(answersService.selectAnswersById(answerId));
     }
 
     /**
@@ -64,8 +64,8 @@ public class AnswerController extends BaseController {
     @PreAuthorize("@ss.hasPermi('survey:answer:add')")
     @Log(title = "问卷答案结果", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody Answer answer) {
-        return toAjax(answerService.insertAnswer(answer));
+    public AjaxResult add(@RequestBody Answers answers) {
+        return toAjax(answersService.insertAnswers(answers));
     }
 
     /**
@@ -74,8 +74,8 @@ public class AnswerController extends BaseController {
     @PreAuthorize("@ss.hasPermi('survey:answer:edit')")
     @Log(title = "问卷答案结果", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody Answer answer) {
-        return toAjax(answerService.updateAnswer(answer));
+    public AjaxResult edit(@RequestBody Answers answers) {
+        return toAjax(answersService.updateAnswers(answers));
     }
 
     /**
@@ -85,6 +85,6 @@ public class AnswerController extends BaseController {
     @Log(title = "问卷答案结果", businessType = BusinessType.DELETE)
     @DeleteMapping("/{answerIds}")
     public AjaxResult remove(@PathVariable Long[] answerIds) {
-        return toAjax(answerService.deleteAnswerByAnswerIds(answerIds));
+        return toAjax(answersService.deleteAnswersByIds(answerIds));
     }
 }

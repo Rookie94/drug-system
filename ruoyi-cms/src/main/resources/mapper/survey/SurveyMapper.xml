@@ -4,16 +4,55 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.cms.survey.mapper.SurveyMapper">
 
-    <resultMap type="Survey" id="SurveyResult">
+    <resultMap id="SurveyResult" type="Survey">
         <result property="surveyId" column="survey_id"/>
         <result property="surveyName" column="survey_name"/>
         <result property="surveyDesc" column="survey_desc"/>
         <result property="surveyType" column="survey_type"/>
         <result property="surveyStatus" column="survey_status"/>
-        <result property="createTime" column="create_time"/>
-        <result property="userId" column="user_id"/>
         <result property="status" column="status"/>
-        <result property="bookCode" column="book_code"/>
+        <result property="createBy" column="create_by"      />
+        <result property="createTime" column="create_time"    />
+        <result property="updateBy" column="update_by"      />
+        <result property="updateTime" column="update_time"    />
+        <result property="remark" column="remark"         />
+    </resultMap>
+
+    <resultMap id="SurveyVoResult" type="SurveyVo">
+        <id property="surveyId" column="survey_id"/>
+        <result property="surveyName" column="survey_name"/>
+        <result property="surveyDesc" column="survey_desc"/>
+        <result property="surveyType" column="survey_type"/>
+        <result property="surveyStatus" column="survey_status"/>
+        <result property="createTime" column="survey_create_time"/>
+        <collection property="questions" resultMap="QuestionResult" columnPrefix="q_"/>
+    </resultMap>
+
+    <resultMap id="QuestionResult" type="QuestionVo">
+        <id property="questionId" column="question_id"/>
+        <result property="questionNo" column="question_no"/>
+        <result property="questionSort" column="question_sort"/>
+        <result property="questionName" column="question_name"/>
+        <result property="questionType" column="question_type"/>
+        <result property="validateRule" column="validate_rule"/>
+        <result property="showOrHide" column="show_or_hide"/>
+        <result property="notEdit" column="not_edit"/>
+        <result property="defaultValue" column="default_value"/>
+        <result property="optionDisplay" column="option_display"/>
+        <collection property="options" resultMap="OptionResult" columnPrefix="o_"/>
+    </resultMap>
+
+    <resultMap id="OptionResult" type="OptionsVo">
+        <id property="optionId" column="option_id"/>
+        <result property="optionCode" column="option_code"/>
+        <result property="optionText" column="option_text"/>
+        <result property="optionNo" column="option_no"/>
+        <result property="isExtend" column="is_extend"/>
+        <result property="wtqdDesc" column="wtqd_desc"/>
+        <result property="showQuestion" column="show_question"/>
+        <result property="hideQuestion" column="hide_question"/>
+        <result property="logicSymbol" column="logic_symbol"/>
+        <result property="wtqdValue" column="wtqd_value"/>
     </resultMap>
 
     <sql id="selectSurveyVo">
@@ -22,10 +61,12 @@
                survey_desc,
                survey_type,
                survey_status,
-               create_time,
-               user_id,
                status,
-               book_code
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
         from doc_survey
     </sql>
 
@@ -36,9 +77,7 @@
             <if test="surveyDesc != null  and surveyDesc != ''">and survey_desc = #{surveyDesc}</if>
             <if test="surveyType != null  and surveyType != ''">and survey_type = #{surveyType}</if>
             <if test="surveyStatus != null  and surveyStatus != ''">and survey_status = #{surveyStatus}</if>
-            <if test="userId != null ">and user_id = #{userId}</if>
             <if test="status != null  and status != ''">and status = #{status}</if>
-            <if test="bookCode != null  and bookCode != ''">and book_code = #{bookCode}</if>
         </where>
     </select>
 
@@ -47,6 +86,50 @@
         where survey_id = #{surveyId}
     </select>
 
+    <select id="selectFullSurveyById" resultMap="SurveyVoResult">
+        SELECT
+            s.survey_id,
+            s.survey_name,
+            s.survey_desc,
+            s.survey_type,
+            s.survey_status,
+            s.create_time AS survey_create_time,
+
+            q.question_id AS q_question_id,
+            q.question_no AS q_question_no,
+            q.question_sort AS q_question_sort,
+            q.question_name AS q_question_name,
+            q.question_type AS q_question_type,
+            q.validate_rule AS q_validate_rule,
+            q.show_or_hide AS q_show_or_hide,
+            q.not_edit AS q_not_edit,
+            q.default_value AS q_default_value,
+            q.option_display AS q_option_display,
+
+            o.option_id AS q_o_option_id,
+            o.option_code AS q_o_option_code,
+            o.option_text AS q_o_option_text,
+            o.option_no AS q_o_option_no,
+            o.is_extend AS q_o_is_extend,
+            o.wtqd_desc AS q_o_wtqd_desc,
+            o.show_question AS q_o_show_question,
+            o.hide_question AS q_o_hide_question,
+            o.logic_symbol AS q_o_logic_symbol,
+            o.wtqd_value AS q_o_wtqd_value
+
+        FROM doc_survey s
+                 LEFT JOIN doc_question q ON s.survey_id = q.survey_id
+                 LEFT JOIN doc_options o ON q.question_id = o.question_id
+        WHERE s.survey_id = #{surveyId}
+          AND s.status = 1
+        ORDER BY
+            q.question_sort ASC,
+            q.question_no ASC,
+            o.option_no ASC
+    </select>
+
+
+
     <insert id="insertSurvey" parameterType="Survey" useGeneratedKeys="true" keyProperty="surveyId">
         insert into doc_survey
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -54,20 +137,18 @@
             <if test="surveyDesc != null">survey_desc,</if>
             <if test="surveyType != null">survey_type,</if>
             <if test="surveyStatus != null">survey_status,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="userId != null">user_id,</if>
             <if test="status != null">status,</if>
-            <if test="bookCode != null">book_code,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="surveyName != null and surveyName != ''">#{surveyName},</if>
             <if test="surveyDesc != null">#{surveyDesc},</if>
             <if test="surveyType != null">#{surveyType},</if>
             <if test="surveyStatus != null">#{surveyStatus},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="userId != null">#{userId},</if>
             <if test="status != null">#{status},</if>
-            <if test="bookCode != null">#{bookCode},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
         </trim>
     </insert>
 
@@ -78,10 +159,9 @@
             <if test="surveyDesc != null">survey_desc = #{surveyDesc},</if>
             <if test="surveyType != null">survey_type = #{surveyType},</if>
             <if test="surveyStatus != null">survey_status = #{surveyStatus},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="userId != null">user_id = #{userId},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="bookCode != null">book_code = #{bookCode},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where survey_id = #{surveyId}
     </update>

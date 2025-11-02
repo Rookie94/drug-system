@@ -1,6 +1,6 @@
 package com.ruoyi.cms.survey.service;
 
-import com.ruoyi.cms.survey.domain.Answer;
+import com.ruoyi.cms.survey.domain.Answers;
 
 import java.util.List;
 
@@ -10,38 +10,38 @@ import java.util.List;
  * @author Shure
  * @date 2021-10-18
  */
-public interface IAnswerService {
+public interface IAnswersService {
     /**
      * 查询问卷答案结果
      *
      * @param answerId 问卷答案结果主键
      * @return 问卷答案结果
      */
-    public Answer selectAnswerByAnswerId(Long answerId);
+    public Answers selectAnswersById(Long answerId);
 
     /**
      * 查询问卷答案结果列表
      *
-     * @param answer 问卷答案结果
+     * @param answers 问卷答案结果
      * @return 问卷答案结果集合
      */
-    public List<Answer> selectAnswerList(Answer answer);
+    public List<Answers> selectAnswersList(Answers answers);
 
     /**
      * 新增问卷答案结果
      *
-     * @param answer 问卷答案结果
+     * @param answers 问卷答案结果
      * @return 结果
      */
-    public int insertAnswer(Answer answer);
+    public int insertAnswers(Answers answers);
 
     /**
      * 修改问卷答案结果
      *
-     * @param answer 问卷答案结果
+     * @param answers 问卷答案结果
      * @return 结果
      */
-    public int updateAnswer(Answer answer);
+    public int updateAnswers(Answers answers);
 
     /**
      * 批量删除问卷答案结果
@@ -49,7 +49,7 @@ public interface IAnswerService {
      * @param answerIds 需要删除的问卷答案结果主键集合
      * @return 结果
      */
-    public int deleteAnswerByAnswerIds(Long[] answerIds);
+    public int deleteAnswersByIds(Long[] answerIds);
 
     /**
      * 删除问卷答案结果信息
@@ -57,7 +57,7 @@ public interface IAnswerService {
      * @param answerId 问卷答案结果主键
      * @return 结果
      */
-    public int deleteAnswerByAnswerId(Long answerId);
+    public int deleteAnswersById(Long answerId);
 
 
     /**
@@ -66,5 +66,5 @@ public interface IAnswerService {
      * @param surveyIds
      * @return
      */
-    public int deleteAnswerBySurveyIds(Long[] surveyIds);
+    public int deleteAnswersBySurveyIds(Long[] surveyIds);
 }

@@ -90,7 +90,6 @@
             <if test="createTime != null">create_time,</if>
             <if test="logicSymbol != null">logic_symbol,</if>
             <if test="surveyId != null">survey_id,</if>
-            <if test="bookCode != null">book_code,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="questionId != null">#{questionId},</if>
@@ -108,18 +107,17 @@
             <if test="createTime != null">#{createTime},</if>
             <if test="logicSymbol != null">#{logicSymbol},</if>
             <if test="surveyId != null">#{surveyId},</if>
-            <if test="bookCode != null">#{bookCode},</if>
         </trim>
     </insert>
 
     <insert id="insertOptionBatch" parameterType="java.util.List">
         insert into doc_options
-        (question_id,option_code,option_text,option_no,hide_question,show_question,is_wtqd,wtqd_type,wtqd_value,wtqd_symbol,wtqd_desc,is_extend,create_time,logic_symbol,survey_id,book_code)
+        (question_id,option_code,option_text,option_no,hide_question,show_question,is_wtqd,wtqd_type,wtqd_value,wtqd_symbol,wtqd_desc,is_extend,create_time,logic_symbol,survey_id)
         values
         <foreach collection="optionList" item="item" index="index" separator=",">
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{item.questionId}, #{item.optionCode}, #{item.optionText}, #{item.optionNo}, #{item.hideQuestion}, #{item.showQuestion}, #{item.isWtqd}, #{item.wtqdType}, #{item.wtqdValue},
-                #{item.wtqdSymbol}, #{item.wtqdDesc}, #{item.isExtend}, #{item.createTime}, #{item.logicSymbol}, #{item.surveyId}, #{item.bookCode},
+                #{item.wtqdSymbol}, #{item.wtqdDesc}, #{item.isExtend}, #{item.createTime}, #{item.logicSymbol}, #{item.surveyId}},
             </trim>
         </foreach>
     </insert>
@@ -142,7 +140,6 @@
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="logicSymbol != null">logic_symbol = #{logicSymbol},</if>
             <if test="surveyId != null">survey_id = #{surveyId},</if>
-            <if test="bookCode != null">book_code = #{bookCode},</if>
         </trim>
         where option_id = #{optionId}
     </update>

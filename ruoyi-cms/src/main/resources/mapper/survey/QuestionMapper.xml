@@ -20,7 +20,6 @@
         <result property="defaultValue" column="default_value"/>
         <result property="optionDisplay" column="option_display"/>
         <result property="formula" column="formula"/>
-        <result property="bookCode" column="book_code"/>
         <collection property="options" javaType="java.util.List" resultMap="optionResult"/>
     </resultMap>
 
@@ -41,7 +40,6 @@
         <result property="createTime" column="create_time"/>
         <result property="logicSymbol" column="logic_symbol"/>
         <result property="surveyId" column="survey_id"/>
-        <result property="bookCode" column="book_code"/>
     </resultMap>
 
     <sql id="selectQuestionVo">
@@ -94,7 +92,6 @@
             <if test="defaultValue != null  and defaultValue != ''">and default_value = #{defaultValue}</if>
             <if test="optionDisplay != null  and optionDisplay != ''">and option_display = #{optionDisplay}</if>
             <if test="formula != null  and formula != ''">and formula = #{formula}</if>
-            <if test="bookCode != null  and bookCode != ''">and book_code = #{bookCode}</if>
         </where>
         order by t.question_sort
     </select>
@@ -127,7 +124,6 @@
             <if test="defaultValue != null">default_value,</if>
             <if test="optionDisplay != null">option_display,</if>
             <if test="formula != null">formula,</if>
-            <if test="bookCode != null">book_code,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="surveyId != null">#{surveyId},</if>
@@ -144,7 +140,6 @@
             <if test="defaultValue != null">#{defaultValue},</if>
             <if test="optionDisplay != null">#{optionDisplay},</if>
             <if test="formula != null">#{formula},</if>
-            <if test="bookCode != null">#{bookCode},</if>
         </trim>
     </insert>
 
@@ -165,7 +160,6 @@
             <if test="defaultValue != null">default_value = #{defaultValue},</if>
             <if test="optionDisplay != null">option_display = #{optionDisplay},</if>
             <if test="formula != null">formula = #{formula},</if>
-            <if test="bookCode != null">book_code = #{bookCode},</if>
         </trim>
         where question_id = #{questionId}
     </update>

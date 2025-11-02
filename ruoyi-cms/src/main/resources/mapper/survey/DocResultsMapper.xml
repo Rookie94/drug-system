@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.survey.mapper.DocResultsMapper">
+
+    <resultMap type="DocResults" id="DocResultsResult">
+        <id     property="resultId"       column="result_id"      />
+        <result property="surveyId"       column="survey_id"      />
+        <result property="resultNo"       column="result_no"      />
+        <result property="deptId"         column="dept_id"        />
+        <result property="userId"         column="user_id"        />
+        <result property="commitTime"     column="commit_time"    />
+        <result property="status"         column="status"         />
+        <result property="jsonResult"     column="json_result"    />
+        <result property="thinJsonResult" column="thin_json_result"/>
+        <result property="jsonReport"     column="json_report"    />
+        <result property="remark"         column="remark"         />
+        <result property="createBy"       column="create_by"      />
+        <result property="createTime"     column="create_time"    />
+        <result property="updateBy"       column="update_by"      />
+        <result property="updateTime"     column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDocResultsVo">
+        select result_id, survey_id, result_no, dept_id, user_id, commit_time, status,
+               json_result, thin_json_result, json_report, remark,
+               create_by, create_time, update_by, update_time
+        from doc_results
+    </sql>
+
+    <select id="selectDocResultsList" parameterType="DocResults" resultMap="DocResultsResult">
+        <include refid="selectDocResultsVo"/>
+        <where>
+            <if test="surveyId != null ">and survey_id = #{surveyId}</if>
+            <if test="answerJson != null  and answerJson != ''">and answer_json = #{answerJson}</if>
+            <if test="userId != null  and userId != ''">and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''">and user_name like concat('%', #{userName}, '%')</if>
+            <if test="bookCode != null  and bookCode != ''">and book_code = #{bookCode}</if>
+        </where>
+    </select>
+
+    <select id="selectDocResultsById" parameterType="Long" resultMap="DocResultsResult">
+        <include refid="selectDocResultsVo"/>
+        where an_id = #{anId}
+    </select>
+
+
+    <select id="selectDocResultsBySurveyId" parameterType="Long" resultMap="DocResultsResult">
+        <include refid="selectDocResultsVo"/>
+        where survey_id = #{surveyId}
+    </select>
+
+    <insert id="insertDocResults" parameterType="DocResults" useGeneratedKeys="true" keyProperty="ResultId">
+        insert into doc_results
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="surveyId != null">survey_id,</if>
+            <if test="resultNo != null">result_no,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="commitTime != null">commit_time,</if>
+            <if test="status != null">status,</if>
+            <if test="jsonResult != null">json_result,</if>
+            <if test="thinJsonResult != null">thin_json_result,</if>
+            <if test="jsonReport != null">json_report,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="surveyId != null">#{surveyId},</if>
+            <if test="resultNo != null">#{resultNo},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="commitTime != null">#{commitTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="jsonResult != null">#{jsonResult},</if>
+            <if test="thinJsonResult != null">#{thinJsonResult},</if>
+            <if test="jsonReport != null">#{jsonReport},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDocResults" parameterType="DocResults">
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="surveyId != null">survey_id = #{surveyId},</if>
+            <if test="resultNo != null">result_no = #{resultNo},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="commitTime != null">commit_time = #{commitTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="jsonResult != null">json_result = #{jsonResult},</if>
+            <if test="thinJsonResult != null">thin_json_result = #{thinJsonResult},</if>
+            <if test="jsonReport != null">json_report = #{jsonReport},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where result_id = #{resultId}
+    </update>
+
+    <delete id="deleteDocResultsById" parameterType="Long">
+        delete
+        from doc_results
+        where result_id = #{resultId}
+    </delete>
+
+    <delete id="deleteDocResultsByIds" parameterType="String">
+        delete from doc_results where result_id in
+        <foreach item="resultId" collection="array" open="(" separator="," close=")">
+            #{resultId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteDocResultsBySurveyIds" parameterType="String">
+        delete from doc_results where survey_id in
+        <foreach item="surveyId" collection="array" open="(" separator="," close=")">
+            #{surveyId}
+        </foreach>
+    </delete>
+</mapper>

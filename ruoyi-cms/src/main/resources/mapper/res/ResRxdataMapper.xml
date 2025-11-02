@@ -26,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectResRxdataVo">
-        select rx_id, order_num, title, pic, rx_type, content, status, publish_time, appored, user_id, dept_id, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_rxdata
+        select rx_id, order_num, title, pic, rx_type, content, status, publish_time, appored, user_id, dept_id, create_by, create_time, update_by, update_time, appor_by, appor_time, remark from res_rxdata t
     </sql>
 
     <select id="selectResRxdataList" parameterType="ResRxdata" resultMap="ResRxdataResult">

@@ -11,7 +11,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @author Shure
  * @date 2021-10-18
  */
-public class Answer extends BaseEntity {
+public class Answers extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -34,8 +34,8 @@ public class Answer extends BaseEntity {
     /**
      * 选项编码
      */
-    @Excel(name = "选项编码")
-    private String optionCode;
+    @Excel(name = "选项Id")
+    private String optionId;
 
     /**
      * 答案结果
@@ -49,23 +49,6 @@ public class Answer extends BaseEntity {
     @Excel(name = "扩展填空值")
     private String extendValue;
 
-    /**
-     * 答题人唯一标识
-     */
-    @Excel(name = "答题人唯一标识")
-    private String userId;
-
-    /**
-     * 答题人姓名
-     */
-    @Excel(name = "答题人姓名")
-    private String userName;
-
-    /**
-     * 账套
-     */
-    @Excel(name = "账套")
-    private String bookCode;
 
     public void setAnswerId(Long answerId) {
         this.answerId = answerId;
@@ -91,12 +74,12 @@ public class Answer extends BaseEntity {
         return questionId;
     }
 
-    public void setOptionCode(String optionCode) {
-        this.optionCode = optionCode;
+    public void setOptionCode(String optionId) {
+        this.optionId = optionId;
     }
 
     public String getOptionCode() {
-        return optionCode;
+        return optionId;
     }
 
     public void setAnswerValue(String answerValue) {
@@ -115,29 +98,6 @@ public class Answer extends BaseEntity {
         return extendValue;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setBookCode(String bookCode) {
-        this.bookCode = bookCode;
-    }
-
-    public String getBookCode() {
-        return bookCode;
-    }
 
     @Override
     public String toString() {
@@ -148,10 +108,12 @@ public class Answer extends BaseEntity {
                 .append("optionCode", getOptionCode())
                 .append("answerValue", getAnswerValue())
                 .append("extendValue", getExtendValue())
-                .append("userId", getUserId())
-                .append("userName", getUserName())
                 .append("createTime", getCreateTime())
-                .append("bookCode", getBookCode())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("remark", getRemark())
                 .toString();
     }
 }

@@ -6,10 +6,10 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.cms.survey.domain.AnswerJson;
+import com.ruoyi.cms.survey.domain.DocResults;
 import com.ruoyi.cms.survey.domain.Survey;
-import com.ruoyi.cms.survey.service.IAnswerJsonService;
-import com.ruoyi.cms.survey.service.IAnswerService;
+import com.ruoyi.cms.survey.service.IDocResultsService;
+import com.ruoyi.cms.survey.service.IAnswersService;
 import com.ruoyi.cms.survey.service.IQuestionService;
 import com.ruoyi.cms.survey.service.ISurveyService;
 
@@ -34,9 +34,9 @@ public class SurveyController extends BaseController {
     @Autowired
     private IQuestionService questionService;
     @Autowired
-    private IAnswerJsonService answerJsonService;
+    private IDocResultsService docResultsService;
     @Autowired
-    private IAnswerService answerService;
+    private IAnswersService answerService;
 
 
     /**
@@ -78,7 +78,6 @@ public class SurveyController extends BaseController {
     @Log(title = "问卷新增", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody Survey survey) {
-        survey.setUserId(getUserId());
         return toAjax(surveyService.insertSurvey(survey));
     }
 
@@ -120,8 +119,8 @@ public class SurveyController extends BaseController {
     @DeleteMapping("/{surveyIds}")
     public AjaxResult delete(@PathVariable Long[] surveyIds) {
         questionService.deleteQuestionBySurveyIds(surveyIds);
-        answerJsonService.deleteAnswerJsonBySurveyIds(surveyIds);
-        answerService.deleteAnswerBySurveyIds(surveyIds);
+        docResultsService.deleteDocResultsBySurveyIds(surveyIds);
+        answerService.deleteAnswersBySurveyIds(surveyIds);
         return toAjax(surveyService.deleteSurveyBySurveyIds(surveyIds));
     }
 
@@ -142,7 +141,7 @@ public class SurveyController extends BaseController {
     @Log(title = "问卷撤销发布", businessType = BusinessType.DELETE)
     @PutMapping("/revoke/{surveyId}")
     public AjaxResult revoke(@PathVariable Long surveyId) {
-        List<AnswerJson> answerJsons = answerJsonService.answerJsonBySurvey(surveyId);
+        List<DocResults> answerJsons = docResultsService.selectDocResultsBySurveyId(surveyId);
         if (!answerJsons.isEmpty()) {
             return AjaxResult.error("数据已采集，不能撤销");
         }

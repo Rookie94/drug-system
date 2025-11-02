@@ -113,7 +113,7 @@ public class Question extends BaseEntity {
     /**
      * 题目结果
      */
-    private Answer answer;
+    private Answers answer;
 
     public void setQuestionId(Long questionId) {
         this.questionId = questionId;
@@ -243,11 +243,11 @@ public class Question extends BaseEntity {
         this.options = options;
     }
 
-    public Answer getAnswer() {
+    public Answers getAnswer() {
         return answer;
     }
 
-    public void setAnswer(Answer answer) {
+    public void setAnswer(Answers answer) {
         this.answer = answer;
     }
 
@@ -269,7 +269,11 @@ public class Question extends BaseEntity {
                 .append("defaultValue", getDefaultValue())
                 .append("formula", getFormula())
                 .append("optionDisplay", getOptionDisplay())
-                .append("bookCode", getBookCode())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("remark", getRemark())
                 .toString();
     }
 }

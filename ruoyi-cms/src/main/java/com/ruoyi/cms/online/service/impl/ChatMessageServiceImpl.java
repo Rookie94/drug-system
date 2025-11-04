@@ -11,6 +11,8 @@ import com.ruoyi.cms.online.mapper.ChatMessageMapper;
 import com.ruoyi.cms.online.service.IChatMessageService;
 import com.ruoyi.common.utils.DateUtils;
 
+import static com.ruoyi.common.utils.SecurityUtils.*;
+
 /**
  * 留言板Service业务层处理
  *
@@ -76,6 +78,9 @@ public class ChatMessageServiceImpl implements IChatMessageService
     @Override
     public int insertChatMessage(ChatMessage chatMessage)
     {
+        chatMessage.setUserId(getUserId());
+        chatMessage.setDeptId(getDeptId());
+        chatMessage.setCreateBy(getUsername());
         chatMessage.setCreateTime(DateUtils.getNowDate());
         return chatMessageMapper.insertChatMessage(chatMessage);
     }
@@ -89,6 +94,7 @@ public class ChatMessageServiceImpl implements IChatMessageService
     @Override
     public int updateChatMessage(ChatMessage chatMessage)
     {
+        chatMessage.setUpdateBy(getUsername());
         chatMessage.setUpdateTime(DateUtils.getNowDate());
         return chatMessageMapper.updateChatMessage(chatMessage);
     }

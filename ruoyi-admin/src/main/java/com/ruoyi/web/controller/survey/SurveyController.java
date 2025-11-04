@@ -56,7 +56,7 @@ public class SurveyController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('survey:vote:export')")
     @Log(title = "问卷导出", businessType = BusinessType.EXPORT)
-    @GetMapping("/export")
+    @PostMapping("/export")
     public AjaxResult export(Survey survey) {
         List<Survey> list = surveyService.selectSurveyList(survey);
         ExcelUtil<Survey> util = new ExcelUtil<Survey>(Survey.class);

@@ -122,7 +122,6 @@
             <if test="questionType != null">question_type,</if>
             <if test="validateRule != null">validate_rule,</if>
             <if test="showOrHide != null">show_or_hide,</if>
-            <if test="createTime != null">create_time,</if>
             <if test="questionAttr != null">question_attr,</if>
             <if test="relationResult != null">relation_result,</if>
             <if test="notEdit != null">not_edit,</if>
@@ -140,7 +139,6 @@
             <if test="questionType != null">#{questionType},</if>
             <if test="validateRule != null">#{validateRule},</if>
             <if test="showOrHide != null">#{showOrHide},</if>
-            <if test="createTime != null">#{createTime},</if>
             <if test="questionAttr != null">#{questionAttr},</if>
             <if test="relationResult != null">#{relationResult},</if>
             <if test="notEdit != null">#{notEdit},</if>
@@ -162,7 +160,6 @@
             <if test="questionType != null">question_type = #{questionType},</if>
             <if test="validateRule != null">validate_rule = #{validateRule},</if>
             <if test="showOrHide != null">show_or_hide = #{showOrHide},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
             <if test="questionAttr != null">question_attr = #{questionAttr},</if>
             <if test="relationResult != null">relation_result = #{relationResult},</if>
             <if test="notEdit != null">not_edit = #{notEdit},</if>

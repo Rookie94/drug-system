@@ -44,7 +44,7 @@ public class DocResultsController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('survey:docs:export')")
     @Log(title = "问卷答案结果json", businessType = BusinessType.EXPORT)
-    @GetMapping("/export")
+    @PostMapping("/export")
     public AjaxResult export(DocResultsVo docResultsVo) {
         List<DocResultsVo> list = docResultsService.selectDocResultsList(docResultsVo);
         ExcelUtil<DocResultsVo> util = new ExcelUtil<DocResultsVo>(DocResultsVo.class);

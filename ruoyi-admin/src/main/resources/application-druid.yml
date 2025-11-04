@@ -13,8 +13,8 @@ spring:
             # 主库数据源
             master:
                 driver-class-name: com.kingbase8.Driver
-                url: jdbc:kingbase8://127.0.0.1:54321/dtcare?currentSchema=public&allowEncodingChanges=true&clientEncoding=UTF8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
-                username: system
+                url: jdbc:kingbase8://192.168.0.100:54321/dtcare?currentSchema=public&allowEncodingChanges=true&clientEncoding=UTF8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+                username: kingbase
                 password: ENC(BJdjkmNsL/v65lUDOLKhAe3Qe1ZZiGTAiKViOBjYnBDMdU30y571XW4p+oMZf0wz)
 
             # 从库数据源

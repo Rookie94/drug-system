@@ -1,5 +1,6 @@
 package com.ruoyi.cms.etl.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.ruoyi.common.utils.DateUtils;
@@ -49,21 +50,53 @@ public class EtlReport1ServiceImpl implements IEtlReport1Service
     public Map<String, Object> selectLoginTrend() {
         List<Map<String, Object>> list = etlReport1Mapper.selectLoginTrend();
         List<String> days = new ArrayList<>();
-        List<Long>   data = new ArrayList<>();
+        List<Long> data = new ArrayList<>();
 
-        // 补全近 30 天（无数据填 0）
-        Map<String, Long> map = new LinkedHashMap<>();
+        // 使用 SimpleDateFormat 确保日期格式一致
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
+
+        // 构建数据映射
+        Map<String, Long> map = new HashMap<>();
         for (Map<String, Object> m : list) {
-            map.put((String) m.get("day"), (Long) m.get("cnt"));
+            Object dayObj = m.get("day");
+            if (dayObj != null) {
+                try {
+                    Date date;
+                    if (dayObj instanceof java.sql.Date) {
+                        date = new Date(((java.sql.Date) dayObj).getTime());
+                    } else if (dayObj instanceof String) {
+                        // 如果是字符串，尝试解析
+                        String dayStr = (String) dayObj;
+                        if (dayStr.contains("-")) {
+                            // 处理 "yyyy-MM-dd" 格式
+                            SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            date = dbFormat.parse(dayStr);
+                        } else {
+                            // 已经是 "MM/dd" 格式
+                            date = sdf.parse(dayStr);
+                        }
+                    } else {
+                        continue;
+                    }
+                    String key = sdf.format(date);
+                    map.put(key, ((Number) m.get("cnt")).longValue());
+                } catch (Exception e) {
+                    // 日期解析失败，跳过该记录
+                    continue;
+                }
+            }
         }
+
+        //补全近30天
         Calendar c = Calendar.getInstance();
         for (int i = 29; i >= 0; i--) {
             c.setTime(new Date());
             c.add(Calendar.DAY_OF_MONTH, -i);
-            String day = (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.DATE);
-            days.add(day);
-            data.add(map.getOrDefault(day, 0L));
+            String monthDay = sdf.format(c.getTime());
+            days.add(monthDay);
+            data.add(map.getOrDefault(monthDay, 0L));
         }
+
         Map<String, Object> result = new HashMap<>(2);
         result.put("days", days);
         result.put("data", data);

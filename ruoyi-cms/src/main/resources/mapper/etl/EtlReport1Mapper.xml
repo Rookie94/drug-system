@@ -62,13 +62,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             GROUP BY day ORDER BY day
         </if>
         <if test="_databaseId == 'kingbase'">
-            SELECT TO_CHAR(login_time, 'MM/DD') AS day,
-            COUNT(DISTINCT user_name) AS cnt
+            SELECT day, COUNT(DISTINCT user_name) AS cnt
+            FROM (
+            SELECT TO_CHAR(login_time, 'MM/DD') AS day, user_name
             FROM sys_logininfor
             WHERE status = '0'
-            AND login_time >= CURRENT_DATE - 29
-            GROUP BY TO_CHAR(login_time, 'MM/DD')
-            ORDER BY TO_CHAR(login_time, 'MM/DD')
+            AND login_time >= CURRENT_DATE - INTERVAL '29' day
+            ) t
+            GROUP BY day
+            ORDER BY DAY
         </if>
     </select>
 

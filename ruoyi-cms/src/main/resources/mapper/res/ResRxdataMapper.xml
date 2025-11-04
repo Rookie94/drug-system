@@ -32,11 +32,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectResRxdataList" parameterType="ResRxdata" resultMap="ResRxdataResult">
         <include refid="selectResRxdataVo"/>
         <where>  
-            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
-            <if test="rxType != null  and rxType != ''"> and rx_type = #{rxType}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="appored != null  and appored != ''"> and appored = #{appored}</if>
-            <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
+            <if test="title != null  and title != ''"> and t.title like concat('%', #{title}, '%')</if>
+            <if test="rxType != null  and rxType != ''"> and t.rx_type = #{rxType}</if>
+            <if test="status != null  and status != ''"> and t.status = #{status}</if>
+            <if test="appored != null  and appored != ''"> and t.appored = #{appored}</if>
+            <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and t.publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
@@ -45,7 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectResRxdataByRxId" parameterType="Long" resultMap="ResRxdataResult">
         <include refid="selectResRxdataVo"/>
-        where rx_id = #{rxId}
+        where t.rx_id = #{rxId}
     </select>
 
     <insert id="insertResRxdata" parameterType="ResRxdata" useGeneratedKeys="true" keyProperty="rxId">

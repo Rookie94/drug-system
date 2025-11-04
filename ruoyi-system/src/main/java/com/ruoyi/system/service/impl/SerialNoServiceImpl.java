@@ -55,7 +55,7 @@ public class SerialNoServiceImpl implements ISerialNoService
     @Override
     public int insertSerialNo(SerialNo serialNo)
     {
-        serialNo.setLastResetDate(java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd")));
+        serialNo.setLastResetDate(java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyMMdd")));
         serialNo.setCreateTime(DateUtils.getNowDate());
         return serialNoMapper.insertSerialNo(serialNo);
     }
@@ -99,7 +99,7 @@ public class SerialNoServiceImpl implements ISerialNoService
 
 
     private boolean needReset(String strategy, String lastDate) {
-        LocalDate last = LocalDate.parse(lastDate, DateTimeFormatter.BASIC_ISO_DATE);
+        LocalDate last = LocalDate.parse(lastDate, DateTimeFormatter.ofPattern("yyMMdd"));
         LocalDate now = LocalDate.now();
 
         switch (strategy) {

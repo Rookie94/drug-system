@@ -156,6 +156,7 @@ dromara:
         access-key: utOGh5X1fv7d7Kiwbzm5
         secret-key: ENC(KyTRAXoc6V9f4OiWHVFYe6KCz9iFmKAMOl59NRctBx087lDZm7EHHc/Sq5NaCn1MSEAxnJTX9IDwFczWe3GrW0KEPtg1JtPAFu3r14HFffE=)
         end-point: http://112.86.226.241:9000
+        #end-point: http://192.168.0.100:9000
         bucket-name: public
         domain: https://yiti.shunxuan.net.cn:9000/public/   # 直链域名，末尾 /
         base-path:          # 可选虚拟目录

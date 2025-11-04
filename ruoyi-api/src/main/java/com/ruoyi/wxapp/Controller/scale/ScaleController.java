@@ -118,6 +118,7 @@ public class ScaleController extends BaseController {
     public AjaxResult getReportList()
     {
         LbsResultsVo lbsResults=new LbsResultsVo();
+        lbsResults.setUserId(getLoginUser().getUserId());
         List<LbsResultsVo> list = lbsResultsService.selectLbsResultsList(lbsResults);
         return success(list);
     }

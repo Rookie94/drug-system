@@ -5,6 +5,7 @@ import com.ruoyi.cms.online.domain.ChatGroup;
 import com.ruoyi.cms.online.domain.ChatGroupMenbers;
 import com.ruoyi.cms.online.domain.ChatMessage;
 import com.ruoyi.cms.online.domain.vo.ChatGroupMenbersVo;
+import com.ruoyi.cms.online.domain.vo.ChatMessageTreeVo;
 import com.ruoyi.cms.online.domain.vo.ChatMessageVo;
 import com.ruoyi.cms.online.service.IChatGroupMenbersService;
 import com.ruoyi.cms.online.service.IChatGroupService;
@@ -109,6 +110,16 @@ public class MsgBoardController extends BaseController {
         }
         List<ChatMessageVo> list = chatMessageService.selectChatMessageList(chatMessage);
         return getDataTable(list);
+    }
+
+    /**
+     * 查询留言板树结构
+     */
+    @GetMapping("/getMessageTree/{parentMessageId}")
+    public AjaxResult getMessageTree(@PathVariable("parentMessageId") Long parentMessageId)
+    {
+        List<ChatMessageTreeVo> tree = chatMessageService.selectChatMessageTree(parentMessageId);
+        return success(tree);
     }
 
     /**

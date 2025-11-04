@@ -71,7 +71,12 @@
                o.wtqd_desc,
                o.is_extend,
                o.logic_symbol,
-               o.survey_id
+               o.survey_id,
+               t.create_by,
+               t.create_time,
+               t.update_by,
+               t.update_time,
+               t.remark
         from doc_question t
                  left join doc_options o on t.question_id = o.question_id
     </sql>
@@ -124,6 +129,8 @@
             <if test="defaultValue != null">default_value,</if>
             <if test="optionDisplay != null">option_display,</if>
             <if test="formula != null">formula,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="surveyId != null">#{surveyId},</if>
@@ -140,6 +147,8 @@
             <if test="defaultValue != null">#{defaultValue},</if>
             <if test="optionDisplay != null">#{optionDisplay},</if>
             <if test="formula != null">#{formula},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
         </trim>
     </insert>
 
@@ -160,6 +169,8 @@
             <if test="defaultValue != null">default_value = #{defaultValue},</if>
             <if test="optionDisplay != null">option_display = #{optionDisplay},</if>
             <if test="formula != null">formula = #{formula},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where question_id = #{questionId}
     </update>

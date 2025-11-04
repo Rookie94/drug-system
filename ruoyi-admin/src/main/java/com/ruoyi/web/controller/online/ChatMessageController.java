@@ -52,6 +52,7 @@ public class ChatMessageController extends BaseController
     /**
      * 查询留言板树结构
      */
+    @PreAuthorize("@ss.hasPermi('online:chat:list')")
     @GetMapping("/getMessageTree/{parentMessageId}")
     public AjaxResult getMessageTree(@PathVariable("parentMessageId") Long parentMessageId)
     {

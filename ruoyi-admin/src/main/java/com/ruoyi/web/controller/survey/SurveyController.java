@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.survey;
 
+import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -141,7 +142,7 @@ public class SurveyController extends BaseController {
     @Log(title = "问卷撤销发布", businessType = BusinessType.DELETE)
     @PutMapping("/revoke/{surveyId}")
     public AjaxResult revoke(@PathVariable Long surveyId) {
-        List<DocResults> answerJsons = docResultsService.selectDocResultsBySurveyId(surveyId);
+        List<DocResultsVo> answerJsons = docResultsService.selectDocResultsBySurveyId(surveyId);
         if (!answerJsons.isEmpty()) {
             return AjaxResult.error("数据已采集，不能撤销");
         }

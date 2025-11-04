@@ -1,12 +1,13 @@
 package com.ruoyi.cms.survey.domain.vo;
 
+import com.ruoyi.common.core.domain.BaseEntity;
 import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
-public class QuestionVo {
+public class QuestionVo extends BaseEntity {
 
     public Long getQuestionId() {
         return questionId;
@@ -120,22 +121,6 @@ public class QuestionVo {
         this.optionDisplay = optionDisplay;
     }
 
-    public String getBookCode() {
-        return bookCode;
-    }
-
-    public void setBookCode(String bookCode) {
-        this.bookCode = bookCode;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
     public List<OptionsVo> getOptions() {
         return options;
     }
@@ -158,8 +143,6 @@ public class QuestionVo {
     private String defaultValue;
     private String formula;
     private String optionDisplay;
-    private String bookCode;
-    private Date createTime;
 
     // 选项列表
     private List<OptionsVo> options;

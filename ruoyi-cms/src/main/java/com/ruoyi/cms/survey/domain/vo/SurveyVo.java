@@ -1,12 +1,13 @@
 package com.ruoyi.cms.survey.domain.vo;
 
+import com.ruoyi.common.core.domain.BaseEntity;
 import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
-public class SurveyVo {
+public class SurveyVo extends BaseEntity {
 
     public Long getSurveyId() {
         return surveyId;
@@ -48,36 +49,12 @@ public class SurveyVo {
         this.surveyStatus = surveyStatus;
     }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
     public Integer getStatus() {
         return status;
     }
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public String getBookCode() {
-        return bookCode;
-    }
-
-    public void setBookCode(String bookCode) {
-        this.bookCode = bookCode;
     }
 
     public List<QuestionVo> getQuestions() {
@@ -93,10 +70,7 @@ public class SurveyVo {
     private String surveyDesc;
     private String surveyType;
     private Integer surveyStatus;
-    private Date createTime;
-    private Long userId;
     private Integer status;
-    private String bookCode;
 
     // 添加题目列表
     private List<QuestionVo> questions;

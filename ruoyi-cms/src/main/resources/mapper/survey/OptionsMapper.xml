@@ -18,10 +18,13 @@
         <result property="wtqdSymbol" column="wtqd_symbol"/>
         <result property="wtqdDesc" column="wtqd_desc"/>
         <result property="isExtend" column="is_extend"/>
-        <result property="createTime" column="create_time"/>
         <result property="logicSymbol" column="logic_symbol"/>
         <result property="surveyId" column="survey_id"/>
-        <result property="bookCode" column="book_code"/>
+        <result property="createBy" column="create_by"      />
+        <result property="createTime" column="create_time"    />
+        <result property="updateBy" column="update_by"      />
+        <result property="updateTime" column="update_time"    />
+        <result property="remark" column="remark"         />
     </resultMap>
 
     <sql id="selectOptionsVo">
@@ -41,7 +44,11 @@
                create_time,
                logic_symbol,
                survey_id,
-               book_code
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
         from doc_options
     </sql>
 
@@ -62,7 +69,6 @@
             <if test="isExtend != null  and isExtend != ''">and is_extend = #{isExtend}</if>
             <if test="logicSymbol != null  and logicSymbol != ''">and logic_symbol = #{logicSymbol}</if>
             <if test="surveyId != null ">and survey_id = #{surveyId}</if>
-            <if test="bookCode != null  and bookCode != ''">and book_code = #{bookCode}</if>
         </where>
         order by option_no
     </select>
@@ -87,9 +93,10 @@
             <if test="wtqdSymbol != null">wtqd_symbol,</if>
             <if test="wtqdDesc != null">wtqd_desc,</if>
             <if test="isExtend != null">is_extend,</if>
-            <if test="createTime != null">create_time,</if>
             <if test="logicSymbol != null">logic_symbol,</if>
             <if test="surveyId != null">survey_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="questionId != null">#{questionId},</if>
@@ -104,20 +111,21 @@
             <if test="wtqdSymbol != null">#{wtqdSymbol},</if>
             <if test="wtqdDesc != null">#{wtqdDesc},</if>
             <if test="isExtend != null">#{isExtend},</if>
-            <if test="createTime != null">#{createTime},</if>
             <if test="logicSymbol != null">#{logicSymbol},</if>
             <if test="surveyId != null">#{surveyId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
         </trim>
     </insert>
 
     <insert id="insertOptionBatch" parameterType="java.util.List">
         insert into doc_options
-        (question_id,option_code,option_text,option_no,hide_question,show_question,is_wtqd,wtqd_type,wtqd_value,wtqd_symbol,wtqd_desc,is_extend,create_time,logic_symbol,survey_id)
+        (question_id,option_code,option_text,option_no,hide_question,show_question,is_wtqd,wtqd_type,wtqd_value,wtqd_symbol,wtqd_desc,is_extend,logic_symbol,survey_id,create_by,create_time)
         values
         <foreach collection="optionList" item="item" index="index" separator=",">
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 #{item.questionId}, #{item.optionCode}, #{item.optionText}, #{item.optionNo}, #{item.hideQuestion}, #{item.showQuestion}, #{item.isWtqd}, #{item.wtqdType}, #{item.wtqdValue},
-                #{item.wtqdSymbol}, #{item.wtqdDesc}, #{item.isExtend}, #{item.createTime}, #{item.logicSymbol}, #{item.surveyId}},
+                #{item.wtqdSymbol}, #{item.wtqdDesc}, #{item.isExtend}, #{item.logicSymbol}, #{item.surveyId}, #{item.createBy}, #{item.createTime},
             </trim>
         </foreach>
     </insert>
@@ -137,9 +145,10 @@
             <if test="wtqdSymbol != null">wtqd_symbol = #{wtqdSymbol},</if>
             <if test="wtqdDesc != null">wtqd_desc = #{wtqdDesc},</if>
             <if test="isExtend != null">is_extend = #{isExtend},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
             <if test="logicSymbol != null">logic_symbol = #{logicSymbol},</if>
             <if test="surveyId != null">survey_id = #{surveyId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where option_id = #{optionId}
     </update>

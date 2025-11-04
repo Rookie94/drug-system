@@ -1,6 +1,7 @@
 package com.ruoyi.cms.survey.service;
 
 import com.ruoyi.cms.survey.domain.DocResults;
+import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
 
 import java.util.List;
 
@@ -17,15 +18,15 @@ public interface IDocResultsService {
      * @param resultId 问卷答案结果json主键
      * @return 问卷答案结果json
      */
-    DocResults selectDocResultsById(Long resultId);
+    DocResultsVo selectDocResultsById(Long resultId);
 
     /**
      * 查询问卷答案结果json列表
      *
-     * @param docResults 问卷答案结果json
+     * @param docResultsVo 问卷答案结果json
      * @return 问卷答案结果json集合
      */
-    List<DocResults> selectDocResultsList(DocResults docResults);
+    List<DocResultsVo> selectDocResultsList(DocResultsVo docResultsVo);
 
 
     /**
@@ -34,7 +35,7 @@ public interface IDocResultsService {
      * @param surveyId 问卷id
      * @return 问卷答案结果json集合
      */
-    List<DocResults> selectDocResultsBySurveyId(Long surveyId);
+    List<DocResultsVo> selectDocResultsBySurveyId(Long surveyId);
 
 
     /**

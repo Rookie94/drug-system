@@ -1,6 +1,7 @@
 package com.ruoyi.cms.survey.mapper;
 
 import com.ruoyi.cms.survey.domain.DocResults;
+import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -19,15 +20,15 @@ public interface DocResultsMapper {
      * @param resultId 问卷答案结果json主键
      * @return 问卷答案结果json
      */
-    DocResults selectDocResultsById(Long resultId);
+    DocResultsVo selectDocResultsById(Long resultId);
 
     /**
      * 查询问卷答案结果json列表
      *
-     * @param docResults 问卷答案结果json
+     * @param docResultsVo 问卷答案结果json
      * @return 问卷答案结果json集合
      */
-    List<DocResults> selectDocResultsList(DocResults docResults);
+    List<DocResultsVo> selectDocResultsList(DocResultsVo docResultsVo);
 
     /**
      * 查询问卷答案结果json列表
@@ -35,7 +36,7 @@ public interface DocResultsMapper {
      * @param surveyId 问卷id
      * @return 问卷答案结果json集合
      */
-    List<DocResults> selectDocResultsBySurveyId(Long surveyId);
+    List<DocResultsVo> selectDocResultsBySurveyId(Long surveyId);
 
 
     /**

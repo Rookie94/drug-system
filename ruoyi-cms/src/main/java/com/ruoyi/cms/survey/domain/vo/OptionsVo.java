@@ -1,11 +1,12 @@
 package com.ruoyi.cms.survey.domain.vo;
 
+import com.ruoyi.common.core.domain.BaseEntity;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class OptionsVo {
+public class OptionsVo extends BaseEntity {
     public Long getOptionId() {
         return optionId;
     }
@@ -134,14 +135,6 @@ public class OptionsVo {
         this.logicSymbol = logicSymbol;
     }
 
-    public String getBookCode() {
-        return bookCode;
-    }
-
-    public void setBookCode(String bookCode) {
-        this.bookCode = bookCode;
-    }
-
     private Long optionId;
     private Long surveyId;
     private Long questionId;
@@ -158,5 +151,5 @@ public class OptionsVo {
     private Integer isExtend;
     private Date createTime;
     private String logicSymbol;
-    private String bookCode;
+
 }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.ruoyi.common.utils.SecurityUtils.getUsername;
+
 /**
  * 问卷答案结果Service业务层处理
  *
@@ -50,6 +52,7 @@ public class AnswersServiceImpl implements IAnswersService {
      */
     @Override
     public int insertAnswers(Answers answers) {
+        answers.setCreateBy(getUsername());
         answers.setCreateTime(DateUtils.getNowDate());
         return answersMapper.insertAnswers(answers);
     }
@@ -62,6 +65,8 @@ public class AnswersServiceImpl implements IAnswersService {
      */
     @Override
     public int updateAnswers(Answers answers) {
+        answers.setUpdateBy(getUsername());
+        answers.setUpdateTime(DateUtils.getNowDate());
         return answersMapper.updateAnswers(answers);
     }
 

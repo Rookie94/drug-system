@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.survey;
 
 import java.util.List;
 
+import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ import com.ruoyi.cms.survey.service.IDocResultsService;
  * @date 2021-10-18
  */
 @RestController
-@RequestMapping("/survey/json")
+@RequestMapping("/survey/docs")
 public class DocResultsController extends BaseController {
     @Autowired
     private IDocResultsService docResultsService;
@@ -30,30 +31,30 @@ public class DocResultsController extends BaseController {
     /**
      * 查询问卷答案结果json列表
      */
-    @PreAuthorize("@ss.hasPermi('survey:json:list')")
+    @PreAuthorize("@ss.hasPermi('survey:docs:list')")
     @GetMapping("/list")
-    public TableDataInfo list(DocResults answerJson) {
+    public TableDataInfo list(DocResultsVo docResultsVo) {
         startPage();
-        List<DocResults> list = docResultsService.selectDocResultsList(answerJson);
+        List<DocResultsVo> list = docResultsService.selectDocResultsList(docResultsVo);
         return getDataTable(list);
     }
 
     /**
      * 导出问卷答案结果json列表
      */
-    @PreAuthorize("@ss.hasPermi('survey:json:export')")
+    @PreAuthorize("@ss.hasPermi('survey:docs:export')")
     @Log(title = "问卷答案结果json", businessType = BusinessType.EXPORT)
     @GetMapping("/export")
-    public AjaxResult export(DocResults answerJson) {
-        List<DocResults> list = docResultsService.selectDocResultsList(answerJson);
-        ExcelUtil<DocResults> util = new ExcelUtil<DocResults>(DocResults.class);
-        return util.exportExcel(list, "问卷答案结果json数据");
+    public AjaxResult export(DocResultsVo docResultsVo) {
+        List<DocResultsVo> list = docResultsService.selectDocResultsList(docResultsVo);
+        ExcelUtil<DocResultsVo> util = new ExcelUtil<DocResultsVo>(DocResultsVo.class);
+        return util.exportExcel(list, "问卷答案数据");
     }
 
     /**
      * 获取问卷答案结果json详细信息
      */
-    @PreAuthorize("@ss.hasPermi('survey:json:query')")
+    @PreAuthorize("@ss.hasPermi('survey:docs:query')")
     @GetMapping(value = "/{resultId}")
     public AjaxResult getInfo(@PathVariable("resultId") Long resultId) {
         return AjaxResult.success(docResultsService.selectDocResultsById(resultId));
@@ -62,7 +63,7 @@ public class DocResultsController extends BaseController {
     /**
      * 新增问卷答案结果json
      */
-    @PreAuthorize("@ss.hasPermi('survey:json:add')")
+    @PreAuthorize("@ss.hasPermi('survey:docs:add')")
     @Log(title = "问卷答案结果json", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody DocResults docResults) {
@@ -72,7 +73,7 @@ public class DocResultsController extends BaseController {
     /**
      * 修改问卷答案结果json
      */
-    @PreAuthorize("@ss.hasPermi('survey:json:edit')")
+    @PreAuthorize("@ss.hasPermi('survey:docs:edit')")
     @Log(title = "问卷答案结果json", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody DocResults docResults) {
@@ -82,7 +83,7 @@ public class DocResultsController extends BaseController {
     /**
      * 删除问卷答案结果json
      */
-    @PreAuthorize("@ss.hasPermi('survey:json:remove')")
+    @PreAuthorize("@ss.hasPermi('survey:docs:remove')")
     @Log(title = "问卷答案结果json", businessType = BusinessType.DELETE)
     @DeleteMapping("/{resultIds}")
     public AjaxResult remove(@PathVariable Long[] resultIds) {

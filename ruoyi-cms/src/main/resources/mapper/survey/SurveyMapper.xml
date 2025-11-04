@@ -110,7 +110,7 @@
             o.option_code AS q_o_option_code,
             o.option_text AS q_o_option_text,
             o.option_no AS q_o_option_no,
-            o.is_extend AS q_o_is_extend,
+            COALESCE(NULLIF(o.is_extend,''),'0')::int AS q_o_is_extend,
             o.wtqd_desc AS q_o_wtqd_desc,
             o.show_question AS q_o_show_question,
             o.hide_question AS q_o_hide_question,

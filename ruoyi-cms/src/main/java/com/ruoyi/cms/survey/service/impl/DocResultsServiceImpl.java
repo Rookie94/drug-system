@@ -1,13 +1,19 @@
 package com.ruoyi.cms.survey.service.impl;
 
+import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
+import com.ruoyi.common.annotation.DataScope;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.cms.survey.domain.DocResults;
 import com.ruoyi.cms.survey.mapper.DocResultsMapper;
 import com.ruoyi.cms.survey.service.IDocResultsService;
+import com.ruoyi.system.service.ISerialNoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.ruoyi.common.utils.SecurityUtils.*;
 
 /**
  * 问卷答案结果jsonService业务层处理
@@ -17,8 +23,12 @@ import java.util.List;
  */
 @Service
 public class DocResultsServiceImpl implements IDocResultsService {
+
     @Autowired
     private DocResultsMapper docResultsMapper;
+
+    @Autowired
+    private ISerialNoService serialNoService;
 
     /**
      * 查询问卷答案结果json
@@ -27,19 +37,27 @@ public class DocResultsServiceImpl implements IDocResultsService {
      * @return 问卷答案结果json
      */
     @Override
-    public DocResults selectDocResultsById(Long resultId) {
+    public DocResultsVo selectDocResultsById(Long resultId) {
         return docResultsMapper.selectDocResultsById(resultId);
     }
 
     /**
      * 查询问卷答案结果json列表
      *
-     * @param docResults 问卷答案结果json
+     * @param docResultsVo 问卷答案结果json
      * @return 问卷答案结果json
      */
     @Override
-    public List<DocResults> selectDocResultsList(DocResults docResults) {
-        return docResultsMapper.selectDocResultsList(docResults);
+    @DataScope(deptAlias = "t", userAlias = "t")
+    public List<DocResultsVo> selectDocResultsList(DocResultsVo docResultsVo) {
+        LoginUser user=getLoginUser();
+        if(!user.getUser().getUserType().trim().equals("00")){
+            docResultsVo.setUserId(user.getUserId());
+        }
+        else{
+            docResultsVo.setUserId(null);
+        }
+        return docResultsMapper.selectDocResultsList(docResultsVo);
     }
 
     /**
@@ -49,7 +67,7 @@ public class DocResultsServiceImpl implements IDocResultsService {
      * @return 问卷答案结果json集合
      */
     @Override
-    public List<DocResults> selectDocResultsBySurveyId(Long surveyId) {
+    public List<DocResultsVo> selectDocResultsBySurveyId(Long surveyId) {
         return docResultsMapper.selectDocResultsBySurveyId(surveyId);
     }
 
@@ -61,7 +79,16 @@ public class DocResultsServiceImpl implements IDocResultsService {
      */
     @Override
     public int insertDocResults(DocResults docResults) {
+        docResults.setCommitTime(DateUtils.getNowDate());
+        docResults.setUserId(getUserId());
+        docResults.setDeptId(getDeptId());
+        docResults.setCreateBy(getUsername());
         docResults.setCreateTime(DateUtils.getNowDate());
+        String resultNo=serialNoService.getSerialNumber("SurveyRecordNo");
+        if(resultNo.equals("")){
+            resultNo=serialNoService.getSerialNumber("SurveyRecordNo");
+        }
+        docResults.setResultNo(resultNo);
         return docResultsMapper.insertDocResults(docResults);
     }
 
@@ -73,6 +100,8 @@ public class DocResultsServiceImpl implements IDocResultsService {
      */
     @Override
     public int updateDocResults(DocResults docResults) {
+        docResults.setUpdateBy(getUsername());
+        docResults.setUpdateTime(DateUtils.getNowDate());
         return docResultsMapper.updateDocResults(docResults);
     }
 

@@ -32,7 +32,7 @@ public class SurveyController extends BaseController {
     {
         startPage();
         survey.setUseDataScope(false);
-        survey.setStatus("1");
+        survey.setStatus("0");
         survey.setSurveyStatus("1");
         List<Survey> list = surveyService.selectSurveyList(survey);
         return getDataTable(list);

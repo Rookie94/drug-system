@@ -166,6 +166,16 @@
         where survey_id = #{surveyId}
     </update>
 
+    <update id="updateStatus" parameterType="Survey">
+        update doc_survey
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where survey_id = #{surveyId}
+    </update>
+
     <update id="removeSurveyBySurveyId" parameterType="Long">
         update doc_survey
         set status = '0'

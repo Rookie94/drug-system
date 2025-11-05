@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.scale;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.cms.res.domain.ResCase;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -110,4 +112,16 @@ public class LbsContextsController extends BaseController
     {
         return toAjax(lbsContextsService.generalJsonByContextIds(contextIds));
     }
+
+    /**
+     * 状态修改
+     */
+    @PreAuthorize("@ss.hasPermi('scale:contexts:edit')")
+    @Log(title = "量表目录", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody LbsContexts lbsContexts)
+    {
+        return toAjax(lbsContextsService.updateStatus(lbsContexts));
+    }
+
 }

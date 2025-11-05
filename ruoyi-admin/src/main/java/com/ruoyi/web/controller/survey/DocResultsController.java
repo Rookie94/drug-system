@@ -16,6 +16,8 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.cms.survey.domain.DocResults;
 import com.ruoyi.cms.survey.service.IDocResultsService;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 问卷答案结果jsonController
  *
@@ -43,12 +45,12 @@ public class DocResultsController extends BaseController {
      * 导出问卷答案结果json列表
      */
     @PreAuthorize("@ss.hasPermi('survey:docs:export')")
-    @Log(title = "问卷答案结果json", businessType = BusinessType.EXPORT)
+    @Log(title = "问卷答案结果", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public AjaxResult export(DocResultsVo docResultsVo) {
+    public void export(HttpServletResponse response, DocResultsVo docResultsVo) {
         List<DocResultsVo> list = docResultsService.selectDocResultsList(docResultsVo);
         ExcelUtil<DocResultsVo> util = new ExcelUtil<DocResultsVo>(DocResultsVo.class);
-        return util.exportExcel(list, "问卷答案数据");
+        util.exportExcel(response, list, "问卷填报明细");
     }
 
     /**

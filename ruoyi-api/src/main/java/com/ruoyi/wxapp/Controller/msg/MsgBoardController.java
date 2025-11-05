@@ -129,6 +129,12 @@ public class MsgBoardController extends BaseController {
     @PostMapping("/sendMessage")
     public AjaxResult SendMessage(@RequestBody ChatMessage chatMessage)
     {
+        // 设置当前用户ID
+        chatMessage.setUserId(getUserId());
+        // 如果是回复，设置主留言状态为已回复
+        if (chatMessage.getParentMessageId() != null) {
+            chatMessageService.updateMainMessageStatus(chatMessage.getParentMessageId(), "1");
+        }
         return toAjax(chatMessageService.insertChatMessage(chatMessage));
     }
 

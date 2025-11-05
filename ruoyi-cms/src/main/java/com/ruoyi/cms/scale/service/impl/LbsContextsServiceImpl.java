@@ -248,5 +248,15 @@ public class LbsContextsServiceImpl implements ILbsContextsService
     }
 
 
+    /**
+     * 修改量表状态
+     *
+     * @param lbsContexts 量表
+     * @return 结果
+     */
+    public int updateStatus(LbsContexts lbsContexts)
+    {
+        return lbsContextsMapper.updateStatus(lbsContexts);
+    }
 
 }

@@ -67,4 +67,13 @@ public interface LbsContextsMapper
     */
     public ContextVo selectContextWithRelations(Long contextId);
 
+
+    /**
+     * 修改量表状态
+     *
+     * @param lbsContexts 量表
+     * @return 结果
+     */
+    public int updateStatus(LbsContexts lbsContexts);
+
 }

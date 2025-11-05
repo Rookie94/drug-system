@@ -1,5 +1,6 @@
 package com.ruoyi.cms.survey.mapper;
 
+import com.ruoyi.cms.res.domain.ResCase;
 import com.ruoyi.cms.survey.domain.Survey;
 import com.ruoyi.cms.survey.domain.vo.SurveyVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -52,6 +53,14 @@ public interface SurveyMapper {
      * @return 结果
      */
     public int updateSurvey(Survey survey);
+
+    /**
+     * 修改问卷状态
+     *
+     * @param survey 问卷
+     * @return 结果
+     */
+    public int updateStatus(Survey survey);
 
     /**
      * 删除问卷

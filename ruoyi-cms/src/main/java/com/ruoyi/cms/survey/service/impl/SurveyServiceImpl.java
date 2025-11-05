@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.ruoyi.common.utils.SecurityUtils.getUsername;
+
 /**
  * 问卷Service业务层处理
  *
@@ -57,6 +59,7 @@ public class SurveyServiceImpl implements ISurveyService {
      */
     @Override
     public int insertSurvey(Survey survey) {
+        survey.setCreateBy(getUsername());
         survey.setCreateTime(DateUtils.getNowDate());
         return surveyMapper.insertSurvey(survey);
     }
@@ -69,7 +72,22 @@ public class SurveyServiceImpl implements ISurveyService {
      */
     @Override
     public int updateSurvey(Survey survey) {
+        survey.setUpdateBy(getUsername());
+        survey.setUpdateTime(DateUtils.getNowDate());
         return surveyMapper.updateSurvey(survey);
+    }
+
+    /**
+     * 修改问卷状态
+     *
+     * @param survey 问卷
+     * @return 结果
+     */
+    public int updateStatus(Survey survey)
+    {
+        survey.setUpdateBy(getUsername());
+        survey.setUpdateTime(DateUtils.getNowDate());
+        return surveyMapper.updateStatus(survey);
     }
 
     /**

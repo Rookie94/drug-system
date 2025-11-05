@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.survey;
 
+import com.ruoyi.cms.res.domain.ResCase;
 import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -57,10 +59,10 @@ public class SurveyController extends BaseController {
     @PreAuthorize("@ss.hasPermi('survey:vote:export')")
     @Log(title = "问卷导出", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public AjaxResult export(Survey survey) {
+    public void export(HttpServletResponse response, Survey survey) {
         List<Survey> list = surveyService.selectSurveyList(survey);
         ExcelUtil<Survey> util = new ExcelUtil<Survey>(Survey.class);
-        return util.exportExcel(list, "问卷数据");
+        util.exportExcel(response, list, "问卷数据");
     }
 
     /**
@@ -90,6 +92,17 @@ public class SurveyController extends BaseController {
     @PutMapping
     public AjaxResult edit(@RequestBody Survey survey) {
         return toAjax(surveyService.updateSurvey(survey));
+    }
+
+    /**
+     * 状态修改
+     */
+    @PreAuthorize("@ss.hasPermi('survey:vote:edit')")
+    @Log(title = "戒治案例", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody Survey survey)
+    {
+        return toAjax(surveyService.updateStatus(survey));
     }
 
     /**

@@ -179,4 +179,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{contextId}
         </foreach>
     </delete>
+
+    <update id="updateStatus" parameterType="LbsContexts">
+        update lbs_contexts
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where context_id = #{contextId}
+    </update>
+
 </mapper>

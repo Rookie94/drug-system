@@ -1,6 +1,8 @@
 package com.ruoyi.cms.scale.service;
 
 import java.util.List;
+
+import com.ruoyi.cms.res.domain.ResCase;
 import com.ruoyi.cms.scale.domain.LbsContexts;
 import com.ruoyi.cms.scale.domain.ContextsTreeSelect;
 import com.ruoyi.cms.scale.domain.vo.ContextVo;
@@ -99,5 +101,13 @@ public interface ILbsContextsService
         * @return 结果
         */
     public ContextVo selectContextWithRelations(Long contextId);
+
+    /**
+     * 修改量表状态
+     *
+     * @param lbsContexts 量表
+     * @return 结果
+     */
+    public int updateStatus(LbsContexts lbsContexts);
 
 }

@@ -21,6 +21,7 @@
             update ofa_activities set appored='3' where appored='2' and start_time &lt;= NOW() and end_time &gt;= NOW();
             update ofa_activities set appored='4' where appored in ('2','3') and end_time &lt;= NOW();
             update ofa_activities set appored = '5' WHERE appored IN ('2','3','4') AND DATE_ADD(end_time, INTERVAL 3 DAY) &lt;= NOW();
+            UPDATE doc_survey SET survey_status = '2', update_time   = CURRENT_TIMESTAMP WHERE  end_time IS NOT NULL  AND  end_time > CURRENT_TIMESTAMP AND survey_status='1';
         </if>
         <if test="_databaseId == 'kingbase'">
             update res_jobinfo set appored='2' where appored='1' and publish_time &lt;= CURRENT_TIMESTAMP;
@@ -38,6 +39,7 @@
             update ofa_activities set appored='3' where appored='2' and start_time &lt;= CURRENT_TIMESTAMP and end_time &gt;= CURRENT_TIMESTAMP;
             update ofa_activities set appored='4' where appored in ('2','3') and end_time &lt;= CURRENT_TIMESTAMP;
             update ofa_activities set appored = '5' WHERE appored IN ('2','3','4') AND end_time&lt;=CURRENT_TIMESTAMP - INTERVAL '3' DAY;
+            UPDATE doc_survey SET survey_status = '2', update_time   = CURRENT_TIMESTAMP WHERE  end_time IS NOT NULL  AND  end_time > CURRENT_TIMESTAMP AND survey_status='1';
         </if>
     </update>
 

@@ -18,8 +18,12 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -124,20 +128,37 @@ public class ScaleController extends BaseController {
     }
 
     @GetMapping("/getReport")
-    public String renderTemplate(@RequestParam Long resultId,@RequestParam(defaultValue = "pc") String deviceType)
-    {
+    public String renderTemplate(@RequestParam Long resultId, @RequestParam(defaultValue = "pc") String deviceType) {
         LbsResultsVo lbsResults = lbsResultsService.selectLbsResultsByResultId(resultId);
         Long contextId = lbsResults.getContextId();
         ITemplateStrategy strategy = reportFactory.getStrategy(contextId, deviceType);
+
         if (strategy == null) {
-            if(deviceType.equals("pc")){
-                return "templates/pc/default/" + "index.html";
+            // 读取默认模板文件内容并返回
+            String templatePath;
+            if (deviceType.equals("pc")) {
+                templatePath = "templates/pc/default/index.html";
+            } else {
+                templatePath = "templates/mobile/default/index.html";
             }
-            else{
-                return "templates/mobile/default/" + "index.html";
+
+            try {
+                // 使用ClassPathResource读取模板文件内容
+                ClassPathResource resource = new ClassPathResource(templatePath);
+                if (resource.exists()) {
+                    return StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);
+                } else {
+                    // 如果默认模板文件不存在，返回一个简单的错误提示
+                    return "<html><body><h1>报告模板不存在</h1><p>无法找到对应的报告模板文件</p></body></html>";
+                }
+            } catch (IOException e) {
+                // 读取文件失败时返回错误信息
+                return "<html><body><h1>报告生成失败</h1><p>读取模板文件时发生错误: " + e.getMessage() + "</p></body></html>";
             }
         }
-        return strategy.getTemplate(contextId,deviceType,lbsResults);
+
+        // 如果找到了策略，调用策略获取模板内容
+        return strategy.getTemplate(contextId, deviceType, lbsResults);
     }
 
 }

@@ -8,11 +8,12 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class SDSMobileStrategy implements ITemplateStrategy {
+public class SASMobileStrategy implements ITemplateStrategy {
     @Override
     public String getTemplate(Long contextId, String deviceType, LbsResultsVo lbsResults)
     {
-        String templatePath="templates/mobile/standard/sds.html";
+        String templatePath="templates/mobile/standard/sas.html";
+
         try {
             // 使用ClassPathResource读取模板文件内容
             ClassPathResource resource = new ClassPathResource(templatePath);
@@ -26,5 +27,6 @@ public class SDSMobileStrategy implements ITemplateStrategy {
             // 读取文件失败时返回错误信息
             return "<html><body><h1>报告生成失败</h1><p>读取模板文件时发生错误: " + e.getMessage() + "</p></body></html>";
         }
+
     }
 }

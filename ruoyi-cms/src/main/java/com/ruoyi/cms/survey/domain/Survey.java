@@ -1,9 +1,12 @@
 package com.ruoyi.cms.survey.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Date;
 
 /**
  * 问卷对象 tb_survey
@@ -37,6 +40,12 @@ public class Survey extends BaseEntity {
     @Excel(name = "问卷类型")
     private String surveyType;
 
+
+    /** 截止时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "截止时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date endTime;
+
     /**
      * 问卷状态（0：未发布，1：收集中，2：已结束）
      */
@@ -48,6 +57,12 @@ public class Survey extends BaseEntity {
      */
     @Excel(name = "数据状态", readConverterExp = "1=：有效，0：无效")
     private String status;
+
+    /**
+     * 问卷删除状态（"0=：正常，1：已删除"）
+     */
+    @Excel(name = "删除状态", readConverterExp = "0=：正常，1：已删除")
+    private String delFlag;
 
 
     public void setSurveyId(Long surveyId) {
@@ -82,6 +97,14 @@ public class Survey extends BaseEntity {
         return surveyType;
     }
 
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
     public void setSurveyStatus(String surveyStatus) {
         this.surveyStatus = surveyStatus;
     }
@@ -99,6 +122,14 @@ public class Survey extends BaseEntity {
         return status;
     }
 
+    public String getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -106,8 +137,10 @@ public class Survey extends BaseEntity {
                 .append("surveyName", getSurveyName())
                 .append("surveyDesc", getSurveyDesc())
                 .append("surveyType", getSurveyType())
+                .append("endTime", getEndTime())
                 .append("surveyStatus", getSurveyStatus())
                 .append("status", getStatus())
+                .append("delFlag", getDelFlag())
                 .append("createBy", getCreateBy())
                 .append("createTime", getCreateTime())
                 .append("updateBy", getUpdateBy())

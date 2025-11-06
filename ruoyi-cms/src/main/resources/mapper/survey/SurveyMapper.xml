@@ -9,8 +9,10 @@
         <result property="surveyName" column="survey_name"/>
         <result property="surveyDesc" column="survey_desc"/>
         <result property="surveyType" column="survey_type"/>
+        <result property="endTime" column="end_time"/>
         <result property="surveyStatus" column="survey_status"/>
         <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
         <result property="createBy" column="create_by"      />
         <result property="createTime" column="create_time"    />
         <result property="updateBy" column="update_by"      />
@@ -23,8 +25,10 @@
         <result property="surveyName" column="survey_name"/>
         <result property="surveyDesc" column="survey_desc"/>
         <result property="surveyType" column="survey_type"/>
+        <result property="endTime" column="end_time"/>
         <result property="surveyStatus" column="survey_status"/>
-        <result property="createTime" column="survey_create_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createTime" column="survey_create_time"    />
         <collection property="questions" resultMap="QuestionResult" columnPrefix="q_"/>
     </resultMap>
 
@@ -60,8 +64,10 @@
                survey_name,
                survey_desc,
                survey_type,
+               end_time,
                survey_status,
                status,
+               del_flag,
                create_by,
                create_time,
                update_by,
@@ -78,6 +84,7 @@
             <if test="surveyType != null  and surveyType != ''">and survey_type = #{surveyType}</if>
             <if test="surveyStatus != null  and surveyStatus != ''">and survey_status = #{surveyStatus}</if>
             <if test="status != null  and status != ''">and status = #{status}</if>
+            <if test="delFlag != null  and delFlag != ''">and del_flag = #{delFlag}</if>
         </where>
     </select>
 
@@ -92,6 +99,7 @@
             s.survey_name,
             s.survey_desc,
             s.survey_type,
+            s.end_time,
             s.survey_status,
             s.create_time AS survey_create_time,
 
@@ -110,7 +118,7 @@
             o.option_code AS q_o_option_code,
             o.option_text AS q_o_option_text,
             o.option_no AS q_o_option_no,
-            COALESCE(NULLIF(o.is_extend,''),'0')::int AS q_o_is_extend,
+            CAST(COALESCE(NULLIF(o.is_extend,''),'0') AS INTEGER) AS q_o_is_extend,
             o.wtqd_desc AS q_o_wtqd_desc,
             o.show_question AS q_o_show_question,
             o.hide_question AS q_o_hide_question,
@@ -121,13 +129,12 @@
                  LEFT JOIN doc_question q ON s.survey_id = q.survey_id
                  LEFT JOIN doc_options o ON q.question_id = o.question_id
         WHERE s.survey_id = #{surveyId}
-          AND s.status = 1
+          AND s.status = '0' AND s.survey_status='1' AND s.del_flag='0'
         ORDER BY
             q.question_sort ASC,
             q.question_no ASC,
             o.option_no ASC
     </select>
-
 
 
     <insert id="insertSurvey" parameterType="Survey" useGeneratedKeys="true" keyProperty="surveyId">
@@ -136,8 +143,10 @@
             <if test="surveyName != null and surveyName != ''">survey_name,</if>
             <if test="surveyDesc != null">survey_desc,</if>
             <if test="surveyType != null">survey_type,</if>
+            <if test="endTime != null">end_time,</if>
             <if test="surveyStatus != null">survey_status,</if>
             <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
         </trim>
@@ -145,8 +154,10 @@
             <if test="surveyName != null and surveyName != ''">#{surveyName},</if>
             <if test="surveyDesc != null">#{surveyDesc},</if>
             <if test="surveyType != null">#{surveyType},</if>
+            <if test="endTime != null">#{endTime},</if>
             <if test="surveyStatus != null">#{surveyStatus},</if>
             <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
         </trim>
@@ -158,8 +169,10 @@
             <if test="surveyName != null and surveyName != ''">survey_name = #{surveyName},</if>
             <if test="surveyDesc != null">survey_desc = #{surveyDesc},</if>
             <if test="surveyType != null">survey_type = #{surveyType},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
             <if test="surveyStatus != null">survey_status = #{surveyStatus},</if>
             <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
@@ -178,12 +191,12 @@
 
     <update id="removeSurveyBySurveyId" parameterType="Long">
         update doc_survey
-        set status = '0'
+        set del_flag = '1'
         where survey_id = #{surveyId}
     </update>
 
     <update id="removeSurveyBySurveyIds" parameterType="String">
-        update doc_survey set status = '0' where survey_id in
+        update doc_survey set del_flag = '1' where survey_id in
         <foreach item="surveyId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>
@@ -210,7 +223,7 @@
     </delete>
 
     <update id="restoreSurveyBySurveyIds" parameterType="String">
-        update doc_survey set status = '1' where survey_id in
+        update doc_survey set del_flag = '0' where survey_id in
         <foreach item="surveyId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>
@@ -221,4 +234,5 @@
         set survey_status = '0'
         where survey_id = #{surveyId}
     </update>
+
 </mapper>

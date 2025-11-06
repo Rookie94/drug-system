@@ -1,4 +1,4 @@
-package com.ruoyi.cms.scale.report.strategy.mobile.standard;
+package com.ruoyi.cms.scale.report.strategy.mobile.family;
 
 import com.ruoyi.cms.scale.domain.vo.LbsResultsVo;
 import com.ruoyi.cms.scale.report.ITemplateStrategy;
@@ -8,11 +8,11 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class SDSMobileStrategy implements ITemplateStrategy {
+public class ASLECMobileStrategy implements ITemplateStrategy {
     @Override
     public String getTemplate(Long contextId, String deviceType, LbsResultsVo lbsResults)
     {
-        String templatePath="templates/mobile/standard/sds.html";
+        String templatePath="templates/mobile/family/aslec.html";
         try {
             // 使用ClassPathResource读取模板文件内容
             ClassPathResource resource = new ClassPathResource(templatePath);

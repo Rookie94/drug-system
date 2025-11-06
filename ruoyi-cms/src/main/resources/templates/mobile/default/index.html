@@ -1,62 +1,213 @@
+<div style="
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding: 20px 15px;
+">
+    <div style="
+        background: white;
+        border-radius: 16px;
+        padding: 30px 20px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin: 0 auto;
+        max-width: 400px;
+    ">
+        <!-- 加载动画 -->
+        <div style="
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f0f7ff;
+            border-top: 3px solid #4a90e2;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+            margin: 0 auto 20px;
+        "></div>
 
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>页面不存在</title>
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            text-align: center;
-        }
-        .container {
-            max-width: 90%;
-            padding: 20px;
-        }
-        h1 {
-            font-size: 5rem;
-            margin: 0;
-            color: #333;
-        }
-        p {
-            font-size: 1.2rem;
-            color: #666;
-            margin: 20px 0;
-        }
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #4285f4;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        .btn:hover {
-            background: #3367d6;
-        }
-        .emoji {
-            font-size: 3rem;
+        <h1 style="
+            color: #2c3e50;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        ">心理测评报告生成中</h1>
+
+        <p style="
+            color: #7f8c8d;
+            font-size: 15px;
+            line-height: 1.5;
             margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div class="emoji">😕</div>
-    <h1>404</h1>
-    <p>抱歉，您访问的页面不存在或已被移除</p>
-    <a href="/" class="btn">返回首页</a>
+        ">系统正在为您生成详细的心理测评分析报告</p>
+
+        <!-- 进度指示 -->
+        <div style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        ">
+            <div style="
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #27ae60;
+                margin: 0 4px;
+            "></div>
+            <div style="
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: #4a90e2;
+                margin: 0 4px;
+                animation: pulse 1.5s ease-in-out infinite;
+            "></div>
+            <div style="
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #bdc3c7;
+                margin: 0 4px;
+            "></div>
+            <div style="
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #bdc3c7;
+                margin: 0 4px;
+            "></div>
+        </div>
+
+        <!-- 步骤信息 -->
+        <div style="
+            background: #f8fbff;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 0;
+            text-align: left;
+        ">
+            <div style="
+                display: flex;
+                align-items: center;
+                margin-bottom: 12px;
+                font-size: 14px;
+                color: #2c3e50;
+            ">
+                <div style="
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    background: #27ae60;
+                    color: white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-right: 10px;
+                    font-size: 10px;
+                    flex-shrink: 0;
+                ">✓</div>
+                <span>数据校验完成</span>
+            </div>
+            <div style="
+                display: flex;
+                align-items: center;
+                margin-bottom: 12px;
+                font-size: 14px;
+                color: #2c3e50;
+            ">
+                <div style="
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    background: #4a90e2;
+                    color: white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-right: 10px;
+                    font-size: 10px;
+                    flex-shrink: 0;
+                ">2</div>
+                <span>分析测评结果中...</span>
+            </div>
+            <div style="
+                display: flex;
+                align-items: center;
+                margin-bottom: 12px;
+                font-size: 14px;
+                color: #95a5a6;
+            ">
+                <div style="
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    background: #ecf0f1;
+                    color: #bdc3c7;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-right: 10px;
+                    font-size: 10px;
+                    flex-shrink: 0;
+                ">3</div>
+                <span>生成个性化建议</span>
+            </div>
+            <div style="
+                display: flex;
+                align-items: center;
+                font-size: 14px;
+                color: #95a5a6;
+            ">
+                <div style="
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    background: #ecf0f1;
+                    color: #bdc3c7;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-right: 10px;
+                    font-size: 10px;
+                    flex-shrink: 0;
+                ">4</div>
+                <span>格式化报告内容</span>
+            </div>
+        </div>
+
+        <!-- 提示信息 -->
+        <div style="
+            background: #e8f4fd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        ">
+            <div style="
+                color: #4a90e2;
+                font-weight: 600;
+                font-size: 14px;
+                margin-bottom: 6px;
+            ">请耐心等待</div>
+            <div style="
+                color: #5a6c7d;
+                font-size: 13px;
+                line-height: 1.4;
+            ">
+                报告生成通常需要10-30秒<br>
+                请勿关闭页面
+            </div>
+        </div>
+
+        <!-- 内联动画样式 -->
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            @keyframes pulse {
+                0%, 100% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.7; transform: scale(1.1); }
+            }
+        </style>
+    </div>
 </div>
-</body>
-</html>

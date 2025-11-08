@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.common;
 
 import com.ruoyi.cms.common.service.ICommonSelectService;
+import com.ruoyi.cms.survey.domain.Survey;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.domain.entity.SysRole;
@@ -45,6 +46,8 @@ public class CommonSelectController extends BaseController {
                 return getDepartments(params);
             case "role":
                 return getRoles(params);
+            case "survey":
+                return getSurvey(params);
             default:
                 throw new RuntimeException("不支持的数据类型: " + dataType);
         }
@@ -76,4 +79,14 @@ public class CommonSelectController extends BaseController {
         List<SysRole> list = commonSelectService.selectRoleList(params);
         return getDataTable(list);
     }
+
+    /**
+     * 获取问卷列表
+     */
+    private TableDataInfo getSurvey(Map<String, Object> params) {
+        startPage();
+        List<Survey> list = commonSelectService.selectSurveyList(params);
+        return getDataTable(list);
+    }
+
 }

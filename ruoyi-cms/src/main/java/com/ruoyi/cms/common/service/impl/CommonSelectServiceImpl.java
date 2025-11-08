@@ -1,6 +1,8 @@
 package com.ruoyi.cms.common.service.impl;
 
 import com.ruoyi.cms.common.service.ICommonSelectService;
+import com.ruoyi.cms.survey.domain.Survey;
+import com.ruoyi.cms.survey.mapper.SurveyMapper;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -28,6 +30,9 @@ public class CommonSelectServiceImpl implements ICommonSelectService {
     @Autowired
     private SysRoleMapper sysRoleMapper;
 
+    @Autowired
+    private SurveyMapper surveyMapper;
+
     /**
      * 查询用户列表
      */
@@ -36,7 +41,6 @@ public class CommonSelectServiceImpl implements ICommonSelectService {
         // 构建查询参数
         SysUser user = new SysUser();
         user.setParams(params);
-
         // 可根据需要设置其他查询条件
         if (params.containsKey("userName")) {
             user.setUserName((String) params.get("userName"));
@@ -50,7 +54,6 @@ public class CommonSelectServiceImpl implements ICommonSelectService {
         if (params.containsKey("deptId")) {
             user.setDeptId(Long.valueOf(params.get("deptId").toString()));
         }
-
         return sysUserMapper.selectUserList(user);
     }
 
@@ -92,6 +95,21 @@ public class CommonSelectServiceImpl implements ICommonSelectService {
     }
 
     /**
+     * 查询用户列表
+     */
+    @Override
+    public List<Survey> selectSurveyList(Map<String, Object> params) {
+        // 构建查询参数
+        Survey survey = new Survey();
+        survey.setParams(params);
+        // 可根据需要设置其他查询条件
+        if (params.containsKey("surveyName")) {
+            survey.setSurveyName((String) params.get("surveyName"));
+        }
+        return surveyMapper.selectSurveyList(survey);
+    }
+
+    /**
      * 根据数据类型查询对应列表
      */
     @Override
@@ -103,7 +121,9 @@ public class CommonSelectServiceImpl implements ICommonSelectService {
                 return selectDeptList(params);
             case "role":
                 return selectRoleList(params);
-            // 可以继续扩展其他数据类型
+            case "survey":
+                return selectSurveyList(params);
+            //可以继续扩展其他数据类型
             default:
                 throw new RuntimeException("不支持的数据类型: " + dataType);
         }

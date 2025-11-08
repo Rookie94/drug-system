@@ -39,6 +39,7 @@
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
+        order by publish_time desc
     </select>
 
     <select id="selectSysNoticeByNoticeId" parameterType="Long" resultMap="SysNoticeResult">

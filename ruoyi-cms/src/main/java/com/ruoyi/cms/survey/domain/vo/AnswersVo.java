@@ -9,18 +9,17 @@ import java.util.List;
 public class AnswersVo extends BaseEntity {
 
 
-    private Long surveyId;
+    private Long resultId;
 
     private List<Answers> answersList;
 
-
     // 外层类的Getters & Setters
-    public Long getSurveyId() {
-        return surveyId;
+    public Long getResultId() {
+        return resultId;
     }
 
-    public void setSurveyId(Long surveyId) {
-        this.surveyId = surveyId;
+    public void setResultId(Long resultId) {
+        this.resultId = resultId;
     }
 
     public List<Answers> getAnswersList() {

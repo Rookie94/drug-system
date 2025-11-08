@@ -4,14 +4,19 @@ import com.alibaba.fastjson.JSONArray;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.cms.survey.domain.Answers;
 import com.ruoyi.cms.survey.domain.DocResults;
 import com.ruoyi.cms.survey.domain.Survey;
+import com.ruoyi.cms.survey.domain.vo.AnswersVo;
 import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
+import com.ruoyi.cms.survey.service.IAnswersService;
 import com.ruoyi.cms.survey.service.IDocResultsService;
 import com.ruoyi.cms.survey.service.ISurveyService;
+import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +31,9 @@ public class SurveyController extends BaseController {
 
     @Autowired
     private IDocResultsService docResultsService;
+
+    @Autowired
+    private IAnswersService answersService;
 
     @GetMapping(value = "/getSurvey")
     public TableDataInfo getSurvey(Survey survey)
@@ -45,6 +53,7 @@ public class SurveyController extends BaseController {
         return success(surveyService.selectFullSurveyById(surveyId));
     }
 
+    @Log(title = "调查问卷", businessType = BusinessType.INSERT)
     @PostMapping(value = "/commitResult")
     public AjaxResult commitResult(@RequestBody JsonNode jsonNode)
     {
@@ -69,13 +78,14 @@ public class SurveyController extends BaseController {
 
         int result=docResultsService.insertDocResults(docResults);
         try{
+
             Long resultId=docResults.getResultId();
-            //AnswersVo answersVo=new AnswersVo();
-            //answersVo.setSurveyId(docResults.getSurveyId());
-            //List<Answers> list= JSONArray.parseArray(docResults.getJsonResult(),Answers.class);
-            //answersVo.setAnswersList(list);
-            //docResultsService.deleteDocResultsById(resultId);
-            //docResultsService.batchInsertAnswer(list);
+            AnswersVo answersVo=new AnswersVo();
+            answersVo.setResultId(resultId);
+            List<Answers> list= answersService.parseJsonResult(docResults);
+            answersVo.setAnswersList(list);
+            answersService.batchInsertAnswer(answersVo);
+
         }catch (Exception ex){
             System.out.println(ex.getMessage());
         }

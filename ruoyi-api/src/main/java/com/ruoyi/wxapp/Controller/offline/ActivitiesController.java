@@ -83,6 +83,9 @@ public class ActivitiesController extends BaseController
         startPage();
         activities.setUseDataScope(false);
         activities.setUserId(getUserId());
+        if(activities.getParentActivityId()==null){
+            activities.setParentActivityId(0L);
+        }
         List<ActivitiesStateVo> list = activitiesService.selectActivitiesStateByStudent(activities);
         return getDataTable(list);
     }

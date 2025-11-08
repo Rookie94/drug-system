@@ -83,6 +83,7 @@
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
+        order by t.commit_time desc
     </select>
 
     <select id="selectLbsResultsByResultId" parameterType="Long" resultMap="LbsResultsResult">

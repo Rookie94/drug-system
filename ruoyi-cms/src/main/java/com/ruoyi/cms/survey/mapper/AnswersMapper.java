@@ -1,6 +1,7 @@
 package com.ruoyi.cms.survey.mapper;
 
 import com.ruoyi.cms.survey.domain.Answers;
+import com.ruoyi.cms.survey.domain.vo.AnswersVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -38,6 +39,13 @@ public interface AnswersMapper {
     public int insertAnswers(Answers answer);
 
     /**
+     * 批量插入问卷答案
+     * @param answersVo 包含答案列表的值对象
+     * @return 插入的记录数
+     */
+    public int batchInsertAnswer(AnswersVo answersVo);
+
+    /**
      * 修改问卷答案结果
      *
      * @param answer 问卷答案结果
@@ -62,10 +70,37 @@ public interface AnswersMapper {
     public int deleteAnswersByIds(Long[] answerIds);
 
     /**
+     * 根据主键删除结果
+     *
+     * @param resultId
+     * @return
+     */
+    public int deleteAnswersByResultId(Long resultId) ;
+
+
+    /**
+     * 根据主键删除结果
+     *
+     * @param resultIds
+     * @return
+     */
+    public int deleteAnswersByResultIds(Long[] resultIds);
+
+
+    /**
+     * 根据问卷主键删除结果
+     *
+     * @param surveyId
+     * @return
+     */
+    public int deleteAnswersBySurveyId(Long surveyId);
+
+    /**
      * 根据问卷主键删除结果
      *
      * @param surveyIds
      * @return
      */
-    int deleteAnswersBySurveyIds(Long[] surveyIds);
+    public int deleteAnswersBySurveyIds(Long[] surveyIds);
+
 }

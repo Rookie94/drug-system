@@ -2,6 +2,8 @@ package com.ruoyi.cms.online.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.cms.online.domain.ChatMessage;
@@ -78,6 +80,14 @@ public class ChatMessageServiceImpl implements IChatMessageService
     @Override
     public int insertChatMessage(ChatMessage chatMessage)
     {
+        String message = chatMessage.getMessage();
+        if (StringUtils.isEmpty(chatMessage.getTitle()) && StringUtils.isNotEmpty(message)) {
+            if (message.length() > 15) {
+                chatMessage.setTitle(message.substring(0, 15) + "...");
+            } else {
+                chatMessage.setTitle(message);
+            }
+        }
         chatMessage.setUserId(getUserId());
         chatMessage.setDeptId(getDeptId());
         chatMessage.setCreateBy(getUsername());

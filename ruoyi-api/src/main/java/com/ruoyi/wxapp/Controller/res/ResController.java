@@ -1,6 +1,8 @@
 package com.ruoyi.wxapp.Controller.res;
 
 import com.ruoyi.cms.res.domain.ResArticlesVo;
+import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.enums.BusinessType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -225,7 +227,7 @@ public class ResController extends BaseController
     }
 
     /**
-     * 获取戒治处方
+     * 获取戒治技术
      */
     @GetMapping("/gettech")
     public TableDataInfo listTech(ResTech resTech)

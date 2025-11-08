@@ -1,5 +1,6 @@
 package com.ruoyi.cms.common.service;
 
+import com.ruoyi.cms.survey.domain.Survey;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -35,6 +36,14 @@ public interface ICommonSelectService {
      * @return 角色列表
      */
     List<SysRole> selectRoleList(Map<String, Object> params);
+
+    /**
+     * 查询问卷列表
+     *
+     * @param params 查询参数
+     * @return 问卷列表
+     */
+    List<Survey> selectSurveyList(Map<String, Object> params);
 
     /**
      * 根据数据类型查询对应列表

@@ -22,8 +22,8 @@ public class Answers extends BaseEntity {
     /**
      * 问卷主键
      */
-    @Excel(name = "问卷主键")
-    private Long surveyId;
+    @Excel(name = "答案主键")
+    private Long resultId;
 
     /**
      * 问题主键
@@ -58,12 +58,12 @@ public class Answers extends BaseEntity {
         return answerId;
     }
 
-    public void setSurveyId(Long surveyId) {
-        this.surveyId = surveyId;
+    public void setResultId(Long resultId) {
+        this.resultId = resultId;
     }
 
-    public Long getSurveyId() {
-        return surveyId;
+    public Long getResultId() {
+        return resultId;
     }
 
     public void setQuestionId(Long questionId) {
@@ -72,14 +72,6 @@ public class Answers extends BaseEntity {
 
     public Long getQuestionId() {
         return questionId;
-    }
-
-    public void setOptionCode(String optionId) {
-        this.optionId = optionId;
-    }
-
-    public String getOptionCode() {
-        return optionId;
     }
 
     public void setAnswerValue(String answerValue) {
@@ -103,9 +95,8 @@ public class Answers extends BaseEntity {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("answerId", getAnswerId())
-                .append("surveyId", getSurveyId())
+                .append("resultId", getResultId())
                 .append("questionId", getQuestionId())
-                .append("optionCode", getOptionCode())
                 .append("answerValue", getAnswerValue())
                 .append("extendValue", getExtendValue())
                 .append("createTime", getCreateTime())

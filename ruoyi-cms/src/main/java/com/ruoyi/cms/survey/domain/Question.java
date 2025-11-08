@@ -46,9 +46,9 @@ public class Question extends BaseEntity {
     private String questionName;
 
     /**
-     * 题目类型（01：填空题，02：单选题，03：多选题，04：多行文本题）
+     * 题目类型（radio：单选题，checkbox：多选题，select：选择题，imput：单行文本题，text：多行文本题）
      */
-    @Excel(name = "题目类型", readConverterExp = "0=1：填空题，02：单选题，03：多选题，04：多行文本题")
+    @Excel(name = "题目类型", readConverterExp = "0=1：填空题，radio：单选题，checkbox：多选题，select：选择题，imput：单行文本题，text：多行文本题")
     private String questionType;
 
     /**

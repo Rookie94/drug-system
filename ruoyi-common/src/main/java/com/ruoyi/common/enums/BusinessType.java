@@ -8,7 +8,7 @@ package com.ruoyi.common.enums;
 public enum BusinessType
 {
     /**
-     * 其它
+     * 访问资源
      */
     OTHER,
 

@@ -86,6 +86,7 @@
             <if test="status != null  and status != ''">and status = #{status}</if>
             <if test="delFlag != null  and delFlag != ''">and del_flag = #{delFlag}</if>
         </where>
+        order by survey_id desc
     </select>
 
     <select id="selectSurveyBySurveyId" parameterType="Long" resultMap="SurveyResult">

@@ -13,9 +13,11 @@ import com.ruoyi.cms.scale.domain.vo.LbsResultsVo;
 import com.ruoyi.cms.scale.report.ITemplateStrategy;
 import com.ruoyi.cms.scale.report.TemplateStrategyFactory;
 import com.ruoyi.cms.scale.service.*;
+import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -80,7 +82,7 @@ public class ScaleController extends BaseController {
         return success(lbsContexts.getJsonData());
     }
 
-    @Log(title = "测评报告", businessType = BusinessType.INSERT)
+    @Log(title = "测评量表", businessType = BusinessType.INSERT)
     @PostMapping(value = "/commitResult")
     public AjaxResult commitResult(@RequestBody JsonNode jsonNode)
     {
@@ -119,12 +121,14 @@ public class ScaleController extends BaseController {
 
 
 	@GetMapping("/getReportList")
-    public AjaxResult getReportList()
+    public TableDataInfo getReportList()
     {
+        startPage();
         LbsResultsVo lbsResults=new LbsResultsVo();
+        lbsResults.setUseDataScope(false);
         lbsResults.setUserId(getLoginUser().getUserId());
         List<LbsResultsVo> list = lbsResultsService.selectLbsResultsList(lbsResults);
-        return success(list);
+        return getDataTable(list);
     }
 
     @GetMapping("/getReport")

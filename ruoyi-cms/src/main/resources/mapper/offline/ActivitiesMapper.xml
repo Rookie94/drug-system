@@ -198,11 +198,11 @@
                         LEFT JOIN ( SELECT activity_id,user_id,dept_id FROM ofa_activities_checkin WHERE user_id = #{userId} ) c ON a.activity_id = c.activity_id
                         LEFT JOIN ( SELECT activity_id,user_id,dept_id FROM ofa_activities_review WHERE user_id = #{userId} ) d ON a.activity_id = d.activity_id
                 WHERE
-                    a.parent_activity_id = 0
-                  AND a.appored IN ('2','3','4')
+                    a.appored IN ('2','3','4')
             ) X
             <where>
                 <if test="activityId != null ">and activity_id = #{activityId}</if>
+                <if test="parentActivityId != null ">and parent_activity_id = #{parentActivityId}</if>
                 <if test="activityName != null and activityName != ''">and activity_name like CONCAT('%', #{activityName}, '%')</if>
                 <if test="orgName != null and orgName != ''">and org_name like CONCAT('%', #{orgName}, '%')</if>
                 <if test="startTime != null">and start_time &gt;= #{startTime}</if>

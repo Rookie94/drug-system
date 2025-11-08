@@ -71,6 +71,26 @@
         </trim>
     </insert>
 
+    <insert id="batchInsertAnswer" parameterType="AnswersVo">
+        INSERT INTO public.doc_answers (
+        result_id, question_id, answer_value, extend_value,
+        create_by, create_time, update_by, update_time, remark
+        ) VALUES
+        <foreach collection="answersList" item="answer" separator=",">
+            (
+            #{answer.resultId},
+            #{answer.questionId},
+            #{answer.answerValue},
+            #{answer.extendValue},
+            #{answer.createBy},
+            #{answer.createTime},
+            #{answer.updateBy},
+            #{answer.updateTime},
+            #{answer.remark}
+            )
+        </foreach>
+    </insert>
+
     <update id="updateAnswers" parameterType="Answers">
         update doc_answers
         <trim prefix="SET" suffixOverrides=",">
@@ -98,10 +118,36 @@
         </foreach>
     </delete>
 
-    <delete id="deleteAnswersBySurveyIds" parameterType="String">
-        delete from doc_answers where survey_id in
-        <foreach item="answerId" collection="array" open="(" separator="," close=")">
-            #{surveyId}
+    <delete id="deleteAnswersByResultId" parameterType="Long">
+        delete from doc_answers where result_id = #{resultId}
+    </delete>
+
+    <delete id="deleteAnswersByResultIds" parameterType="String">
+        delete from doc_answers where result_id in
+        <foreach item="resultId" collection="array" open="(" separator="," close=")">
+            #{resultId}
         </foreach>
     </delete>
+
+    <delete id="deleteAnswersBySurveyId" parameterType="Long">
+        DELETE FROM doc_answers
+        WHERE result_id IN (
+        SELECT result_id
+        FROM doc_results
+        WHERE survey_id = #{surveyId}
+        )
+    </delete>
+
+    <delete id="deleteAnswersBySurveyIds" parameterType="java.util.List">
+        DELETE FROM doc_answers
+        WHERE result_id IN (
+        SELECT result_id
+        FROM doc_results
+        WHERE survey_id IN
+        <foreach item="SurveyId" collection="array" open="(" separator="," close=")">
+            #{surveyId}
+        </foreach>
+        )
+    </delete>
+
 </mapper>

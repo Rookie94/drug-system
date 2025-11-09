@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SerialNoMapper">
-    
+
     <resultMap type="SerialNo" id="SerialNoResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectSerialNoList" parameterType="SerialNo" resultMap="SerialNoResult">
         <include refid="selectSerialNoVo"/>
-        <where>  
+        <where>
             <if test="id != null  and id != ''"> and id = #{id}</if>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="prefix != null  and prefix != ''"> and prefix like concat('%', #{prefix}, '%')</if>
@@ -43,7 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''"> and status = #{status}</if>
         </where>
     </select>
-    
+
     <select id="selectSerialNoById" parameterType="String" resultMap="SerialNoResult">
         <include refid="selectSerialNoVo"/>
         where id = #{id}
@@ -68,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="name != null and name != ''">#{name},</if>
@@ -86,7 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateSerialNo" parameterType="SerialNo">
@@ -102,8 +102,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="lastResetDate != null">last_reset_date = #{lastResetDate},</if>
             <if test="version != null">version = #{version},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
@@ -111,12 +109,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <!-- 带版本控制的更新 -->
+    <update id="updateSerialNoWithVersion" parameterType="SerialNo">
+        update sys_serialno
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="prefix != null">prefix = #{prefix},</if>
+            <if test="suffix != null">suffix = #{suffix},</if>
+            <if test="dateFormat != null and dateFormat != ''">date_format = #{dateFormat},</if>
+            <if test="seqLength != null">seq_length = #{seqLength},</if>
+            <if test="currentSeq != null">current_seq = #{currentSeq},</if>
+            <if test="resetStrategy != null">reset_strategy = #{resetStrategy},</if>
+            <if test="lastResetDate != null">last_reset_date = #{lastResetDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            version = version + 1
+        </trim>
+        where id = #{id} and version = #{version}
+    </update>
+
     <delete id="deleteSerialNoById" parameterType="String">
         delete from sys_serialno where id = #{id}
     </delete>
 
     <delete id="deleteSerialNoByIds" parameterType="String">
-        delete from sys_serialno where id in 
+        delete from sys_serialno where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

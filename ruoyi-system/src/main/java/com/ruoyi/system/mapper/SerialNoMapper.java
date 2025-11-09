@@ -5,15 +5,15 @@ import com.ruoyi.system.domain.SerialNo;
 
 /**
  * 流水号管理Mapper接口
- * 
+ *
  * @author admin
  * @date 2025-05-16
  */
-public interface SerialNoMapper 
+public interface SerialNoMapper
 {
     /**
      * 查询流水号管理
-     * 
+     *
      * @param id 流水号管理主键
      * @return 流水号管理
      */
@@ -21,7 +21,7 @@ public interface SerialNoMapper
 
     /**
      * 查询流水号管理列表
-     * 
+     *
      * @param serialNo 流水号管理
      * @return 流水号管理集合
      */
@@ -29,7 +29,7 @@ public interface SerialNoMapper
 
     /**
      * 新增流水号管理
-     * 
+     *
      * @param serialNo 流水号管理
      * @return 结果
      */
@@ -37,15 +37,23 @@ public interface SerialNoMapper
 
     /**
      * 修改流水号管理
-     * 
+     *
      * @param serialNo 流水号管理
      * @return 结果
      */
     public int updateSerialNo(SerialNo serialNo);
 
     /**
+     * 修改流水号管理（带版本控制）
+     *
+     * @param serialNo 流水号管理
+     * @return 结果
+     */
+    public int updateSerialNoWithVersion(SerialNo serialNo);
+
+    /**
      * 删除流水号管理
-     * 
+     *
      * @param id 流水号管理主键
      * @return 结果
      */
@@ -53,7 +61,7 @@ public interface SerialNoMapper
 
     /**
      * 批量删除流水号管理
-     * 
+     *
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */

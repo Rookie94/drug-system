@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.survey;
 
 import com.ruoyi.cms.res.domain.ResCase;
 import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
+import com.ruoyi.cms.survey.service.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -10,10 +11,6 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.cms.survey.domain.DocResults;
 import com.ruoyi.cms.survey.domain.Survey;
-import com.ruoyi.cms.survey.service.IDocResultsService;
-import com.ruoyi.cms.survey.service.IAnswersService;
-import com.ruoyi.cms.survey.service.IQuestionService;
-import com.ruoyi.cms.survey.service.ISurveyService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,7 +37,6 @@ public class SurveyController extends BaseController {
     private IDocResultsService docResultsService;
     @Autowired
     private IAnswersService answerService;
-
 
     /**
      * 查询问卷列表

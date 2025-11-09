@@ -47,6 +47,15 @@ public interface IDocResultsService {
     int insertDocResults(DocResults docResults);
 
     /**
+     * 刷新问卷答案结果json
+     *
+     * @param resultIds 问卷答案结果json
+     * @return 结果
+     */
+    int refreshDocResultsByIds(Long[] resultIds);
+
+
+    /**
      * 修改问卷答案结果json
      *
      * @param docResults 问卷答案结果json
@@ -65,10 +74,10 @@ public interface IDocResultsService {
     /**
      * 批量删除问卷答案结果json
      *
-     * @param anIds 需要删除的数据主键集合
+     * @param resultIds 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteDocResultsByIds(Long[] anIds);
+    public int deleteDocResultsByIds(Long[] resultIds);
 
 
     /**

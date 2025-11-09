@@ -11,6 +11,7 @@ import com.ruoyi.cms.survey.domain.vo.AnswersVo;
 import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
 import com.ruoyi.cms.survey.service.IAnswersService;
 import com.ruoyi.cms.survey.service.IDocResultsService;
+import com.ruoyi.cms.survey.service.ISurveyReportService;
 import com.ruoyi.cms.survey.service.ISurveyService;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -78,7 +79,6 @@ public class SurveyController extends BaseController {
 
         int result=docResultsService.insertDocResults(docResults);
         try{
-
             Long resultId=docResults.getResultId();
             AnswersVo answersVo=new AnswersVo();
             answersVo.setResultId(resultId);

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysResLogMapper">
+    
+    <resultMap type="SysResLog" id="SysResLogResult">
+        <result property="logId"    column="log_id"    />
+        <result property="resName"    column="res_name"    />
+        <result property="optName"    column="opt_name"    />
+        <result property="resId"    column="res_id"    />
+        <result property="resTitle"    column="res_title"    />
+        <result property="userName"    column="user_name"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="accessTime"    column="access_time"    />
+        <result property="operIp"    column="oper_ip"    />
+        <result property="operLocation"    column="oper_location"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysResLogVo">
+        select log_id, res_name, opt_name, res_id, res_title, user_name, dept_name, access_time, oper_ip, oper_location, status, create_by, create_time, update_by, update_time, remark from sys_res_log
+    </sql>
+
+    <select id="selectSysResLogList" parameterType="SysResLog" resultMap="SysResLogResult">
+        <include refid="selectSysResLogVo"/>
+        <where>  
+            <if test="resName != null  and resName != ''"> and res_name like concat('%', #{resName}, '%')</if>
+            <if test="resTitle != null  and resTitle != ''"> and res_title = #{resTitle}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="params.beginAccessTime != null and params.beginAccessTime != '' and params.endAccessTime != null and params.endAccessTime != ''"> and access_time between #{params.beginAccessTime} and #{params.endAccessTime}</if>
+            <if test="operIp != null  and operIp != ''"> and oper_ip like concat('%', #{operIp}, '%')</if>
+            <if test="operLocation != null  and operLocation != ''"> and oper_location like concat('%', #{operLocation}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysResLogByLogId" parameterType="Long" resultMap="SysResLogResult">
+        <include refid="selectSysResLogVo"/>
+        where log_id = #{logId}
+    </select>
+
+    <insert id="insertSysResLog" parameterType="SysResLog">
+        insert into sys_res_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="logId != null">log_id,</if>
+            <if test="resName != null and resName != ''">res_name,</if>
+            <if test="optName != null">opt_name,</if>
+            <if test="resId != null">res_id,</if>
+            <if test="resTitle != null">res_title,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="accessTime != null">access_time,</if>
+            <if test="operIp != null">oper_ip,</if>
+            <if test="operLocation != null">oper_location,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="logId != null">#{logId},</if>
+            <if test="resName != null and resName != ''">#{resName},</if>
+            <if test="optName != null">#{optName},</if>
+            <if test="resId != null">#{resId},</if>
+            <if test="resTitle != null">#{resTitle},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="accessTime != null">#{accessTime},</if>
+            <if test="operIp != null">#{operIp},</if>
+            <if test="operLocation != null">#{operLocation},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysResLog" parameterType="SysResLog">
+        update sys_res_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="resName != null and resName != ''">res_name = #{resName},</if>
+            <if test="optName != null">opt_name = #{optName},</if>
+            <if test="resId != null">res_id = #{resId},</if>
+            <if test="resTitle != null">res_title = #{resTitle},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="accessTime != null">access_time = #{accessTime},</if>
+            <if test="operIp != null">oper_ip = #{operIp},</if>
+            <if test="operLocation != null">oper_location = #{operLocation},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where log_id = #{logId}
+    </update>
+
+    <delete id="deleteSysResLogByLogId" parameterType="Long">
+        delete from sys_res_log where log_id = #{logId}
+    </delete>
+
+    <delete id="deleteSysResLogByLogIds" parameterType="String">
+        delete from sys_res_log where log_id in 
+        <foreach item="logId" collection="array" open="(" separator="," close=")">
+            #{logId}
+        </foreach>
+    </delete>
+</mapper>

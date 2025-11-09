@@ -1,8 +1,15 @@
 package com.ruoyi.wxapp.Controller.res;
 
 import com.ruoyi.cms.res.domain.ResArticlesVo;
-import com.ruoyi.common.annotation.Log;
-import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.system.domain.vo.ResVo;
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.utils.MessageUtils;
+import com.ruoyi.common.utils.ip.IpUtils;
+import com.ruoyi.framework.manager.AsyncManager;
+import com.ruoyi.framework.manager.factory.AsyncFactory;
+import com.ruoyi.system.service.ISysResLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +68,62 @@ public class ResController extends BaseController
 
     @Autowired
     private IResTechService resTechService;
+
+    /**
+     * UV‌（Unique Visitor）：独立访客数量
+     */
+    @GetMapping("/getuv")
+    public AjaxResult getuv()
+    {
+        LoginUser loginUser=null;
+        try{
+            loginUser=getLoginUser();
+        }
+        catch(Exception ex){
+            //
+        }
+        try{
+            if(loginUser==null){
+                String ip = IpUtils.getIpAddr();
+                AsyncManager.me().execute(AsyncFactory.recordLogininfor("匿名访客" + ip, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
+            }
+        }
+        catch(Exception ex){
+            //
+        }
+        return success("ok");
+    }
+
+    /**
+     * PV‌（Page View）：用户对单个页面的访问次数
+     */
+    @GetMapping("/getpv")
+    public AjaxResult getpv(ResVo resVo)
+    {
+        String userName="";
+        String deptName="";
+        LoginUser loginUser=null;
+        try{
+            loginUser=getLoginUser();
+        }
+        catch(Exception ex){
+            //
+        }
+        if(loginUser==null){
+            String ip = IpUtils.getIpAddr();
+            userName="匿名访客" + ip;
+        }
+        else{
+            userName=loginUser.getUsername();
+        }
+        try{
+            AsyncManager.me().execute(AsyncFactory.recordSysResLog(userName,resVo));
+        }
+        catch(Exception ex){
+            //
+        }
+        return success("ok");
+    }
 
     /**
      * 查询首页轮播图列表

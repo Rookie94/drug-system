@@ -1,6 +1,9 @@
 package com.ruoyi.cms.survey.service.impl;
 
+import com.ruoyi.cms.survey.domain.Answers;
+import com.ruoyi.cms.survey.domain.vo.AnswersVo;
 import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
+import com.ruoyi.cms.survey.service.IAnswersService;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
@@ -8,6 +11,7 @@ import com.ruoyi.cms.survey.domain.DocResults;
 import com.ruoyi.cms.survey.mapper.DocResultsMapper;
 import com.ruoyi.cms.survey.service.IDocResultsService;
 import com.ruoyi.system.service.ISerialNoService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +33,9 @@ public class DocResultsServiceImpl implements IDocResultsService {
 
     @Autowired
     private ISerialNoService serialNoService;
+
+    @Autowired
+    private IAnswersService answersService;
 
     /**
      * 查询问卷答案结果json
@@ -90,6 +97,36 @@ public class DocResultsServiceImpl implements IDocResultsService {
         }
         docResults.setResultNo(resultNo);
         return docResultsMapper.insertDocResults(docResults);
+    }
+
+    /**
+     * 刷新问卷答案结果json
+     *
+     * @param resultIds 问卷答案结果json
+     * @return 结果
+     */
+    @Override
+    public int refreshDocResultsByIds(Long[] resultIds){
+        int success=0;
+        try{
+            for (Long resultId : resultIds) {
+                DocResultsVo docResultsVo=selectDocResultsById(resultId);
+                if(docResultsVo!=null) {
+                    AnswersVo answersVo = new AnswersVo();
+                    answersVo.setResultId(resultId);
+                    DocResults docResults = new DocResults();
+                    BeanUtils.copyProperties(docResultsVo, docResults);
+                    List<Answers> list = answersService.parseJsonResult(docResults);
+                    answersVo.setAnswersList(list);
+                    answersService.batchInsertAnswer(answersVo);
+                    success++;
+                }
+            }
+
+        }catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return success;
     }
 
     /**

@@ -66,10 +66,10 @@ public interface DocResultsMapper {
     /**
      * 批量删除问卷答案结果json
      *
-     * @param anIds 需要删除的数据主键集合
+     * @param resultIds 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteDocResultsByIds(Long[] anIds);
+    public int deleteDocResultsByIds(Long[] resultIds);
 
 
     /**

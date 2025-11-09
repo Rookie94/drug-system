@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.survey.mapper.SurveyReportMapper">
+
+    <!-- 查询符合条件的答卷ID列表 -->
+    <select id="findResultIdsBySurveyAndTime" resultType="java.lang.Long">
+        SELECT result_id
+        FROM doc_results
+        WHERE survey_id = #{surveyId}
+        AND status = '0'
+        <if test="startTime != null and endTime != null">
+            AND commit_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        <if test="startTime != null and endTime == null">
+            AND commit_time &gt;= #{startTime}
+        </if>
+        <if test="startTime == null and endTime != null">
+            AND commit_time &lt;= #{endTime}
+        </if>
+    </select>
+
+    <!-- 查询调查问卷下的所有问题 -->
+    <select id="findQuestionsBySurveyId" resultType="com.ruoyi.cms.survey.domain.QuestionDTO">
+        SELECT
+            question_id as questionId,
+            question_name as questionName,
+            question_type as questionType,
+            question_sort as questionSort
+        FROM doc_question
+        WHERE survey_id = #{surveyId}
+        ORDER BY question_sort
+    </select>
+
+    <!-- 查询问题的所有选项 -->
+    <select id="findOptionsByQuestionId" resultType="com.ruoyi.cms.survey.domain.OptionDTO">
+        SELECT
+            option_id as optionId,
+            option_code as optionCode,
+            option_text as optionText,
+            option_no as optionNo
+        FROM doc_options
+        WHERE question_id = #{questionId}
+        ORDER BY option_no
+    </select>
+
+    <!-- 统计单选题的答案数量 - 修正：按选项ID统计 -->
+    <select id="countRadioAnswers" resultType="com.ruoyi.cms.survey.domain.AnswerCount">
+        SELECT
+        answer_value as optionValue,
+        COUNT(*) as count
+        FROM doc_answers
+        WHERE result_id IN
+        <foreach collection="resultIds" item="resultId" open="(" separator="," close=")">
+            #{resultId}
+        </foreach>
+        AND question_id = #{questionId}
+        GROUP BY answer_value
+    </select>
+
+    <!-- 统计多选题的答案数量 - 修正：按选项ID统计 -->
+    <select id="countCheckboxAnswers" resultType="com.ruoyi.cms.survey.domain.AnswerCount">
+        SELECT
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(a.answer_value, ',', n.n), ',', -1)) as optionValue,
+        COUNT(*) as count
+        FROM doc_answers a
+        JOIN (
+        SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+        UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8
+        UNION ALL SELECT 9 UNION ALL SELECT 10
+        ) n
+        ON CHAR_LENGTH(a.answer_value) - CHAR_LENGTH(REPLACE(a.answer_value, ',', '')) >= n.n - 1
+        WHERE a.result_id IN
+        <foreach collection="resultIds" item="resultId" open="(" separator="," close=")">
+            #{resultId}
+        </foreach>
+        AND a.question_id = #{questionId}
+        GROUP BY TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(a.answer_value, ',', n.n), ',', -1))
+    </select>
+
+    <!-- 统计下拉选择题的答案数量 - 修正：按选项ID统计 -->
+    <select id="countSelectAnswers" resultType="com.ruoyi.cms.survey.domain.AnswerTextCount">
+        SELECT
+        answer_value as answerText,
+        COUNT(*) as count
+        FROM doc_answers
+        WHERE result_id IN
+        <foreach collection="resultIds" item="resultId" open="(" separator="," close=")">
+            #{resultId}
+        </foreach>
+        AND question_id = #{questionId}
+        GROUP BY answer_value
+    </select>
+
+    <!-- 查询主观题答案 -->
+    <select id="findSubjectiveAnswers" resultType="java.lang.String">
+        SELECT answer_value
+        FROM doc_answers
+        WHERE result_id IN
+        <foreach collection="resultIds" item="resultId" open="(" separator="," close=")">
+            #{resultId}
+        </foreach>
+        AND question_id = #{questionId}
+    </select>
+
+</mapper>

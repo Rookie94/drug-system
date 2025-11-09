@@ -63,10 +63,20 @@ public class DocResultsController extends BaseController {
     }
 
     /**
+     * 刷新问卷答案结果json
+     */
+    @PreAuthorize("@ss.hasPermi('survey:docs:edit')")
+    @Log(title = "问卷答案结果", businessType = BusinessType.UPDATE)
+    @PostMapping("/refresh/{resultIds}")
+    public AjaxResult refreshDocResults(@PathVariable Long[] resultIds) {
+        return toAjax(docResultsService.refreshDocResultsByIds(resultIds));
+    }
+
+    /**
      * 新增问卷答案结果json
      */
     @PreAuthorize("@ss.hasPermi('survey:docs:add')")
-    @Log(title = "问卷答案结果json", businessType = BusinessType.INSERT)
+    @Log(title = "问卷答案结果", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody DocResults docResults) {
         return toAjax(docResultsService.insertDocResults(docResults));
@@ -76,7 +86,7 @@ public class DocResultsController extends BaseController {
      * 修改问卷答案结果json
      */
     @PreAuthorize("@ss.hasPermi('survey:docs:edit')")
-    @Log(title = "问卷答案结果json", businessType = BusinessType.UPDATE)
+    @Log(title = "问卷答案结果", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody DocResults docResults) {
         return toAjax(docResultsService.updateDocResults(docResults));
@@ -86,9 +96,11 @@ public class DocResultsController extends BaseController {
      * 删除问卷答案结果json
      */
     @PreAuthorize("@ss.hasPermi('survey:docs:remove')")
-    @Log(title = "问卷答案结果json", businessType = BusinessType.DELETE)
+    @Log(title = "问卷答案结果", businessType = BusinessType.DELETE)
     @DeleteMapping("/{resultIds}")
     public AjaxResult remove(@PathVariable Long[] resultIds) {
         return toAjax(docResultsService.deleteDocResultsByIds(resultIds));
     }
+
+
 }

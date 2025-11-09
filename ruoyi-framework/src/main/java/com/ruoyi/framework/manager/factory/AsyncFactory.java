@@ -1,6 +1,12 @@
 package com.ruoyi.framework.manager.factory;
 
+import java.util.Map;
 import java.util.TimerTask;
+
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.domain.SysResLog;
+import com.ruoyi.system.domain.vo.ResVo;
+import com.ruoyi.system.service.ISysResLogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ruoyi.common.constant.Constants;
@@ -15,6 +21,7 @@ import com.ruoyi.system.domain.SysOperLog;
 import com.ruoyi.system.service.ISysLogininforService;
 import com.ruoyi.system.service.ISysOperLogService;
 import eu.bitwalker.useragentutils.UserAgent;
+import java.util.HashMap;
 
 /**
  * 异步工厂（产生任务用）
@@ -24,6 +31,20 @@ import eu.bitwalker.useragentutils.UserAgent;
 public class AsyncFactory
 {
     private static final Logger sys_user_logger = LoggerFactory.getLogger("sys-user");
+    private static final Map<String, String> TITLE_MAP = new HashMap<>();
+    static {
+        TITLE_MAP.put("slider", "首页轮播");
+        TITLE_MAP.put("orginfo", "戒治机构");
+        TITLE_MAP.put("expert", "戒治专家");
+        TITLE_MAP.put("case", "戒治案例");
+        TITLE_MAP.put("jobinfo", "招聘资讯");
+        TITLE_MAP.put("news", "禁毒资讯");
+        TITLE_MAP.put("skill", "技能培训");
+        TITLE_MAP.put("notice", "公告通知");
+        TITLE_MAP.put("articles", "戒治资源");
+        TITLE_MAP.put("rxdata", "戒治处方");
+        TITLE_MAP.put("tech", "戒治技术");
+    }
 
     /**
      * 记录登录信息
@@ -99,4 +120,36 @@ public class AsyncFactory
             }
         };
     }
+
+    /**
+     * 资源日志记录
+     *
+     * @param resVo 操作日志信息
+     * @return 任务task
+     */
+    public static TimerTask recordSysResLog(final String username,final ResVo resVo){
+        return new TimerTask(){
+            final String ip = IpUtils.getIpAddr();
+            @Override
+            public void run()
+            {
+                SysResLog sysResLog=new SysResLog();
+                String resType=TITLE_MAP.getOrDefault(resVo.getResType(), "其它");
+                sysResLog.setResName(resType);
+                sysResLog.setOptName("浏览");
+                sysResLog.setResId(resVo.getResId());
+                //获取资源标题
+                sysResLog.setResTitle(resVo.getResTitle());
+                sysResLog.setUserName(username);
+                sysResLog.setAccessTime(DateUtils.getNowDate());
+                String address = AddressUtils.getRealAddressByIP(ip);
+                sysResLog.setOperIp(ip);
+                sysResLog.setOperLocation(address);
+                sysResLog.setStatus(0L);
+                sysResLog.setCreateTime(DateUtils.getNowDate());
+                SpringUtils.getBean(ISysResLogService.class).insertSysResLog(sysResLog);
+            }
+        };
+    }
+
 }

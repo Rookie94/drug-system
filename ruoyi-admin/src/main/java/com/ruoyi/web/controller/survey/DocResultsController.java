@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.survey;
 import java.util.List;
 
 import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
+import com.ruoyi.cms.survey.service.ISurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,13 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/survey/docs")
 public class DocResultsController extends BaseController {
+
+    @Autowired
+    private ISurveyService surveyService;
+
     @Autowired
     private IDocResultsService docResultsService;
+
 
     /**
      * 查询问卷答案结果json列表
@@ -60,6 +66,16 @@ public class DocResultsController extends BaseController {
     @GetMapping(value = "/{resultId}")
     public AjaxResult getInfo(@PathVariable("resultId") Long resultId) {
         return AjaxResult.success(docResultsService.selectDocResultsById(resultId));
+    }
+
+    /**
+     * 获取问卷详细信息JSON
+     */
+    @PreAuthorize("@ss.hasPermi('survey:docs:query')")
+    @GetMapping(value = "/getSurveyInfo/{surveyId}")
+    public AjaxResult getSurveyInfo(@PathVariable("surveyId") Long surveyId)
+    {
+        return success(surveyService.selectFullSurveyById(surveyId));
     }
 
     /**

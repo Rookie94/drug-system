@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.framework.security.filter.PasswordValidator;
 import com.ruoyi.system.domain.SysArea;
 import com.ruoyi.system.service.*;
 import org.apache.commons.lang3.ArrayUtils;
@@ -54,6 +55,9 @@ public class SysUserController extends BaseController
 
     @Autowired
     private ISysAreaService sysAreaService;
+
+    @Autowired
+    private PasswordValidator passwordValidator;
 
     /**
      * 获取用户列表
@@ -224,6 +228,10 @@ public class SysUserController extends BaseController
     {
         userService.checkUserAllowed(user);
         userService.checkUserDataScope(user.getUserId());
+        String errorMsg = passwordValidator.validate(user.getPassword(), user.getUserName());
+        if (errorMsg != null) {
+            return error(errorMsg);
+        }
         user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
         user.setUpdateBy(getUsername());
         return toAjax(userService.resetPwd(user));

@@ -6,6 +6,7 @@ import com.ruoyi.cms.offline.service.*;
 import com.ruoyi.cms.res.domain.ResOrginfo;
 import com.ruoyi.cms.res.service.IResOrginfoService;
 import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysDictData;
@@ -169,6 +170,7 @@ public class ActivitiesController extends BaseController
     public AjaxResult getSignUpState(@PathVariable("activityId") Long activityId)
     {
         ActivitiesSignUpVo signUp=new ActivitiesSignUpVo();
+        signUp.setUseDataScope(false);
         signUp.setActivityId(activityId);
         signUp.setUserId(getUserId());
         List<ActivitiesSignUpVo> list=signUpService.selectSignUpList(signUp);
@@ -243,16 +245,16 @@ public class ActivitiesController extends BaseController
         if(!activity.getStatus().equals("0")){
             return error("活动已停用,不能签到");
         }
-        //主活动必须活动中才能签到,子活动忽略状态
-        if(activity.getParentActivityId()==0){
-            if(activity.getAppored().equals("3")==false){
-                return error("主活动进行中才可以签到");
-            }
+
+        if(activity.getAppored().equals("3")==false){
+            return error("活动进行中才可以签到");
         }
+
         LoginUser loginUser=getLoginUser();
         if(loginUser==null){
             return error("无法获取登录用户信息");
         }
+
         SysUser sysUser=loginUser.getUser();
         if(sysUser==null){
             return error("游客不能参加活动");
@@ -260,58 +262,89 @@ public class ActivitiesController extends BaseController
         if(sysUser.getUserType().equals("00")){
             return error("学员才能签到");
         }
+
+        //检查报名情况
+        ActivitiesSignUpVo signUp=new ActivitiesSignUpVo();
         if(activity.getParentActivityId()==0){
-            ActivitiesCheckinVo checkinCheck=new ActivitiesCheckinVo();
-            checkinCheck.setUserId(sysUser.getUserId());
-            checkinCheck.setActivityId(activityId);
-            checkinCheck.setUseDataScope(false);
-            List<ActivitiesCheckinVo> list= checkinService.selectActivitiesCheckinList(checkinCheck);
-            if(list!=null && list.size()>0){
-                return error("学员已签到,请勿重复签到!");
+            signUp.setUseDataScope(false);
+            signUp.setActivityId(activityId);
+            signUp.setUserId(getUserId());
+            List<ActivitiesSignUpVo> list=signUpService.selectSignUpList(signUp);
+            if(list==null || list.size()==0){
+                return new AjaxResult(HttpStatus.SEE_OTHER,"学员报名活动以后才能签到!",activityId);
             }
-            ActivitiesCheckin checkIn=new ActivitiesCheckin();
-            checkIn.setActivityId(activityId);
+        }
+        else{
+            signUp.setUseDataScope(false);
+            signUp.setActivityId(activity.getParentActivityId());
+            signUp.setUserId(getUserId());
+            List<ActivitiesSignUpVo> list=signUpService.selectSignUpList(signUp);
+            if(list==null || list.size()==0){
+                return new AjaxResult(HttpStatus.SEE_OTHER,"学员主活动报名以后才能签到子活动!",activity.getParentActivityId());
+            }
+        }
+
+        //检查签到情况
+        ActivitiesCheckinVo checkinCheck=new ActivitiesCheckinVo();
+        checkinCheck.setUserId(sysUser.getUserId());
+        checkinCheck.setActivityId(activityId);
+        checkinCheck.setUseDataScope(false);
+        List<ActivitiesCheckinVo> list= checkinService.selectActivitiesCheckinList(checkinCheck);
+        if(list!=null && list.size()>0){
+            return error("学员已签到,请勿重复签到!");
+        }
+
+        //开始签到
+        ActivitiesCheckin checkIn=new ActivitiesCheckin();
+        checkIn.setActivityId(activityId);
+        if(activity.getParentActivityId()==0){
             return toAjax(checkinService.insertActivitiesCheckin(checkIn));
         }
         else{
             if(activity.getActivityType().equals("0")){
                 //经颅磁
                 ActivitiesTmsdataVo tsmDataCheck=new ActivitiesTmsdataVo();
+                tsmDataCheck.setUseDataScope(false);
                 tsmDataCheck.setActivityId(activityId);
                 tsmDataCheck.setUserId(sysUser.getUserId());
                 List<ActivitiesTmsdataVo> list1=activitiesTmsdataService.selectActivitiesTmsdataList(tsmDataCheck);
-                if(list1!=null && list1.size()>0){
-                    return error("学员已签到,请勿重复签到!");
+                if(list1==null || list1.size()==0){
+                    ActivitiesTmsdata tsmData=new ActivitiesTmsdata();
+                    tsmData.setActivityId(activityId);
+                    tsmData.setUserId(sysUser.getUserId());
+                    tsmData.setDeptId(sysUser.getDeptId());
+                    tsmData.setStatus("0");
+                    tsmData.setName(sysUser.getNickName());
+                    tsmData.setSex(sysUser.getSex().equals(0) ? "男":"女");
+                    tsmData.setAge(String.valueOf(calculateAge(sysUser.getBirthday())));
+                    return toAjax(activitiesTmsdataService.insertActivitiesTmsdata(tsmData));
                 }
-                ActivitiesTmsdata tsmData=new ActivitiesTmsdata();
-                tsmData.setActivityId(activityId);
-                tsmData.setUserId(sysUser.getUserId());
-                tsmData.setDeptId(sysUser.getDeptId());
-                tsmData.setStatus("0");
-                tsmData.setName(sysUser.getNickName());
-                tsmData.setSex(sysUser.getSex().equals(0) ? "男":"女");
-                tsmData.setAge(String.valueOf(calculateAge(sysUser.getBirthday())));
-                return toAjax(activitiesTmsdataService.insertActivitiesTmsdata(tsmData));
+                else{
+                    return error("学员经颅磁数据已生成,请勿重复创建!");
+                }
             }
             else{
                 //其它图文
                 ActivitiesTechVo techCheck=new ActivitiesTechVo();
+                techCheck.setUseDataScope(false);
                 techCheck.setActivityId(activityId);
                 techCheck.setUserId(sysUser.getUserId());
                 List<ActivitiesTechVo> list2=activitiesTechService.selectActivitiesTechList(techCheck);
-                if(list2!=null && list2.size()>0){
-                    return error("学员已签到,请勿重复签到!");
+                if(list2==null || list2.size()==0){
+                    ActivitiesTech techData=new ActivitiesTech();
+                    techData.setActivityId(activityId);
+                    techData.setUserId(sysUser.getUserId());
+                    techData.setDeptId(sysUser.getDeptId());
+                    techData.setStatus("0");
+                    techData.setName(sysUser.getNickName());
+                    techData.setSex(sysUser.getSex().equals(0) ? "男":"女");
+                    techData.setAge(String.valueOf(calculateAge(sysUser.getBirthday())));
+                    techData.setTechType(activity.getActivityType());
+                    return toAjax(activitiesTechService.insertActivitiesTech(techData));
                 }
-                ActivitiesTech techData=new ActivitiesTech();
-                techData.setActivityId(activityId);
-                techData.setUserId(sysUser.getUserId());
-                techData.setDeptId(sysUser.getDeptId());
-                techData.setStatus("0");
-                techData.setName(sysUser.getNickName());
-                techData.setSex(sysUser.getSex().equals(0) ? "男":"女");
-                techData.setAge(String.valueOf(calculateAge(sysUser.getBirthday())));
-                techData.setTechType(activity.getActivityType());
-                return toAjax(activitiesTechService.insertActivitiesTech(techData));
+                else{
+                    return error("学员子活动数据已生成,请勿重复生成!");
+                }
             }
         }
     }
@@ -362,6 +395,7 @@ public class ActivitiesController extends BaseController
     public AjaxResult getCheckInState(@PathVariable("activityId") Long activityId)
     {
         ActivitiesCheckinVo checkIn=new ActivitiesCheckinVo();
+        checkIn.setUseDataScope(false);
         checkIn.setActivityId(activityId);
         checkIn.setUserId(getUserId());
         List<ActivitiesCheckinVo> list=checkinService.selectActivitiesCheckinList(checkIn);

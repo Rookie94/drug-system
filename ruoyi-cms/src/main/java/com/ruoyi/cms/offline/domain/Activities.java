@@ -58,6 +58,11 @@ public class Activities extends TreeEntity
     @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 
+    /** 报名截止时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "报名截止时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date signDeadline;
+
     /** 活动组织者 */
     @Excel(name = "活动分类")
     private String activityType;
@@ -182,9 +187,23 @@ public class Activities extends TreeEntity
     {
         return startTime;
     }
+
+    public Date getEndTime()
+    {
+        return endTime;
+    }
+
     public void setEndTime(Date endTime)
     {
         this.endTime = endTime;
+    }
+
+    public Date getSignDeadline() {
+        return signDeadline;
+    }
+
+    public void setSignDeadline(Date signDeadline) {
+        this.signDeadline = signDeadline;
     }
 
     public String getActivityType() {
@@ -195,10 +214,6 @@ public class Activities extends TreeEntity
         this.activityType = activityType;
     }
 
-    public Date getEndTime()
-    {
-        return endTime;
-    }
     public void setStatus(String status)
     {
         this.status = status;
@@ -277,6 +292,7 @@ public class Activities extends TreeEntity
                 .append("tel", getTel())
                 .append("startTime", getStartTime())
                 .append("endTime", getEndTime())
+                .append("signDeadline", getSignDeadline())
                 .append("activityType", getActivityType())
                 .append("status", getStatus())
                 .append("appored", getAppored())

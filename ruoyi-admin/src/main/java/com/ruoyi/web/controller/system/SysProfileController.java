@@ -1,6 +1,8 @@
 package com.ruoyi.web.controller.system;
 
 import java.util.Map;
+
+import com.ruoyi.framework.security.filter.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +40,9 @@ public class SysProfileController extends BaseController
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private PasswordValidator passwordValidator;
 
     /**
      * 个人信息
@@ -102,6 +107,10 @@ public class SysProfileController extends BaseController
         if (SecurityUtils.matchesPassword(newPassword, password))
         {
             return error("新密码不能与旧密码相同");
+        }
+        String errorMsg = passwordValidator.validate(newPassword, userName);
+        if (errorMsg != null) {
+            return error(errorMsg);
         }
         newPassword = SecurityUtils.encryptPassword(newPassword);
         if (userService.resetUserPwd(userName, newPassword) > 0)

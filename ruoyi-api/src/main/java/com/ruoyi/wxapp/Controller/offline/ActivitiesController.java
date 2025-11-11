@@ -301,6 +301,7 @@ public class ActivitiesController extends BaseController
             return toAjax(checkinService.insertActivitiesCheckin(checkIn));
         }
         else{
+            checkinService.insertActivitiesCheckin(checkIn);
             if(activity.getActivityType().equals("0")){
                 //经颅磁
                 ActivitiesTmsdataVo tsmDataCheck=new ActivitiesTmsdataVo();
@@ -500,6 +501,7 @@ public class ActivitiesController extends BaseController
         if(sysUser.getUserType().equals("00")==false){
             return error("警官才能上传经颅磁资讯");
         }
+        activitiesTmsdata.setStatus("1");
         return toAjax(activitiesTmsdataService.updateActivitiesTmsdata(activitiesTmsdata));
     }
 
@@ -596,6 +598,7 @@ public class ActivitiesController extends BaseController
         if(sysUser.getUserType().equals("00")==false){
             return error("警官才能上传戒治技术资料");
         }
+        activitiesTech.setStatus("1");
         return toAjax(activitiesTechService.updateActivitiesTech(activitiesTech));
     }
 
@@ -669,7 +672,70 @@ public class ActivitiesController extends BaseController
         if(sysUser.getUserType().equals("00")){
             return error("学员才能参加活动评价");
         }
+
+        //检查报名情况
+        ActivitiesSignUpVo signUp=new ActivitiesSignUpVo();
+        if(activity.getParentActivityId()==0){
+            signUp.setUseDataScope(false);
+            signUp.setActivityId(activity.getActivityId());
+            signUp.setUserId(getUserId());
+            List<ActivitiesSignUpVo> list=signUpService.selectSignUpList(signUp);
+            if(list==null || list.size()==0){
+                return new AjaxResult(HttpStatus.SEE_OTHER,"学员报名主活动以后才能评价!",activity.getActivityId());
+            }
+        }
+        else{
+            signUp.setUseDataScope(false);
+            signUp.setActivityId(activity.getParentActivityId());
+            signUp.setUserId(getUserId());
+            List<ActivitiesSignUpVo> list=signUpService.selectSignUpList(signUp);
+            if(list==null || list.size()==0){
+                return new AjaxResult(HttpStatus.SEE_OTHER,"学员报名主活动以后才能评价子活动!",activity.getParentActivityId());
+            }
+        }
+
+        //检查签到情况
+        ActivitiesCheckinVo checkinVo=new ActivitiesCheckinVo();
+        if(activity.getParentActivityId()==0){
+            checkinVo.setUseDataScope(false);
+            checkinVo.setActivityId(activity.getActivityId());
+            checkinVo.setUserId(getUserId());
+            List<ActivitiesCheckinVo> list=checkinService.selectActivitiesCheckinList(checkinVo);
+            if(list==null || list.size()==0){
+                return new AjaxResult(HttpStatus.SEE_OTHER,"学员签到主活动以后才能评价!",activity.getActivityId());
+            }
+        }
+        else{
+            //主活动
+            checkinVo.setUseDataScope(false);
+            checkinVo.setUserId(getUserId());
+            checkinVo.setActivityId(activity.getParentActivityId());
+            List<ActivitiesCheckinVo> list1=checkinService.selectActivitiesCheckinList(checkinVo);
+            if(list1==null || list1.size()==0){
+                return new AjaxResult(HttpStatus.SEE_OTHER,"学员签到主活动以后才能评价子活动!",activity.getParentActivityId());
+            }
+            //子活动
+            checkinVo.setUseDataScope(false);
+            checkinVo.setUserId(getUserId());
+            checkinVo.setActivityId(activity.getActivityId());
+            List<ActivitiesCheckinVo> list2=checkinService.selectActivitiesCheckinList(checkinVo);
+            if(list2==null || list2.size()==0){
+                return new AjaxResult(HttpStatus.SEE_OTHER,"学员签到子活动以后才能评价子活动!",activity.getActivityId());
+            }
+        }
+
+        //检测已评价
+        ActivitiesReviewVo reviewVo=new ActivitiesReviewVo();
+        reviewVo.setUseDataScope(false);
+        reviewVo.setActivityId(activitiesReview.getActivityId());
+        reviewVo.setUserId(getUserId());
+        List<ActivitiesReviewVo> list=activitiesReviewService.selectActivitiesReviewList(reviewVo);
+        if(list!=null && list.size()>0){
+            return error("当前活动已经评价过,请勿重复评价");
+        }
+
         return toAjax(activitiesReviewService.insertActivitiesReview(activitiesReview));
+
     }
 
     /**

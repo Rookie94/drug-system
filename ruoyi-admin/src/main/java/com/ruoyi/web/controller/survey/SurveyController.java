@@ -31,12 +31,10 @@ public class SurveyController extends BaseController {
 
     @Autowired
     private ISurveyService surveyService;
-    @Autowired
-    private IQuestionService questionService;
+
     @Autowired
     private IDocResultsService docResultsService;
-    @Autowired
-    private IAnswersService answerService;
+
 
     /**
      * 查询问卷列表
@@ -128,9 +126,6 @@ public class SurveyController extends BaseController {
     @Log(title = "问卷删除", businessType = BusinessType.DELETE)
     @DeleteMapping("/{surveyIds}")
     public AjaxResult delete(@PathVariable Long[] surveyIds) {
-        questionService.deleteQuestionBySurveyIds(surveyIds);
-        docResultsService.deleteDocResultsBySurveyIds(surveyIds);
-        answerService.deleteAnswersBySurveyIds(surveyIds);
         return toAjax(surveyService.deleteSurveyBySurveyIds(surveyIds));
     }
 

@@ -214,3 +214,15 @@ encrypt:
   key: ENC(jQ3yP19TLcTKLvM22w/te5Op8csOkRdhD06L7MoeLs4ToUOwdF2Jvev8erffJsFRaRJ4CZWzecU1ct7Dxatcsjfq8yMMFhoD7mbwEykfGrA=)
   ## 忽略url，不做处理
   filterUrls: /common/*,/profile/upload/*,/captchaImage
+
+external:
+  config:
+    base-url: http://10.60.32.8:3030
+    secret-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMxtH3cw4q7l1o//1s0DY02F/fTbf03DiTX1D9WnDNblGTi8P3Jgq4R21UYDLDd1GfYGfA8YIGkSSKcFFLs48gECAwEAAQ==
+    interfaces:
+      get-org-data: /Mobile/GetOrgData
+      police-verify: /Mobile/PoliceVerify
+      archives-verify: /Mobile/ArchivesVerify
+      all-police-info: /Mobile/AllPoliceInfo
+      all-archives-info: /Mobile/AllArchivesInfo
+

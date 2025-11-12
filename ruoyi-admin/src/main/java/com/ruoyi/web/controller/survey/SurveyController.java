@@ -122,7 +122,7 @@ public class SurveyController extends BaseController {
     /**
      * 永久删除问卷
      */
-    @PreAuthorize("@ss.hasPermi('survey:vote:delete')")
+    @PreAuthorize("@ss.hasPermi('survey:recycle:delete')")
     @Log(title = "问卷删除", businessType = BusinessType.DELETE)
     @DeleteMapping("/{surveyIds}")
     public AjaxResult delete(@PathVariable Long[] surveyIds) {

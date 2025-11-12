@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.external.mapper.PoliceMapper">
+
+    <resultMap type="Police" id="PoliceResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="mobileNumber" column="mobile_number"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="orgId" column="org_id"/>
+        <result property="address" column="address"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectPoliceVo">
+        select id, name, sex, birthday, mobile_number, org_name, org_code, org_id, address, create_time, update_time, remark
+        from mid_police
+    </sql>
+
+    <select id="selectPoliceById" parameterType="String" resultMap="PoliceResult">
+        <include refid="selectPoliceVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectPoliceList" parameterType="Police" resultMap="PoliceResult">
+        <include refid="selectPoliceVo"/>
+        <where>
+            <if test="name != null and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="mobileNumber != null and mobileNumber != ''"> and mobile_number = #{mobileNumber}</if>
+            <if test="orgName != null and orgName != ''"> and org_name like concat('%', #{orgName}, '%')</if>
+            <if test="orgCode != null and orgCode != ''"> and org_code = #{orgCode}</if>
+            <if test="orgId != null and orgId != ''"> and org_id = #{orgId}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectPoliceByMobile" parameterType="String" resultMap="PoliceResult">
+        <include refid="selectPoliceVo"/>
+        where mobile_number = #{mobileNumber}
+    </select>
+
+    <insert id="insertPolice" parameterType="Police">
+        insert into mid_police (
+            id, name, sex, birthday, mobile_number, org_name, org_code, org_id, address, create_time, update_time, remark
+        ) values (
+                     #{id}, #{name}, #{sex}, #{birthday}, #{mobileNumber}, #{orgName}, #{orgCode}, #{orgId}, #{address}, #{createTime}, #{updateTime}, #{remark}
+                 )
+    </insert>
+
+    <update id="updatePolice" parameterType="Police">
+        update mid_police
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="birthday != null and birthday != ''">birthday = #{birthday},</if>
+            <if test="mobileNumber != null and mobileNumber != ''">mobile_number = #{mobileNumber},</if>
+            <if test="orgName != null and orgName != ''">org_name = #{orgName},</if>
+            <if test="orgCode != null and orgCode != ''">org_code = #{orgCode},</if>
+            <if test="orgId != null and orgId != ''">org_id = #{orgId},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePoliceById" parameterType="String">
+        delete from mid_police where id = #{id}
+    </delete>
+
+    <delete id="deletePoliceByIds" parameterType="String">
+        delete from mid_police where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="batchInsertPolice" parameterType="java.util.List">
+        insert into mid_police (
+        id, name, sex, birthday, mobile_number, org_name, org_code, org_id, address, create_time, update_time, remark
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id}, #{item.name}, #{item.sex}, #{item.birthday}, #{item.mobileNumber},
+            #{item.orgName}, #{item.orgCode}, #{item.orgId}, #{item.address}, #{item.createTime}, #{item.updateTime}, #{item.remark}
+            )
+        </foreach>
+    </insert>
+
+    <update id="batchUpdatePolice" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" separator=";">
+            update mid_police
+            <set>
+                name = #{item.name},
+                sex = #{item.sex},
+                birthday = #{item.birthday},
+                mobile_number = #{item.mobileNumber},
+                org_name = #{item.orgName},
+                org_code = #{item.orgCode},
+                org_id = #{item.orgId},
+                address = #{item.address},
+                update_time = #{item.updateTime},
+                remark = #{item.remark}
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+</mapper>

@@ -81,7 +81,7 @@ public class DocResultsController extends BaseController {
     /**
      * 刷新问卷答案结果json
      */
-    @PreAuthorize("@ss.hasPermi('survey:docs:edit')")
+    @PreAuthorize("@ss.hasPermi('survey:docs:refresh')")
     @Log(title = "问卷答案结果", businessType = BusinessType.UPDATE)
     @PostMapping("/refresh/{resultIds}")
     public AjaxResult refreshDocResults(@PathVariable Long[] resultIds) {

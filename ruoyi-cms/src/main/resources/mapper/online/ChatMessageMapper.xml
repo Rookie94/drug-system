@@ -103,6 +103,13 @@
         order by t.create_time asc  <!-- 按创建时间排序 -->
     </select>
 
+    <!-- 根据父 id 查询直接子节点 id 列表 -->
+    <select id="selectChildMessageIds" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT message_id
+        FROM chat_message
+        WHERE parent_message_id = #{parentMessageId}
+    </select>
+
     <select id="selectMessageRootTree" parameterType="Long" resultMap="ChatMessageTreeResult">
         <include refid="selectChatMessageVo"/>
         <where>

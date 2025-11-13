@@ -142,10 +142,10 @@ public class MsgBoardController extends BaseController {
      * 删除留言消息
      */
     @Log(title = "留言板", businessType = BusinessType.DELETE)
-    @PostMapping("/removeMessage/{messageIds}")
+    @PostMapping("/removeMessage/{messageId}")
     public AjaxResult remove(@PathVariable Long messageId)
     {
-        return toAjax(chatMessageService.deleteChatMessageByMessageId(messageId));
+        return toAjax(chatMessageService.deleteChatMessageTree(messageId));
     }
 
 }

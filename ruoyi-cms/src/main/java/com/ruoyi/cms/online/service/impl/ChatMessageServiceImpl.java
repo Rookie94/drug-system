@@ -1,6 +1,7 @@
 package com.ruoyi.cms.online.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.ruoyi.common.utils.StringUtils;
@@ -12,6 +13,7 @@ import com.ruoyi.cms.online.domain.vo.ChatMessageVo;
 import com.ruoyi.cms.online.mapper.ChatMessageMapper;
 import com.ruoyi.cms.online.service.IChatMessageService;
 import com.ruoyi.common.utils.DateUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.ruoyi.common.utils.SecurityUtils.*;
 
@@ -69,6 +71,11 @@ public class ChatMessageServiceImpl implements IChatMessageService
         }
 
         return firstLevelReplies;
+    }
+
+    @Override
+    public List<Long> selectChildMessageIds(Long parentMessageId) {
+        return chatMessageMapper.selectChildMessageIds(parentMessageId);
     }
 
     /**
@@ -132,9 +139,20 @@ public class ChatMessageServiceImpl implements IChatMessageService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteChatMessageByMessageIds(Long[] messageIds)
     {
-        return chatMessageMapper.deleteChatMessageByMessageIds(messageIds);
+        try {
+            for (Long messageId : messageIds) {
+                deleteChatMessageTree(messageId);
+            }
+            return 1;
+        }
+        catch(Exception ex)
+        {
+            return 0;
+        }
+        //return chatMessageMapper.deleteChatMessageByMessageIds(messageIds);
     }
 
     /**
@@ -148,4 +166,32 @@ public class ChatMessageServiceImpl implements IChatMessageService
     {
         return chatMessageMapper.deleteChatMessageByMessageId(messageId);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteChatMessageTree(Long rootMessageId) {
+        if (rootMessageId == null) {
+            return 0;
+        }
+        // 1. 递归删子孙
+        deleteChildrenRecursive(rootMessageId);
+        // 2. 最后删自己
+        return chatMessageMapper.deleteChatMessageByMessageId(rootMessageId);
+    }
+
+    /**
+     * 递归删除所有子孙节点
+     */
+    private void deleteChildrenRecursive(Long parentMessageId) {
+        // 查出直接子
+        List<Long> childMessageIds = chatMessageMapper.selectChildMessageIds(parentMessageId);
+        if (childMessageIds.isEmpty()) {
+            return;
+        }
+        // 深度优先：先删子，再删孙
+        for (Long childMessageId : childMessageIds) {
+            deleteChildrenRecursive(childMessageId);
+            chatMessageMapper.deleteChatMessageByMessageId(childMessageId);
+        }
+    }
+
 }

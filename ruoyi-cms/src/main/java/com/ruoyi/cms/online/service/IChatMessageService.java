@@ -39,6 +39,14 @@ public interface IChatMessageService
     public List<ChatMessageTreeVo> selectChatMessageTree(Long parentMessageId);
 
     /**
+     * 查询子留言id
+     *
+     * @param parentMessageId 父留言ID
+     * @return 子留言集合
+     */
+    public List<Long> selectChildMessageIds(Long parentMessageId);
+
+    /**
      * 新增留言板
      *
      * @param chatMessage 留言板
@@ -66,16 +74,26 @@ public interface IChatMessageService
     /**
      * 批量删除留言板
      *
+     * @param messageId 需要删除的留言板主键集合
+     * @return 结果
+     */
+    public int deleteChatMessageByMessageId(Long messageId);
+
+    /**
+     * 批量删除留言板
+     *
      * @param messageIds 需要删除的留言板主键集合
      * @return 结果
      */
     public int deleteChatMessageByMessageIds(Long[] messageIds);
 
     /**
-     * 删除留言板信息
+     * 删除留言树信息
      *
-     * @param messageId 留言板主键
+     * @param rootMessageId 留言板主键
      * @return 结果
      */
-    public int deleteChatMessageByMessageId(Long messageId);
+
+    public int deleteChatMessageTree(Long rootMessageId);
+
 }

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysCustomLogMapper">
+
+    <resultMap type="SysCustomLog" id="SysCustomLogResult">
+        <result property="logId" column="log_id"/>
+        <result property="logTitle" column="log_title"/>
+        <result property="operName" column="oper_name"/>
+        <result property="operIp" column="oper_ip"/>
+        <result property="operLocation" column="oper_location"/>
+        <result property="operTime" column="oper_time"/>
+        <result property="status" column="status"/>
+        <result property="logDetail" column="log_detail"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectSysCustomLogVo">
+        select log_id, log_title, oper_name, oper_ip, oper_location, oper_time, status, log_detail, create_time, update_time
+        from sys_custom_log
+    </sql>
+
+    <select id="selectCustomLogList" parameterType="SysCustomLog" resultMap="SysCustomLogResult">
+        <include refid="selectSysCustomLogVo"/>
+        <where>
+            <if test="logTitle != null and logTitle != ''">
+                AND log_title like concat('%', #{logTitle}, '%')
+            </if>
+            <if test="operName != null and operName != ''">
+                AND oper_name like concat('%', #{operName}, '%')
+            </if>
+            <if test="operIp != null and operIp != ''">
+                AND oper_ip = #{operIp}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <!-- 添加时间范围查询条件 -->
+            <if test="beginOperTime != null and beginOperTime != ''">
+                AND oper_time &gt;= #{beginOperTime}
+            </if>
+            <if test="endOperTime != null and endOperTime != ''">
+                AND oper_time &lt;= #{endOperTime}
+            </if>
+        </where>
+        order by oper_time desc
+    </select>
+
+    <select id="selectCustomLogCount" parameterType="SysCustomLog" resultType="int">
+        select count(*) from sys_custom_log
+        <where>
+            <if test="logTitle != null and logTitle != ''">
+                AND log_title like concat('%', #{logTitle}, '%')
+            </if>
+            <if test="operName != null and operName != ''">
+                AND oper_name like concat('%', #{operName}, '%')
+            </if>
+            <if test="operIp != null and operIp != ''">
+                AND oper_ip = #{operIp}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <!-- 添加时间范围查询条件 -->
+            <if test="beginOperTime != null and beginOperTime != ''">
+                AND oper_time &gt;= #{beginOperTime}
+            </if>
+            <if test="endOperTime != null and endOperTime != ''">
+                AND oper_time &lt;= #{endOperTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCustomLogById" parameterType="Long" resultMap="SysCustomLogResult">
+        <include refid="selectSysCustomLogVo"/>
+        where log_id = #{logId}
+    </select>
+
+    <insert id="insertCustomLog" parameterType="SysCustomLog" useGeneratedKeys="true" keyProperty="logId">
+        insert into sys_custom_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="logTitle != null and logTitle != ''">log_title,</if>
+            <if test="operName != null and operName != ''">oper_name,</if>
+            <if test="operIp != null and operIp != ''">oper_ip,</if>
+            <if test="operLocation != null">oper_location,</if>
+            <if test="operTime != null">oper_time,</if>
+            <if test="status != null">status,</if>
+            <if test="logDetail != null">log_detail,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="logTitle != null and logTitle != ''">#{logTitle},</if>
+            <if test="operName != null and operName != ''">#{operName},</if>
+            <if test="operIp != null and operIp != ''">#{operIp},</if>
+            <if test="operLocation != null">#{operLocation},</if>
+            <if test="operTime != null">#{operTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="logDetail != null">#{logDetail},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertCustomLog" parameterType="java.util.List">
+        insert into sys_custom_log
+        (
+        log_title,
+        oper_name,
+        oper_ip,
+        oper_location,
+        oper_time,
+        status,
+        log_detail,
+        create_time,
+        update_time
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.logTitle},
+            #{item.operName},
+            #{item.operIp},
+            #{item.operLocation},
+            #{item.operTime},
+            #{item.status},
+            #{item.logDetail},
+            #{item.createTime},
+            #{item.updateTime}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateCustomLog" parameterType="SysCustomLog">
+        update sys_custom_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="logTitle != null and logTitle != ''">log_title = #{logTitle},</if>
+            <if test="operName != null and operName != ''">oper_name = #{operName},</if>
+            <if test="operIp != null and operIp != ''">oper_ip = #{operIp},</if>
+            <if test="operLocation != null">oper_location = #{operLocation},</if>
+            <if test="operTime != null">oper_time = #{operTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="logDetail != null">log_detail = #{logDetail},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where log_id = #{logId}
+    </update>
+
+    <delete id="deleteCustomLogById" parameterType="Long">
+        delete from sys_custom_log where log_id = #{logId}
+    </delete>
+
+    <delete id="deleteCustomLogByIds" parameterType="String">
+        delete from sys_custom_log where log_id in
+        <foreach item="logId" collection="array" open="(" separator="," close=")">
+            #{logId}
+        </foreach>
+    </delete>
+
+    <delete id="cleanCustomLog">
+        truncate table sys_custom_log
+    </delete>
+</mapper>

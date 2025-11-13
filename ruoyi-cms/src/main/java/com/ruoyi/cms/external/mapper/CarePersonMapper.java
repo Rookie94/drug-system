@@ -41,6 +41,11 @@ public interface CarePersonMapper {
     int deleteCarePersonByIds(String[] ids);
 
     /**
+     * 清空照管人员表
+     */
+    int deleteAllCarePersons();
+
+    /**
      * 根据身份证号查询照管人员
      */
     CarePerson selectCarePersonByIdNumber(String idNumber);

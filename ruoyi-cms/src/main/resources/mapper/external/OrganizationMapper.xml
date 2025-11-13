@@ -66,6 +66,10 @@
         where id = #{id}
     </update>
 
+    <delete id="deleteAllOrganizations">
+        DELETE FROM mid_organization
+    </delete>
+
     <delete id="deleteOrganizationById" parameterType="String">
         delete from mid_organization where id = #{id}
     </delete>

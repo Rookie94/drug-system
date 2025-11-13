@@ -83,6 +83,10 @@
         where id = #{id}
     </update>
 
+    <delete id="deleteAllCarePersons">
+        DELETE FROM mid_care_person
+    </delete>
+
     <delete id="deleteCarePersonById" parameterType="String">
         delete from mid_care_person where id = #{id}
     </delete>

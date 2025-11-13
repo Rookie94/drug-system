@@ -190,7 +190,7 @@
 
     <delete id="deleteQuestionBySurveyIds" parameterType="String">
         delete from doc_question where survey_id in
-        <foreach item="questionId" collection="array" open="(" separator="," close=")">
+        <foreach item="surveyId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>
     </delete>

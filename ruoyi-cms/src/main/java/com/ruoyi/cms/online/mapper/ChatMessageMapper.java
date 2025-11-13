@@ -42,6 +42,15 @@ public interface ChatMessageMapper
     public List<ChatMessageTreeVo> selectChildMessages(Long parentMessageId);
 
     /**
+     * 查询子留言id
+     *
+     * @param parentMessageId 父留言ID
+     * @return 子留言集合
+     */
+    public List<Long> selectChildMessageIds(Long parentMessageId);
+
+
+    /**
      * 新增留言板
      *
      * @param chatMessage 留言板

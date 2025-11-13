@@ -69,6 +69,10 @@
         where id = #{id}
     </update>
 
+    <delete id="deleteAllPolice">
+        DELETE FROM mid_police
+    </delete>
+
     <delete id="deletePoliceById" parameterType="String">
         delete from mid_police where id = #{id}
     </delete>

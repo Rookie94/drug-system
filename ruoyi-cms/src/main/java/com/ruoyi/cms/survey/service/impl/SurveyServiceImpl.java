@@ -21,8 +21,9 @@ import static com.ruoyi.common.utils.SecurityUtils.getUsername;
  */
 @Service
 public class SurveyServiceImpl implements ISurveyService {
+
     @Autowired
-    private ISurveyService surveyService;
+    private SurveyMapper surveyMapper;
 
     @Autowired
     private IQuestionService questionService;
@@ -41,7 +42,7 @@ public class SurveyServiceImpl implements ISurveyService {
      */
     @Override
     public Survey selectSurveyBySurveyId(Long surveyId) {
-        return surveyService.selectSurveyBySurveyId(surveyId);
+        return surveyMapper.selectSurveyBySurveyId(surveyId);
     }
 
     /**
@@ -52,12 +53,12 @@ public class SurveyServiceImpl implements ISurveyService {
      */
     @Override
     public List<Survey> selectSurveyList(Survey survey) {
-        return surveyService.selectSurveyList(survey);
+        return surveyMapper.selectSurveyList(survey);
     }
 
     @Override
     public SurveyVo selectFullSurveyById(Long surveyId) {
-        SurveyVo survey = surveyService.selectFullSurveyById(surveyId);
+        SurveyVo survey = surveyMapper.selectFullSurveyById(surveyId);
         return survey;
     }
 
@@ -71,7 +72,7 @@ public class SurveyServiceImpl implements ISurveyService {
     public int insertSurvey(Survey survey) {
         survey.setCreateBy(getUsername());
         survey.setCreateTime(DateUtils.getNowDate());
-        return surveyService.insertSurvey(survey);
+        return surveyMapper.insertSurvey(survey);
     }
 
     /**
@@ -84,7 +85,7 @@ public class SurveyServiceImpl implements ISurveyService {
     public int updateSurvey(Survey survey) {
         survey.setUpdateBy(getUsername());
         survey.setUpdateTime(DateUtils.getNowDate());
-        return surveyService.updateSurvey(survey);
+        return surveyMapper.updateSurvey(survey);
     }
 
     /**
@@ -97,7 +98,7 @@ public class SurveyServiceImpl implements ISurveyService {
     {
         survey.setUpdateBy(getUsername());
         survey.setUpdateTime(DateUtils.getNowDate());
-        return surveyService.updateStatus(survey);
+        return surveyMapper.updateStatus(survey);
     }
 
     /**
@@ -113,7 +114,7 @@ public class SurveyServiceImpl implements ISurveyService {
         docResultsService.deleteDocResultsBySurveyIds(surveyIds);
         optionsService.deleteOptionsBySurveyIds(surveyIds);
         questionService.deleteQuestionBySurveyIds(surveyIds);
-        return surveyService.deleteSurveyBySurveyIds(surveyIds);
+        return surveyMapper.deleteSurveyBySurveyIds(surveyIds);
     }
 
     /**
@@ -124,7 +125,7 @@ public class SurveyServiceImpl implements ISurveyService {
      */
     @Override
     public int deleteSurveyBySurveyId(Long surveyId) {
-        return surveyService.deleteSurveyBySurveyId(surveyId);
+        return surveyMapper.deleteSurveyBySurveyId(surveyId);
     }
 
     /**
@@ -135,7 +136,7 @@ public class SurveyServiceImpl implements ISurveyService {
      */
     @Override
     public int removeSurveyBySurveyIds(Long[] surveyIds) {
-        return surveyService.removeSurveyBySurveyIds(surveyIds);
+        return surveyMapper.removeSurveyBySurveyIds(surveyIds);
     }
 
     /**
@@ -146,7 +147,7 @@ public class SurveyServiceImpl implements ISurveyService {
      */
     @Override
     public int removeSurveyBySurveyId(Long surveyId) {
-        return surveyService.removeSurveyBySurveyId(surveyId);
+        return surveyMapper.removeSurveyBySurveyId(surveyId);
     }
 
     /**
@@ -157,7 +158,7 @@ public class SurveyServiceImpl implements ISurveyService {
      */
     @Override
     public int publishSurveyBySurveyIds(Long[] surveyIds) {
-        return surveyService.publishSurveyBySurveyIds(surveyIds);
+        return surveyMapper.publishSurveyBySurveyIds(surveyIds);
     }
 
     /**
@@ -168,7 +169,7 @@ public class SurveyServiceImpl implements ISurveyService {
      */
     @Override
     public int restoreSurveyBySurveyIds(Long[] surveyIds) {
-        return surveyService.restoreSurveyBySurveyIds(surveyIds);
+        return surveyMapper.restoreSurveyBySurveyIds(surveyIds);
     }
 
     /**
@@ -179,6 +180,6 @@ public class SurveyServiceImpl implements ISurveyService {
      */
     @Override
     public int revokeSurveyBySurveyId(Long surveyId) {
-        return surveyService.revokeSurveyBySurveyId(surveyId);
+        return surveyMapper.revokeSurveyBySurveyId(surveyId);
     }
 }

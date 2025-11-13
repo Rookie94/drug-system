@@ -41,6 +41,11 @@ public interface PoliceMapper {
     int deletePoliceByIds(String[] ids);
 
     /**
+     * 清空警员表
+     */
+    int deleteAllPolice();
+
+    /**
      * 根据手机号查询警员
      */
     Police selectPoliceByMobile(String mobileNumber);

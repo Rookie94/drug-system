@@ -168,7 +168,7 @@
 
     <delete id="deleteOptionsBySurveyIds" parameterType="String">
         delete from doc_options where survey_id in
-        <foreach item="optionId" collection="array" open="(" separator="," close=")">
+        <foreach item="surveyId" collection="array" open="(" separator="," close=")">
             #{surveyId}
         </foreach>
     </delete>

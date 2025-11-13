@@ -49,4 +49,10 @@ public interface OrganizationMapper {
      * 查询子机构列表
      */
     List<Organization> selectChildrenOrganization(String parentId);
+
+    /**
+     * 清空组织机构表
+     */
+    int deleteAllOrganizations();
+
 }

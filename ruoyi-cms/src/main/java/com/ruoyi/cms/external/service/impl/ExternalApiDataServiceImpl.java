@@ -1,6 +1,5 @@
 package com.ruoyi.cms.external.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.cms.external.utils.ExternalApiHttpClient;
 import com.ruoyi.cms.external.domain.CarePerson;
@@ -43,13 +42,17 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
     private CarePersonMapper carePersonMapper;
 
     /**
-     * 1. 获取组织机构信息接口
+     * 1. 获取组织机构信息接口 - 全量同步
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult syncOrganizations() {
         try {
-            log.info("开始同步组织机构信息");
+            log.info("开始全量同步组织机构信息");
+
+            // 清空组织机构表
+            int deletedCount = organizationMapper.deleteAllOrganizations();
+            log.info("清空组织机构表，删除 {} 条记录", deletedCount);
 
             ExternalApiResponse<Organization> response = apiHttpClient.doGet("get-org-data", null, Organization.class);
 
@@ -61,8 +64,8 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             Organization org = response.getDecodedData();
             if (org != null) {
                 int savedCount = saveOrganizationRecursive(org, 0);
-                log.info("组织机构同步完成，共处理 {} 个组织", savedCount);
-                return AjaxResult.success("组织机构同步成功，共处理 " + savedCount + " 个组织");
+                log.info("组织机构全量同步完成，共处理 {} 个组织", savedCount);
+                return AjaxResult.success("组织机构全量同步成功，共处理 " + savedCount + " 个组织");
             } else {
                 log.warn("未获取到组织机构数据");
                 return AjaxResult.error("未获取到组织机构数据");
@@ -74,10 +77,9 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
     }
 
     /**
-     * 2. 警察注册校验接口
+     * 2. 警察注册校验接口 - 只做校验，不写入数据库
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public AjaxResult verifyPolice(String mobileNumber) {
         try {
             log.info("开始警察注册校验，手机号: {}", mobileNumber);
@@ -85,19 +87,14 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             PoliceVerifyRequest request = new PoliceVerifyRequest();
             request.setMobileNumber(mobileNumber);
 
-            // 使用类型安全的方法处理列表返回
+            // 直接返回验证结果，不保存到数据库
             ExternalApiResponse<List<Police>> response = apiHttpClient.doPostForList("police-verify", request, Police.class);
 
             if (response.isSuccess()) {
                 List<Police> policeList = response.getDecodedData();
                 if (policeList != null && !policeList.isEmpty()) {
-                    int savedCount = 0;
-                    for (Police police : policeList) {
-                        if (saveOrUpdatePolice(police)) {
-                            savedCount++;
-                        }
-                    }
-                    log.info("警察注册校验成功，验证通过 {} 人，保存 {} 条记录", policeList.size(), savedCount);
+                    log.info("警察注册校验成功，验证通过 {} 人", policeList.size());
+                    // 只返回验证结果，不保存数据
                     return AjaxResult.success("验证成功", policeList);
                 } else {
                     log.warn("警察注册校验成功但未返回数据");
@@ -114,10 +111,9 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
     }
 
     /**
-     * 3. 出所人员注册校验接口
+     * 3. 出所人员注册校验接口 - 只做校验，不写入数据库
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public AjaxResult verifyCarePerson(String idNumber) {
         try {
             log.info("开始照管人员注册校验，身份证号: {}", idNumber);
@@ -125,19 +121,14 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             ArchivesVerifyRequest request = new ArchivesVerifyRequest();
             request.setIDNumber(idNumber);
 
-            // 使用类型安全的方法处理列表返回
+            // 直接返回验证结果，不保存到数据库
             ExternalApiResponse<List<CarePerson>> response = apiHttpClient.doPostForList("archives-verify", request, CarePerson.class);
 
             if (response.isSuccess()) {
                 List<CarePerson> carePersonList = response.getDecodedData();
                 if (carePersonList != null && !carePersonList.isEmpty()) {
-                    int savedCount = 0;
-                    for (CarePerson person : carePersonList) {
-                        if (saveOrUpdateCarePerson(person)) {
-                            savedCount++;
-                        }
-                    }
-                    log.info("照管人员注册校验成功，验证通过 {} 人，保存 {} 条记录", carePersonList.size(), savedCount);
+                    log.info("照管人员注册校验成功，验证通过 {} 人", carePersonList.size());
+                    // 只返回验证结果，不保存数据
                     return AjaxResult.success("验证成功", carePersonList);
                 } else {
                     log.warn("照管人员注册校验成功但未返回数据");
@@ -154,13 +145,17 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
     }
 
     /**
-     * 4. 获取在册警员列表接口
+     * 4. 获取在册警员列表接口 - 全量同步
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult syncPolice() {
         try {
-            log.info("开始同步在册警员列表");
+            log.info("开始全量同步在册警员列表");
+
+            // 清空警员表
+            int deletedCount = policeMapper.deleteAllPolice();
+            log.info("清空警员表，删除 {} 条记录", deletedCount);
 
             // 使用类型安全的方法处理列表返回
             ExternalApiResponse<List<Police>> response = apiHttpClient.doGetForList("all-police-info", null, Police.class);
@@ -174,7 +169,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             if (policeList != null && !policeList.isEmpty()) {
                 int successCount = processPoliceBatch(policeList);
 
-                String message = String.format("警员信息同步完成，总数: %d，成功: %d，失败: %d",
+                String message = String.format("警员信息全量同步完成，总数: %d，成功: %d，失败: %d",
                         policeList.size(), successCount, policeList.size() - successCount);
                 log.info(message);
 
@@ -193,118 +188,8 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
         }
     }
 
-    private int saveOrganizationRecursive(Organization org, int count) {
-        // 检查是否已存在
-        Organization existingOrg = organizationMapper.selectOrganizationById(org.getId());
-        Date now = new Date();
-        org.setCreateTime(now);
-        org.setUpdateTime(now);
-
-        if (existingOrg != null) {
-            organizationMapper.updateOrganization(org);
-            log.debug("更新组织机构: {} (Level: {})", org.getOrgName(), org.getLevels());
-        } else {
-            organizationMapper.insertOrganization(org);
-            log.debug("新增组织机构: {} (Level: {})", org.getOrgName(), org.getLevels());
-        }
-        count++;
-
-        // 递归保存子组织
-        if (org.getChildren() != null && !org.getChildren().isEmpty()) {
-            for (Organization child : org.getChildren()) {
-                count = saveOrganizationRecursive(child, count);
-            }
-        }
-
-        return count;
-    }
-
     /**
-     * 批量处理警员数据 - 类型安全的方法
-     */
-    private int processPoliceBatch(List<Police> policeList) {
-        int successCount = 0;
-        List<Police> toInsert = new ArrayList<>();
-        List<Police> toUpdate = new ArrayList<>();
-
-        // 安全地分离插入和更新操作
-        for (Police police : policeList) {
-            try {
-                Police existing = policeMapper.selectPoliceById(police.getId());
-                Date now = new Date();
-                police.setUpdateTime(now);
-
-                if (existing != null) {
-                    police.setCreateTime(existing.getCreateTime());
-                    toUpdate.add(police);
-                } else {
-                    police.setCreateTime(now);
-                    toInsert.add(police);
-                }
-            } catch (Exception e) {
-                log.error("处理警员信息失败: {}", police.getName(), e);
-            }
-        }
-
-        // 批量插入
-        if (!toInsert.isEmpty()) {
-            try {
-                policeMapper.batchInsertPolice(toInsert);
-                successCount += toInsert.size();
-            } catch (Exception e) {
-                log.error("批量插入警员失败，降级为单条插入", e);
-                successCount += insertPoliceIndividually(toInsert);
-            }
-        }
-
-        // 批量更新
-        if (!toUpdate.isEmpty()) {
-            try {
-                policeMapper.batchUpdatePolice(toUpdate);
-                successCount += toUpdate.size();
-            } catch (Exception e) {
-                log.error("批量更新警员失败，降级为单条更新", e);
-                successCount += updatePoliceIndividually(toUpdate);
-            }
-        }
-
-        return successCount;
-    }
-
-    /**
-     * 单条插入警员 - 避免泛型警告
-     */
-    private int insertPoliceIndividually(List<Police> policeList) {
-        int count = 0;
-        for (Police police : policeList) {
-            try {
-                policeMapper.insertPolice(police);
-                count++;
-            } catch (Exception e) {
-                log.error("单条插入警员失败: {}", police.getName(), e);
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 单条更新警员 - 避免泛型警告
-     */
-    private int updatePoliceIndividually(List<Police> policeList) {
-        int count = 0;
-        for (Police police : policeList) {
-            try {
-                policeMapper.updatePolice(police);
-                count++;
-            } catch (Exception e) {
-                log.error("单条更新警员失败: {}", police.getName(), e);
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 5. 获取在册照管人员列表接口 - 分页读取全部
+     * 5. 获取在册照管人员列表接口 - 全量同步
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -316,7 +201,11 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
         int totalRecords = 0;
 
         try {
-            log.info("开始同步在册照管人员列表，初始页码: {}，页大小: {}", pageIndex, pageSize);
+            log.info("开始全量同步在册照管人员列表");
+
+            // 清空照管人员表
+            int deletedCount = carePersonMapper.deleteAllCarePersons();
+            log.info("清空照管人员表，删除 {} 条记录", deletedCount);
 
             // 先获取第一页数据，了解总记录数
             Map<String, Object> firstPageParams = new HashMap<>();
@@ -389,7 +278,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 }
             }
 
-            String message = String.format("照管人员信息同步完成，应同步: %d 条，实际成功: %d 条", totalRecords, totalSaved);
+            String message = String.format("照管人员信息全量同步完成，应同步: %d 条，实际成功: %d 条", totalRecords, totalSaved);
             log.info(message);
 
             if (totalSaved < totalRecords) {
@@ -406,7 +295,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
     }
 
     /**
-     * 分批同步照管人员信息（可选方案）
+     * 分批同步照管人员信息（可选方案）- 全量同步
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -417,7 +306,11 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
         boolean hasMore = true;
 
         try {
-            log.info("开始分批同步照管人员信息，页大小: {}", pageSize);
+            log.info("开始全量分批同步照管人员信息，页大小: {}", pageSize);
+
+            // 清空照管人员表
+            int deletedCount = carePersonMapper.deleteAllCarePersons();
+            log.info("清空照管人员表，删除 {} 条记录", deletedCount);
 
             while (hasMore) {
                 log.info("正在获取第{}批数据", currentPage);
@@ -466,12 +359,101 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 }
             }
 
-            return AjaxResult.success("照管人员信息分批同步完成，共同步: " + totalSaved + " 条");
+            return AjaxResult.success("照管人员信息全量分批同步完成，共同步: " + totalSaved + " 条");
 
         } catch (Exception e) {
             log.error("分批同步照管人员信息异常", e);
             return AjaxResult.error("分批同步异常，已成功: " + totalSaved + " 条，错误: " + e.getMessage());
         }
+    }
+
+    /**
+     * 递归保存组织机构信息 - 直接插入，不检查existing
+     */
+    private int saveOrganizationRecursive(Organization org, int count) {
+        Date now = new Date();
+        org.setCreateTime(now);
+        org.setUpdateTime(now);
+
+        // 直接插入，不检查existing
+        organizationMapper.insertOrganization(org);
+        log.debug("新增组织机构: {} (Level: {})", org.getOrgName(), org.getLevels());
+        count++;
+
+        // 递归保存子组织
+        if (org.getChildren() != null && !org.getChildren().isEmpty()) {
+            for (Organization child : org.getChildren()) {
+                count = saveOrganizationRecursive(child, count);
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * 批量处理警员数据 - 直接插入，不检查existing
+     */
+    private int processPoliceBatch(List<Police> policeList) {
+        int successCount = 0;
+        List<Police> toInsert = new ArrayList<>();
+
+        // 直接准备插入，不检查existing
+        for (Police police : policeList) {
+            try {
+                Date now = new Date();
+                police.setCreateTime(now);
+                police.setUpdateTime(now);
+                toInsert.add(police);
+            } catch (Exception e) {
+                log.error("处理警员信息失败: {}", police.getName(), e);
+            }
+        }
+
+        // 批量插入
+        if (!toInsert.isEmpty()) {
+            try {
+                policeMapper.batchInsertPolice(toInsert);
+                successCount += toInsert.size();
+            } catch (Exception e) {
+                log.error("批量插入警员失败，降级为单条插入", e);
+                successCount += insertPoliceIndividually(toInsert);
+            }
+        }
+
+        return successCount;
+    }
+
+    /**
+     * 处理单页照管人员数据 - 直接插入，不检查existing
+     */
+    private int processCarePersonPage(List<CarePerson> carePersonList) {
+        int savedCount = 0;
+        List<CarePerson> toInsert = new ArrayList<>();
+
+        // 直接准备插入，不检查existing
+        for (CarePerson person : carePersonList) {
+            try {
+                Date now = new Date();
+                person.setCreateTime(now);
+                person.setUpdateTime(now);
+                toInsert.add(person);
+            } catch (Exception e) {
+                log.error("处理照管人员信息失败: {}", person.getName(), e);
+            }
+        }
+
+        // 批量插入
+        if (!toInsert.isEmpty()) {
+            try {
+                carePersonMapper.batchInsertCarePerson(toInsert);
+                savedCount += toInsert.size();
+            } catch (Exception e) {
+                log.error("批量插入照管人员失败，降级为单条插入", e);
+                savedCount += insertCarePersonIndividually(toInsert);
+            }
+        }
+
+        return savedCount;
     }
 
     // 数据查询方法
@@ -490,57 +472,20 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
         return carePersonMapper.selectCarePersonList(carePerson);
     }
 
-
     /**
-     * 处理单页照管人员数据 - 类型安全的方法
+     * 单条插入警员 - 避免泛型警告
      */
-    private int processCarePersonPage(List<CarePerson> carePersonList) {
-        int savedCount = 0;
-        List<CarePerson> toInsert = new ArrayList<>();
-        List<CarePerson> toUpdate = new ArrayList<>();
-
-        // 安全地分离插入和更新操作
-        for (CarePerson person : carePersonList) {
+    private int insertPoliceIndividually(List<Police> policeList) {
+        int count = 0;
+        for (Police police : policeList) {
             try {
-                CarePerson existing = carePersonMapper.selectCarePersonById(person.getId());
-                Date now = new Date();
-                person.setUpdateTime(now);
-
-                if (existing != null) {
-                    person.setCreateTime(existing.getCreateTime());
-                    toUpdate.add(person);
-                } else {
-                    person.setCreateTime(now);
-                    toInsert.add(person);
-                }
+                policeMapper.insertPolice(police);
+                count++;
             } catch (Exception e) {
-                log.error("处理照管人员信息失败: {}", person.getName(), e);
+                log.error("单条插入警员失败: {}", police.getName(), e);
             }
         }
-
-        // 批量插入
-        if (!toInsert.isEmpty()) {
-            try {
-                carePersonMapper.batchInsertCarePerson(toInsert);
-                savedCount += toInsert.size();
-            } catch (Exception e) {
-                log.error("批量插入照管人员失败，降级为单条插入", e);
-                savedCount += insertCarePersonIndividually(toInsert);
-            }
-        }
-
-        // 批量更新
-        if (!toUpdate.isEmpty()) {
-            try {
-                carePersonMapper.batchUpdateCarePerson(toUpdate);
-                savedCount += toUpdate.size();
-            } catch (Exception e) {
-                log.error("批量更新照管人员失败，降级为单条更新", e);
-                savedCount += updateCarePersonIndividually(toUpdate);
-            }
-        }
-
-        return savedCount;
+        return count;
     }
 
     /**
@@ -558,67 +503,4 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
         }
         return count;
     }
-
-    /**
-     * 单条更新照管人员 - 避免泛型警告
-     */
-    private int updateCarePersonIndividually(List<CarePerson> carePersonList) {
-        int count = 0;
-        for (CarePerson person : carePersonList) {
-            try {
-                carePersonMapper.updateCarePerson(person);
-                count++;
-            } catch (Exception e) {
-                log.error("单条更新照管人员失败: {}", person.getName(), e);
-            }
-        }
-        return count;
-    }
-
-    /**
-     * 保存或更新警员信息
-     */
-    private boolean saveOrUpdatePolice(Police police) {
-        try {
-            Police existing = policeMapper.selectPoliceById(police.getId());
-            Date now = new Date();
-            police.setUpdateTime(now);
-
-            if (existing != null) {
-                police.setCreateTime(existing.getCreateTime());
-                policeMapper.updatePolice(police);
-            } else {
-                police.setCreateTime(now);
-                policeMapper.insertPolice(police);
-            }
-            return true;
-        } catch (Exception e) {
-            log.error("保存警员信息失败: {}", police.getName(), e);
-            return false;
-        }
-    }
-
-    /**
-     * 保存或更新照管人员信息
-     */
-    private boolean saveOrUpdateCarePerson(CarePerson carePerson) {
-        try {
-            CarePerson existing = carePersonMapper.selectCarePersonById(carePerson.getId());
-            Date now = new Date();
-            carePerson.setUpdateTime(now);
-
-            if (existing != null) {
-                carePerson.setCreateTime(existing.getCreateTime());
-                carePersonMapper.updateCarePerson(carePerson);
-            } else {
-                carePerson.setCreateTime(now);
-                carePersonMapper.insertCarePerson(carePerson);
-            }
-            return true;
-        } catch (Exception e) {
-            log.error("保存照管人员信息失败: {}", carePerson.getName(), e);
-            return false;
-        }
-    }
-
 }

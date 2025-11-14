@@ -241,9 +241,9 @@ public class ExternalApiHttpClient {
         // 根据接口类型选择正确的解析方式
         ExternalApiResponse<?> rawResponse;
 
-        if ("police-verify".equals(interfaceName)) {
+        if ("policeverify".equals(interfaceName)) {
             rawResponse = doPost(interfaceName, requestBody, Police.class);
-        } else if ("archives-verify".equals(interfaceName)) {
+        } else if ("archivesverify".equals(interfaceName)) {
             rawResponse = doPost(interfaceName, requestBody, CarePerson.class);
         } else {
             rawResponse = doPost(interfaceName, requestBody, Object.class);
@@ -365,13 +365,13 @@ public class ExternalApiHttpClient {
 
                 // 2. 根据接口类型处理解码后的数据
                 switch (interfaceName) {
-                    case "get-org-data":
+                    case "getorgdata":
                         // 单个对象解析
                         T decodedObj = JSONUtil.toBean(decodedData, responseType);
                         apiResponse.setDecodedData(decodedObj);
                         break;
 
-                    case "all-archives-info":
+                    case "allarchivesinfo":
                         // 分页响应处理
                         handlePageResponse(decodedData, apiResponse);
                         break;

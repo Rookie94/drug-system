@@ -26,4 +26,19 @@ public class MyTask
         return myTaskService.updateEtlReport1();
     }
 
+    public int syncOrg()
+    {
+        return myTaskService.syncOrg();
+    }
+
+    public int syncPolice()
+    {
+        return myTaskService.syncPolice();
+    }
+
+    public int syncCarePerson()
+    {
+        return myTaskService.syncCarePerson();
+    }
+
 }

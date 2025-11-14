@@ -1,24 +1,50 @@
 package com.ruoyi.cms.external.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 照管人员实体
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CarePerson extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
+    @JsonProperty("Id")
     private String id;
+
+    @JsonProperty("Name")
     private String name;
+
+    @JsonProperty("Sex")
     private String sex;
+
+    @JsonProperty("Birthday")
     private String birthday;
+
+    @JsonProperty("IntoTime")
     private String intoTime;
+
+    @JsonProperty("OutTime")
     private String outTime;
+
+    @JsonProperty("MobileNumber")
     private String mobileNumber;
+
+    @JsonProperty("IDNumber")
     private String idNumber;
+
+    @JsonProperty("OrgName")
     private String orgName;
+
+    @JsonProperty("OrgCode")
     private String orgCode;
+
+    @JsonProperty("OrgId")
     private String orgId;
+
+    @JsonProperty("Address")
     private String address;
 
     public String getId() {
@@ -115,5 +141,23 @@ public class CarePerson extends BaseEntity {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "CarePerson{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", sex='" + sex + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", intoTime='" + intoTime + '\'' +
+                ", outTime='" + outTime + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
+                ", idNumber='" + idNumber + '\'' +
+                ", orgName='" + orgName + '\'' +
+                ", orgCode='" + orgCode + '\'' +
+                ", orgId='" + orgId + '\'' +
+                ", address='" + address + '\'' +
+                '}';
     }
 }

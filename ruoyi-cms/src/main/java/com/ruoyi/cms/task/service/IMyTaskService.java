@@ -27,18 +27,18 @@ public interface IMyTaskService
      * 同步荣飞接口组织架构
      *
      */
-    public int syncOrg();
+    public void syncOrg()  throws Exception ;
 
     /**
      * 同步荣飞接口police
      *
      */
-    public int syncPolice();
+    public void syncPolice() throws Exception ;
 
     /**
      * 同步荣飞接口后续照管对象
      *
      */
-    public int syncCarePerson();
+    public void syncCarePerson() throws Exception ;
 
 }

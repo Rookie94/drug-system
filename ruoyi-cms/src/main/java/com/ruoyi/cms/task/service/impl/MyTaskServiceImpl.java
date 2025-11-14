@@ -46,41 +46,40 @@ public class MyTaskServiceImpl implements IMyTaskService
     }
 
     @Override
-    public int syncOrg() {
-        AjaxResult ajaxResult=apiDataService.syncOrganizations();
-        if(ajaxResult.isSuccess()){
-            MyLog.success("荣飞syncOrg接口","定时同步任务","成功");
-            return 1;
-        }
-        else {
-            MyLog.error("荣飞syncOrg接口","定时同步任务","失败",ajaxResult.get("msg").toString());
-            return 0;
+    public void syncOrg() throws Exception {
+
+        AjaxResult ajaxResult = apiDataService.syncOrganizations();
+        if (ajaxResult.isSuccess()) {
+            MyLog.success("荣飞syncOrg接口", "定时同步任务", "成功");
+        } else {
+            String errorMsg = ajaxResult.get("msg") != null ? ajaxResult.get("msg").toString() : "荣飞syncOrg接口返回失败，未知错误";
+            MyLog.error("荣飞syncOrg接口", "定时同步任务", "失败", errorMsg);
+            // 抛出异常，让若依感知任务失败
+            throw new RuntimeException("syncOrg 同步失败：" + errorMsg);
         }
     }
 
     @Override
-    public int syncPolice() {
+    public void syncPolice()  throws Exception {
         AjaxResult ajaxResult=apiDataService.syncPolice();
         if(ajaxResult.isSuccess()){
             MyLog.success("荣飞syncPolice接口","定时同步任务","成功");
-            return 1;
         }
         else {
-            MyLog.error("荣飞syncPolice接口","定时同步任务","失败",ajaxResult.get("msg").toString());
-            return 0;
+            String errorMsg = ajaxResult.get("msg") != null ? ajaxResult.get("msg").toString() : "荣飞syncPolice接口返回失败，未知错误";
+            MyLog.error("荣飞syncPolice接口", "定时同步任务", "失败", errorMsg);
         }
     }
 
     @Override
-    public int syncCarePerson() {
+    public void syncCarePerson() throws Exception  {
         AjaxResult ajaxResult=apiDataService.syncCarePersons();
         if(ajaxResult.isSuccess()){
-            MyLog.success("syncCarePerson","定时同步任务","成功");
-            return 1;
+            MyLog.success("荣飞syncCarePerson接口","定时同步任务","成功");
         }
         else {
-            MyLog.error("syncCarePerson","定时同步任务","失败",ajaxResult.get("msg").toString());
-            return 0;
+            String errorMsg = ajaxResult.get("msg") != null ? ajaxResult.get("msg").toString() : "荣飞syncCarePerson接口返回失败，未知错误";
+            MyLog.error("荣飞syncCarePerson接口", "定时同步任务", "失败", errorMsg);
         }
     }
 

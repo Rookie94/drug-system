@@ -1,23 +1,44 @@
 package com.ruoyi.cms.external.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 警员实体
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Police extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
+    @JsonProperty("Id")
     private String id;
+
+    @JsonProperty("Name")
     private String name;
+
+    @JsonProperty("Sex")
     private String sex;
+
+    @JsonProperty("Birthday")
     private String birthday;
+
+    @JsonProperty("MobileNumber")
     private String mobileNumber;
+
+    @JsonProperty("OrgName")
     private String orgName;
+
+    @JsonProperty("OrgCode")
     private String orgCode;
+
+    @JsonProperty("OrgId")
     private String orgId;
+
+    @JsonProperty("Address")
     private String address;
 
+    // Getter 和 Setter 方法
     public String getId() {
         return id;
     }
@@ -88,5 +109,20 @@ public class Police extends BaseEntity {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "Police{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", sex='" + sex + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
+                ", orgName='" + orgName + '\'' +
+                ", orgCode='" + orgCode + '\'' +
+                ", orgId='" + orgId + '\'' +
+                ", address='" + address + '\'' +
+                '}';
     }
 }

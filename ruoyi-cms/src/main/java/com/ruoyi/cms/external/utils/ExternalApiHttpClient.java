@@ -1,10 +1,14 @@
 package com.ruoyi.cms.external.utils;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ruoyi.cms.external.config.ExternalApiConfig;
 import com.ruoyi.cms.external.domain.CarePerson;
+import com.ruoyi.cms.external.domain.Organization;
 import com.ruoyi.cms.external.domain.Police;
 import com.ruoyi.cms.external.domain.response.ExternalApiResponse;
 import com.ruoyi.cms.external.domain.response.ExternalPageResponse;
@@ -22,6 +26,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
+import javax.annotation.PostConstruct;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.*;
@@ -40,9 +46,11 @@ public class ExternalApiHttpClient {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
-    public ExternalApiHttpClient() {
+    // 使用@PostConstruct确保在依赖注入后初始化
+    @PostConstruct
+    public void init() {
         this.restTemplate = createRestTemplate();
     }
 
@@ -65,7 +73,11 @@ public class ExternalApiHttpClient {
         // 设置消息转换器
         List<HttpMessageConverter<?>> converters = new ArrayList<>();
         converters.add(new StringHttpMessageConverter(StandardCharsets.UTF_8));
-        converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
+        // 使用注入的objectMapper创建MappingJackson2HttpMessageConverter
+        MappingJackson2HttpMessageConverter jacksonConverter = new MappingJackson2HttpMessageConverter();
+        jacksonConverter.setObjectMapper(objectMapper);
+        converters.add(jacksonConverter);
+
         template.setMessageConverters(converters);
 
         return template;
@@ -129,11 +141,9 @@ public class ExternalApiHttpClient {
             return "[]";
         }
         try {
-            // Hutool的Base64解码方法
-            return StrUtil.str(
-                    cn.hutool.core.codec.Base64.decode(encodedStr),
-                    StandardCharsets.UTF_8
-            );
+            // 使用 Java 标准库的 Base64 解码
+            byte[] decodedBytes = java.util.Base64.getDecoder().decode(encodedStr);
+            return new String(decodedBytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
             log.error("Base64解码失败: {}", encodedStr, e);
             return "[]";
@@ -148,47 +158,53 @@ public class ExternalApiHttpClient {
             String interfacePath = getInterfacePath(interfaceName);
             String url = apiConfig.getBaseUrl() + interfacePath;
 
-            // 构建查询参数和URL
+            // 构建查询参数
             String paramValue = "";
             if (params != null && !params.isEmpty()) {
                 StringBuilder queryString = new StringBuilder();
                 for (Map.Entry<String, Object> entry : params.entrySet()) {
-                    if (queryString.length() > 0) {
-                        queryString.append("&");
-                    }
-                    queryString.append(entry.getKey()).append("=").append(entry.getValue());
+                    if (queryString.length() > 0) queryString.append("&");
+                    queryString.append(URLEncoder.encode(entry.getKey(), "UTF-8"))
+                            .append("=")
+                            .append(URLEncoder.encode(String.valueOf(entry.getValue()), "UTF-8"));
                 }
-                url += "?" + queryString.toString();
+                url += "?" + queryString;
 
-                // 对于需要参数值的接口，提取参数值用于签名
                 if (apiConfig.getParamSignInterfaces().contains(interfaceName.toLowerCase())) {
                     paramValue = extractParamValueFromMap(params);
                 }
             }
 
-            // 生成签名
             String sign = generateSign(interfaceName, paramValue);
-
             HttpHeaders headers = new HttpHeaders();
             headers.set("sign", sign);
-            headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-            log.info("发送GET请求 - 接口: {}, URL: {}, 参数: {}", interfaceName, url, params);
-
             HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            // 添加详细的请求日志
+            log.info("=== HTTP GET 请求详细信息 ===");
+            log.info("接口名称: {}", interfaceName);
+            log.info("完整URL: {}", url);
+            log.info("签名(sign): {}", sign);
+            log.info("请求头: {}", headers);
+            log.info("参数: {}", params);
+            log.info("===========================");
+
+            // 只拿原始字符串
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
-            log.debug("GET响应 - 接口: {}, 状态: {}, 响应体: {}",
-                    interfaceName, response.getStatusCode(), response.getBody());
+            log.info("GET响应状态: {}", response.getStatusCode());
+            log.debug("GET响应原始数据: {}", response.getBody());
 
+            // 手动解析
             return parseResponseSafely(response.getBody(), responseType, interfaceName);
+
         } catch (Exception e) {
             log.error("GET请求失败 - 接口: {}, 参数: {}", interfaceName, params, e);
-            ExternalApiResponse<T> errorResponse = new ExternalApiResponse<>();
-            errorResponse.setCode("1");
-            errorResponse.setMsg("请求失败: " + e.getMessage());
-            return errorResponse;
+            ExternalApiResponse<T> error = new ExternalApiResponse<>();
+            error.setCode("1");
+            error.setMsg("请求失败: " + e.getMessage());
+            return error;
         }
     }
 
@@ -232,7 +248,6 @@ public class ExternalApiHttpClient {
         }
     }
 
-
     /**
      * 类型安全的列表处理方法
      */
@@ -241,9 +256,9 @@ public class ExternalApiHttpClient {
         // 根据接口类型选择正确的解析方式
         ExternalApiResponse<?> rawResponse;
 
-        if ("policeverify".equals(interfaceName)) {
+        if ("PoliceVerify".equals(interfaceName)) {
             rawResponse = doPost(interfaceName, requestBody, Police.class);
-        } else if ("archivesverify".equals(interfaceName)) {
+        } else if ("ArchivesVerify".equals(interfaceName)) {
             rawResponse = doPost(interfaceName, requestBody, CarePerson.class);
         } else {
             rawResponse = doPost(interfaceName, requestBody, Object.class);
@@ -344,7 +359,7 @@ public class ExternalApiHttpClient {
     }
 
     /**
-     * 类型安全的响应解析 - 使用 TypeReference 避免泛型擦除问题
+     * 类型安全的响应解析 - 使用 Jackson 替代 JSONUtil
      */
     private <T> ExternalApiResponse<T> parseResponseSafely(String responseBody, Class<T> responseType, String interfaceName) {
         try {
@@ -352,12 +367,25 @@ public class ExternalApiHttpClient {
                 throw new RuntimeException("响应体为空");
             }
 
-            // 1. 使用Hutool解析基础ApiResponse
-            cn.hutool.json.JSONObject jsonObject = JSONUtil.parseObj(responseBody);
+            // 1. 使用 Jackson 解析基础 ApiResponse
+            JsonNode jsonNode = objectMapper.readTree(responseBody);
             ExternalApiResponse<T> apiResponse = new ExternalApiResponse<>();
-            apiResponse.setCode(jsonObject.getStr("code"));
-            apiResponse.setMsg(jsonObject.getStr("msg"));
-            apiResponse.setData(jsonObject.getStr("data"));
+
+            // 安全地获取字段值
+            if (jsonNode.has("code")) {
+                apiResponse.setCode(jsonNode.get("code").asText());
+            }
+            if (jsonNode.has("msg")) {
+                apiResponse.setMsg(jsonNode.get("msg").asText());
+            }
+            if (jsonNode.has("data")) {
+                if(interfaceName.equals("AllArchivesInfo")){
+                    apiResponse.setData(jsonNode.get("data").get("list").asText());
+                }
+                else{
+                    apiResponse.setData(jsonNode.get("data").asText());
+                }
+            }
 
             if (apiResponse.isSuccess() && StrUtil.isNotBlank(apiResponse.getData())) {
                 String decodedData = base64Decode(apiResponse.getData());
@@ -365,17 +393,20 @@ public class ExternalApiHttpClient {
 
                 // 2. 根据接口类型处理解码后的数据
                 switch (interfaceName) {
-                    case "getorgdata":
+                    case "GetOrgData":
                         // 单个对象解析
-                        T decodedObj = JSONUtil.toBean(decodedData, responseType);
-                        apiResponse.setDecodedData(decodedObj);
+                        JavaType listType = objectMapper.getTypeFactory()
+                                .constructCollectionType(List.class, Organization.class);
+                        List<Organization> orgList = objectMapper.readValue(decodedData, listType);
+                        apiResponse.setDecodedData((T) orgList);
                         break;
-
-                    case "allarchivesinfo":
-                        // 分页响应处理
-                        handlePageResponse(decodedData, apiResponse);
+                    case "AllArchivesInfo":
+                        // 分页响应处理 - 现在直接返回列表，因为使用了 doGetForList
+                        JavaType carePersonListType = objectMapper.getTypeFactory()
+                                .constructCollectionType(List.class, CarePerson.class);
+                        List<CarePerson> carePersonList = objectMapper.readValue(decodedData, carePersonListType);
+                        apiResponse.setDecodedData((T) carePersonList);
                         break;
-
                     default:
                         // 其他接口（返回数组的接口）
                         handleArrayResponse(decodedData, apiResponse, responseType, interfaceName);
@@ -394,23 +425,35 @@ public class ExternalApiHttpClient {
     }
 
     /**
-     * 处理分页响应（针对all-archives-info接口）
+     * 处理分页响应（针对all-archives-info接口）- 使用 Jackson 替代 JSONUtil
      */
     @SuppressWarnings("unchecked")
     private <T> void handlePageResponse(String decodedData, ExternalApiResponse<T> apiResponse) {
         try {
-            // 解析分页结构
-            cn.hutool.json.JSONObject pageJson = JSONUtil.parseObj(decodedData);
+            // 使用 Jackson 解析分页结构
+            JsonNode pageJson = objectMapper.readTree(decodedData);
             ExternalPageResponse<CarePerson> pageResponse = new ExternalPageResponse<>();
-            pageResponse.setTotal(pageJson.getInt("total"));
-            pageResponse.setPageIndex(pageJson.getInt("pageIndex"));
-            pageResponse.setPageSize(pageJson.getInt("pageSize"));
-            pageResponse.setList(pageJson.getStr("list"));
+
+            // 安全地获取字段值
+            if (pageJson.has("total")) {
+                pageResponse.setTotal(pageJson.get("total").asInt());
+            }
+            if (pageJson.has("pageIndex")) {
+                pageResponse.setPageIndex(pageJson.get("pageIndex").asInt());
+            }
+            if (pageJson.has("pageSize")) {
+                pageResponse.setPageSize(pageJson.get("pageSize").asInt());
+            }
+            if (pageJson.has("list")) {
+                pageResponse.setList(pageJson.get("list").asText());
+            }
 
             // 解码list字段中的Base64数据
             if (StrUtil.isNotBlank(pageResponse.getList())) {
                 String decodedList = base64Decode(pageResponse.getList());
-                List<CarePerson> carePersonList = JSONUtil.toList(decodedList, CarePerson.class);
+                JavaType carePersonListType = objectMapper.getTypeFactory()
+                        .constructCollectionType(List.class, CarePerson.class);
+                List<CarePerson> carePersonList = objectMapper.readValue(decodedList, carePersonListType);
                 pageResponse.setDecodedList(carePersonList);
             }
 
@@ -422,22 +465,30 @@ public class ExternalApiHttpClient {
     }
 
     /**
-     * 处理数组响应（针对返回数组的接口）
+     * 处理数组响应（针对返回数组的接口）- 使用 Jackson 替代 JSONUtil
      */
     @SuppressWarnings("unchecked")
     private <T> void handleArrayResponse(String decodedData, ExternalApiResponse<T> apiResponse,
                                          Class<T> responseType, String interfaceName) {
         try {
-            // 使用TypeReference解决复杂泛型类型问题
+            // 使用注入的 objectMapper，确保配置一致
             if (Police.class.equals(responseType)) {
-                List<Police> policeList = JSONUtil.toList(decodedData, Police.class);
+                // 使用 JavaType 构建明确的 List<Police> 类型
+                JavaType policeListType = objectMapper.getTypeFactory()
+                        .constructCollectionType(List.class, Police.class);
+                List<Police> policeList = objectMapper.readValue(decodedData, policeListType);
                 apiResponse.setDecodedData((T) policeList);
             } else if (CarePerson.class.equals(responseType)) {
-                List<CarePerson> carePersonList = JSONUtil.toList(decodedData, CarePerson.class);
+                // 使用 JavaType 构建明确的 List<CarePerson> 类型
+                JavaType carePersonListType = objectMapper.getTypeFactory()
+                        .constructCollectionType(List.class, CarePerson.class);
+                List<CarePerson> carePersonList = objectMapper.readValue(decodedData, carePersonListType);
                 apiResponse.setDecodedData((T) carePersonList);
             } else {
-                // 通用数组处理
-                List<T> list = JSONUtil.toList(decodedData, responseType);
+                // 通用数组处理：构建明确的List<T>类型
+                JavaType javaType = objectMapper.getTypeFactory()
+                        .constructCollectionType(List.class, responseType);
+                List<T> list = objectMapper.readValue(decodedData, javaType);
                 apiResponse.setDecodedData((T) list);
             }
         } catch (Exception e) {
@@ -445,5 +496,4 @@ public class ExternalApiHttpClient {
             throw new RuntimeException("数组数据解析失败", e);
         }
     }
-
 }

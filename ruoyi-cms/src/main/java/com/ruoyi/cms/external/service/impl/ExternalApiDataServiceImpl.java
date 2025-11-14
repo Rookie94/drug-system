@@ -1,5 +1,7 @@
 package com.ruoyi.cms.external.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.cms.external.utils.ExternalApiHttpClient;
 import com.ruoyi.cms.external.domain.CarePerson;
@@ -54,16 +56,20 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             int deletedCount = organizationMapper.deleteAllOrganizations();
             log.info("清空组织机构表，删除 {} 条记录", deletedCount);
 
-            ExternalApiResponse<Organization> response = apiHttpClient.doGet("get-org-data", null, Organization.class);
+            // 使用 doGetForList 而不是 doGet
+            ExternalApiResponse<List<Organization>> response = apiHttpClient.doGetForList("GetOrgData", null, Organization.class);
 
             if (!response.isSuccess()) {
                 log.error("获取组织机构失败: {}", response.getMsg());
                 return AjaxResult.error("获取组织机构失败: " + response.getMsg());
             }
 
-            Organization org = response.getDecodedData();
-            if (org != null) {
-                int savedCount = saveOrganizationRecursive(org, 0);
+            List<Organization> orgList = response.getDecodedData();
+            if (orgList != null && !orgList.isEmpty()) {
+                int savedCount = 0;
+                for (Organization org : orgList) {
+                    savedCount = saveOrganizationRecursive(org, savedCount);
+                }
                 log.info("组织机构全量同步完成，共处理 {} 个组织", savedCount);
                 return AjaxResult.success("组织机构全量同步成功，共处理 " + savedCount + " 个组织");
             } else {
@@ -88,7 +94,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             request.setMobileNumber(mobileNumber);
 
             // 直接返回验证结果，不保存到数据库
-            ExternalApiResponse<List<Police>> response = apiHttpClient.doPostForList("police-verify", request, Police.class);
+            ExternalApiResponse<List<Police>> response = apiHttpClient.doPostForList("PoliceVerify", request, Police.class);
 
             if (response.isSuccess()) {
                 List<Police> policeList = response.getDecodedData();
@@ -122,7 +128,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             request.setIDNumber(idNumber);
 
             // 直接返回验证结果，不保存到数据库
-            ExternalApiResponse<List<CarePerson>> response = apiHttpClient.doPostForList("archives-verify", request, CarePerson.class);
+            ExternalApiResponse<List<CarePerson>> response = apiHttpClient.doPostForList("ArchivesVerify", request, CarePerson.class);
 
             if (response.isSuccess()) {
                 List<CarePerson> carePersonList = response.getDecodedData();
@@ -158,7 +164,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             log.info("清空警员表，删除 {} 条记录", deletedCount);
 
             // 使用类型安全的方法处理列表返回
-            ExternalApiResponse<List<Police>> response = apiHttpClient.doGetForList("all-police-info", null, Police.class);
+            ExternalApiResponse<List<Police>> response = apiHttpClient.doGetForList("AllPoliceInfo", null, Police.class);
 
             if (!response.isSuccess()) {
                 log.error("获取警员列表失败: {}", response.getMsg());
@@ -195,7 +201,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult syncCarePersons() {
         int pageIndex = 1;
-        int pageSize = 1000;
+        int pageSize = 500;
         int totalSaved = 0;
         int totalPages = 0;
         int totalRecords = 0;
@@ -207,64 +213,58 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             int deletedCount = carePersonMapper.deleteAllCarePersons();
             log.info("清空照管人员表，删除 {} 条记录", deletedCount);
 
-            // 先获取第一页数据，了解总记录数
+            // 先获取第一页数据，了解总记录数 - 使用 doGetForList
             Map<String, Object> firstPageParams = new HashMap<>();
             firstPageParams.put("pageIndex", pageIndex);
             firstPageParams.put("pageSize", pageSize);
 
-            ExternalApiResponse<ExternalPageResponse> firstResponse = apiHttpClient.doGet("all-archives-info", firstPageParams, ExternalPageResponse.class);
+            // 修改：使用 doGetForList 而不是 doGet
+            ExternalApiResponse<List<CarePerson>> firstResponse = apiHttpClient.doGetForList("AllArchivesInfo", firstPageParams, CarePerson.class);
 
             if (!firstResponse.isSuccess()) {
                 log.error("获取照管人员列表失败: {}", firstResponse.getMsg());
                 return AjaxResult.error("获取照管人员列表失败: " + firstResponse.getMsg());
             }
 
-            ExternalPageResponse firstPage = firstResponse.getDecodedData();
-            if (firstPage == null) {
+            List<CarePerson> firstPageList = firstResponse.getDecodedData();
+            if (firstPageList == null || firstPageList.isEmpty()) {
                 return AjaxResult.error("获取照管人员列表数据为空");
             }
 
-            totalRecords = firstPage.getTotal();
-            totalPages = (int) Math.ceil((double) totalRecords / pageSize);
-
-            log.info("照管人员总数: {}，总页数: {}", totalRecords, totalPages);
-
-            if (totalRecords == 0) {
-                return AjaxResult.success("没有照管人员数据需要同步");
-            }
-
-            // 处理第一页数据
-            if (firstPage.getDecodedList() != null && !firstPage.getDecodedList().isEmpty()) {
-                int pageSaved = processCarePersonPage(firstPage.getDecodedList());
-                totalSaved += pageSaved;
-                log.info("第1页处理完成，本页数量: {}，成功保存: {}，累计数量: {}",
-                        firstPage.getDecodedList().size(), pageSaved, totalSaved);
-            }
+            // 由于分页接口的特殊性，我们需要通过多次调用来获取总记录数
+            // 这里假设第一页有数据，我们继续获取后续页面直到没有数据
+            totalSaved += processCarePersonPage(firstPageList);
+            log.info("第1页处理完成，本页数量: {}，累计数量: {}", firstPageList.size(), totalSaved);
 
             // 从第二页开始循环获取所有数据
-            for (pageIndex = 2; pageIndex <= totalPages; pageIndex++) {
-                log.info("正在获取第{}/{}页数据", pageIndex, totalPages);
+            pageIndex = 2;
+            boolean hasMoreData = true;
+
+            while (hasMoreData) {
+                log.info("正在获取第{}页数据", pageIndex);
 
                 Map<String, Object> pageParams = new HashMap<>();
                 pageParams.put("pageIndex", pageIndex);
                 pageParams.put("pageSize", pageSize);
 
-                ExternalApiResponse<ExternalPageResponse> response = apiHttpClient.doGet("all-archives-info", pageParams, ExternalPageResponse.class);
+                // 修改：使用 doGetForList 而不是 doGet
+                ExternalApiResponse<List<CarePerson>> response = apiHttpClient.doGetForList("AllArchivesInfo", pageParams, CarePerson.class);
 
                 if (!response.isSuccess()) {
                     log.error("获取照管人员列表第{}页失败: {}", pageIndex, response.getMsg());
                     // 记录错误但继续处理下一页
+                    pageIndex++;
                     continue;
                 }
 
-                ExternalPageResponse pageResponse = response.getDecodedData();
-                if (pageResponse != null && pageResponse.getDecodedList() != null
-                        && !pageResponse.getDecodedList().isEmpty()) {
-
-                    int pageSaved = processCarePersonPage(pageResponse.getDecodedList());
+                List<CarePerson> pageList = response.getDecodedData();
+                if (pageList != null && !pageList.isEmpty()) {
+                    int pageSaved = processCarePersonPage(pageList);
                     totalSaved += pageSaved;
                     log.info("第{}页处理完成，本页数量: {}，成功保存: {}，累计数量: {}",
-                            pageIndex, pageResponse.getDecodedList().size(), pageSaved, totalSaved);
+                            pageIndex, pageList.size(), pageSaved, totalSaved);
+
+                    pageIndex++;
 
                     // 添加延迟，避免请求过快
                     try {
@@ -274,18 +274,15 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                         break;
                     }
                 } else {
-                    log.warn("第{}页数据为空", pageIndex);
+                    log.info("第{}页数据为空，停止获取", pageIndex);
+                    hasMoreData = false;
                 }
             }
 
-            String message = String.format("照管人员信息全量同步完成，应同步: %d 条，实际成功: %d 条", totalRecords, totalSaved);
+            String message = String.format("照管人员信息全量同步完成，实际成功: %d 条", totalSaved);
             log.info(message);
 
-            if (totalSaved < totalRecords) {
-                return AjaxResult.warn(message);
-            } else {
-                return AjaxResult.success(message);
-            }
+            return AjaxResult.success(message);
 
         } catch (Exception e) {
             log.error("获取照管人员列表异常", e);
@@ -319,29 +316,21 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 params.put("pageIndex", currentPage);
                 params.put("pageSize", pageSize);
 
-                ExternalApiResponse<ExternalPageResponse> response = apiHttpClient.doGet("all-archives-info", params, ExternalPageResponse.class);
+                // 修改：使用 doGetForList 而不是 doGet
+                ExternalApiResponse<List<CarePerson>> response = apiHttpClient.doGetForList("AllArchivesInfo", params, CarePerson.class);
 
                 if (!response.isSuccess()) {
                     log.error("获取照管人员列表第{}页失败: {}", currentPage, response.getMsg());
                     break;
                 }
 
-                ExternalPageResponse pageResponse = response.getDecodedData();
-                if (pageResponse != null && pageResponse.getDecodedList() != null
-                        && !pageResponse.getDecodedList().isEmpty()) {
-
-                    int batchSaved = processCarePersonPage(pageResponse.getDecodedList());
+                List<CarePerson> pageList = response.getDecodedData();
+                if (pageList != null && !pageList.isEmpty()) {
+                    int batchSaved = processCarePersonPage(pageList);
                     totalSaved += batchSaved;
 
                     log.info("第{}批处理完成，本批数量: {}，成功保存: {}，累计数量: {}",
-                            currentPage, pageResponse.getDecodedList().size(), batchSaved, totalSaved);
-
-                    // 检查是否还有更多数据
-                    int currentTotal = currentPage * pageSize;
-                    if (pageResponse.getTotal() != null && currentTotal >= pageResponse.getTotal()) {
-                        hasMore = false;
-                        log.info("已到达最后一页，停止同步");
-                    }
+                            currentPage, pageList.size(), batchSaved, totalSaved);
 
                     currentPage++;
 
@@ -441,6 +430,19 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 log.error("处理照管人员信息失败: {}", person.getName(), e);
             }
         }
+        /*
+        try
+        {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            String jsonOutput = mapper.writeValueAsString(carePersonList);
+            System.out.println("照管人员列表:");
+            System.out.println(jsonOutput);
+        }
+        catch(Exception ex){
+            //
+        }
+        */
 
         // 批量插入
         if (!toInsert.isEmpty()) {

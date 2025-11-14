@@ -26,19 +26,19 @@ public class MyTask
         return myTaskService.updateEtlReport1();
     }
 
-    public int syncOrg()
+    public void syncOrg() throws Exception
     {
-        return myTaskService.syncOrg();
+        myTaskService.syncOrg();
     }
 
-    public int syncPolice()
+    public void syncPolice() throws Exception
     {
-        return myTaskService.syncPolice();
+        myTaskService.syncPolice();
     }
 
-    public int syncCarePerson()
+    public void syncCarePerson() throws Exception
     {
-        return myTaskService.syncCarePerson();
+        myTaskService.syncCarePerson();
     }
 
 }

@@ -192,6 +192,51 @@ sms:
       # 短信重试次数，默认0次不重试
       max-retries: 2
 
+aj:
+  captcha:
+    #滑块目录
+    jigsaw: classpath:images/jigsaw
+    #背景图
+    pic-click: classpath:images/pic-click
+    # 缓存local/redis...
+    cache-type: redis
+    # local缓存的阈值,达到这个值，清除缓存
+    cache-number: 1000
+    # local定时清除过期缓存(单位秒),设置为0代表不执行
+    timing-clear: 180
+    # 验证码类型default两种都实例化。
+    type: default
+    # 右下角水印文字(我的水印)
+    water-mark: 苏戒通
+    # 校验滑动拼图允许误差偏移量(默认5像素)
+    slip-offset: 5
+    # aes加密坐标开启或者禁用(true|false)
+    aes-status: true
+    # 滑动干扰项(0/1/2)
+    interference-options: 1
+    history-data-clear-enable: true
+    # 接口请求次数一分钟限制是否开启 true|false
+    req-frequency-limit-enable: true
+    # 验证失败5次，get接口锁定
+    req-get-lock-limit: 5
+    # 验证失败后，锁定时间间隔,s
+    req-get-lock-seconds: 60
+    # get接口一分钟内请求数限制
+    req-get-minute-limit: 30
+    # check接口一分钟内请求数限制
+    req-check-minute-limit: 60
+    # verify接口一分钟内请求数限制
+    req-verify-minute-limit: 60
+
+# 短信配置
+jssms:
+  api:
+    url: http://36.134.23.209:8028/smsbus/yhyx/sms/comm/mt/data/sendTempEncryptSms
+  third: ytlyxxhpt
+  thirdkey: TJJVpy
+  public-key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWmEV9bfGhYkGmdWaPIzWXIsH7PRT1_pxfKOrXWXUG3RQktZav61-7Ea3kFjkiXQU5HSiOxgzHEKQT3SNMUJT8I4dkDQHbbe1bnjRUGTPo8dC7lEIvx2qZfMQT6CVA6tKwwYySHJFy1WMzBwNYkp8C_zfw5a9c0ZfiP2-fXQEb_QIDAQAB
+  templateId: 02446c8f-a901-4322-b018-4213e64e58e5
+
 jasypt:
   encryptor:
     # 核心：高级算法
@@ -213,7 +258,7 @@ encrypt:
   ## 密钥，与前端保持一致
   key: ENC(jQ3yP19TLcTKLvM22w/te5Op8csOkRdhD06L7MoeLs4ToUOwdF2Jvev8erffJsFRaRJ4CZWzecU1ct7Dxatcsjfq8yMMFhoD7mbwEykfGrA=)
   ## 忽略url，不做处理
-  filterUrls: /common/*,/profile/upload/*,/captchaImage
+  filterUrls: /common/*,/profile/upload/*,/captchaImage,/captcha/*
 
 external:
   config:

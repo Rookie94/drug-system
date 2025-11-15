@@ -95,6 +95,12 @@
             <artifactId>oshi-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.anji-plus</groupId>
+            <artifactId>captcha-spring-boot-starter</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
         <!-- 系统模块-->
         <dependency>
             <groupId>com.ruoyi</groupId>

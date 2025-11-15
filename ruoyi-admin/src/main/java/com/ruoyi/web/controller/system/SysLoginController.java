@@ -3,8 +3,12 @@ package com.ruoyi.web.controller.system;
 import java.util.List;
 import java.util.Set;
 
-import com.ruoyi.framework.sms.SmsLoginBody;
-import com.ruoyi.framework.sms.SmsLoginService;
+
+import com.anji.captcha.model.common.ResponseModel;
+import com.anji.captcha.model.vo.CaptchaVO;
+import com.anji.captcha.service.CaptchaService;
+import com.ruoyi.framework.jssms.domain.JsSmsSendResponse;
+import com.ruoyi.framework.sms.SmsSendDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +28,9 @@ import com.ruoyi.framework.web.service.SysPermissionService;
 import com.ruoyi.framework.web.service.TokenService;
 import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.framework.sms.SmsService;
+import com.ruoyi.framework.jssms.service.IJsSmsService;
+import com.ruoyi.framework.sms.SmsLoginBody;
+import com.ruoyi.framework.sms.SmsLoginService;
 
 /**
  * 登录验证
@@ -47,7 +53,10 @@ public class SysLoginController
     private TokenService tokenService;
 
     @Autowired
-    private SmsService smsService;
+    private CaptchaService captchaService;
+
+    @Autowired
+    private IJsSmsService jsSmsService;
 
     @Autowired
     private SmsLoginService smsLoginService;
@@ -70,17 +79,26 @@ public class SysLoginController
     }
 
     /**
-     * 发送短信验证码
+     * 发送验证码接口，需要二次验证
      *
-     * @param phoneNumber 手机号
-     * @return AjaxResult
+     * @param smsSendDTO
+     * @return
      */
     @PostMapping("/sendSms")
-    public AjaxResult sendBySms(@RequestBody String phoneNumber) {
+    public AjaxResult sendSms(@RequestBody SmsSendDTO smsSendDTO) {
+        // 1. 先校验滑块
+        CaptchaVO captchaVO = new CaptchaVO();
+        captchaVO.setCaptchaVerification(smsSendDTO.getCaptchaVerification());
+        ResponseModel response = captchaService.verification(captchaVO);
+        if (!response.isSuccess()) {
+            return AjaxResult.error("滑块验证失败!");
+        }
+        String phoneNumber = smsSendDTO.getPhoneNumber();
         if (StringUtils.isBlank(phoneNumber) || phoneNumber.length() != 11 || !phoneNumber.matches("^1[3-9]\\d{9}$")) {
             return AjaxResult.error("请输入有效的长度为11位的手机号");
         }
-        if (!smsService.sendVerificationCode(phoneNumber)) {
+        JsSmsSendResponse jsSmsSendResponse=jsSmsService.sendVerificationCode(phoneNumber);
+        if (!jsSmsSendResponse.getStatus().equals("0")) {
             return AjaxResult.error("验证码发送失败，请稍后重试");
         }
         return AjaxResult.success("验证码发送成功");

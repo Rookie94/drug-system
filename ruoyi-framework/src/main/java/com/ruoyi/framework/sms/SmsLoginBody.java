@@ -25,7 +25,7 @@ public class SmsLoginBody implements Serializable {
     private String phonenumber;
 
     @Xss(message = "验证码不能出现任何脚本")
-    @Size(min = 6, max = 6, message = "验证码长度为6个字符")
+    @Size(min = 4, max = 4, message = "验证码长度为4个字符")
     @Pattern(regexp = "^[0-9]+$", message = "验证码应为纯数字，格式不正确")
     private String code;
 }

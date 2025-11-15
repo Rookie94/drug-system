@@ -1,5 +1,6 @@
 package com.ruoyi.framework.security.provider;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  */
 public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
 
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @Override
@@ -27,8 +29,7 @@ public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
         UserDetails userDetails = userDetailsService.loadUserByUsername(telephone);
 
         // 此时鉴权成功后，应当重新 new 一个拥有鉴权的 authenticationResult 返回
-        SmsCodeAuthenticationToken authenticationResult = new SmsCodeAuthenticationToken(userDetails,
-                userDetails.getAuthorities());
+        SmsCodeAuthenticationToken authenticationResult = new SmsCodeAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 
         authenticationResult.setDetails(authenticationToken.getDetails());
 

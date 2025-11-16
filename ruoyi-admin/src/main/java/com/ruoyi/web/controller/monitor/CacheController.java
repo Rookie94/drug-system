@@ -22,6 +22,8 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysCache;
 
+import javax.annotation.Resource;
+
 /**
  * 缓存监控
  * 

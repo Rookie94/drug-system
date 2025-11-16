@@ -58,6 +58,9 @@ user:
     # 密码锁定时间（默认10分钟）
     lockTime: 10
 
+#redis模式 single或cluster
+redis.mode: single
+
 # Spring配置
 spring:
   # 资源信息
@@ -100,6 +103,12 @@ spring:
         max-active: 8
         # #连接池最大阻塞等待时间（使用负值表示没有限制）
         max-wait: -1ms
+    # 集群地址（single 模式下自动忽略）
+    cluster:
+      nodes:
+        - 127.0.0.1:7001
+        - 127.0.0.1:7002
+        - 127.0.0.1:7003
 
 # token配置
 token:

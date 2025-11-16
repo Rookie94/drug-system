@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -19,6 +21,7 @@ import com.ruoyi.common.xss.Xss;
  * 
  * @author ruoyi
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SysUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -220,12 +223,12 @@ public class SysUser extends BaseEntity
     }
 
     @Size(min = 0, max = 11, message = "手机号码长度不能超过11个字符")
-    public String getPhonenumber()
+    public String getPhoneNumber()
     {
         return phoneNumber;
     }
 
-    public void setPhonenumber(String phoneNumber)
+    public void setPhoneNumber(String phoneNumber)
     {
         this.phoneNumber = phoneNumber;
     }
@@ -391,7 +394,7 @@ public class SysUser extends BaseEntity
             .append("userType", getUserType())
             .append("nickName", getNickName())
             .append("email", getEmail())
-            .append("phonenumber", getPhonenumber())
+            .append("phonenumber", getPhoneNumber())
             .append("sex", getSex())
             .append("avatar", getAvatar())
             .append("password", getPassword())

@@ -46,7 +46,7 @@ public class CommonSelectServiceImpl implements ICommonSelectService {
             user.setUserName((String) params.get("userName"));
         }
         if (params.containsKey("phonenumber")) {
-            user.setPhonenumber((String) params.get("phonenumber"));
+            user.setPhoneNumber((String) params.get("phonenumber"));
         }
         if (params.containsKey("status")) {
             user.setStatus((String) params.get("status"));

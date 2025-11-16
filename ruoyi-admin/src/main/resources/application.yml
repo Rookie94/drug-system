@@ -78,12 +78,21 @@ spring:
     restart:
       # 热部署开关
       enabled: true
-  # redis 配置
+
+  # redis配置
   redis:
-    # 地址
+    #模式single或cluster
+    mode: single
+    # 单机地址
     host: 127.0.0.1
     # 端口，默认为6379
     port: 6379
+    # 集群地址
+    cluster:
+      nodes:
+        - 127.0.0.1:6380
+        - 127.0.0.1:6381
+        - 127.0.0.1:6382
     # 数据库索引
     database: 0
     # 密码
@@ -231,7 +240,7 @@ aj:
 # 短信配置
 jssms:
   api:
-    url: http://36.134.23.209:8028/smsbus/yhyx/sms/comm/mt/data/sendTempEncryptSms
+    url: http://30.1.1.124:7000/smsbus/yhyx/sms/comm/mt/data/sendTempEncryptSms
   third: ytlyxxhpt
   thirdkey: TJJVpy
   public-key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWmEV9bfGhYkGmdWaPIzWXIsH7PRT1_pxfKOrXWXUG3RQktZav61-7Ea3kFjkiXQU5HSiOxgzHEKQT3SNMUJT8I4dkDQHbbe1bnjRUGTPo8dC7lEIvx2qZfMQT6CVA6tKwwYySHJFy1WMzBwNYkp8C_zfw5a9c0ZfiP2-fXQEb_QIDAQAB

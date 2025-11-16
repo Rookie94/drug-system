@@ -11,7 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="userType"     column="user_type"    />
         <result property="nickName"     column="nick_name"    />
         <result property="email"        column="email"        />
-        <result property="phonenumber"  column="phonenumber"  />
+        <result property="phoneNumber"  column="phonenumber"  />
         <result property="sex"          column="sex"          />
         <result property="avatar"       column="avatar"       />
 		<result property="birthday"          column="birthday"          />
@@ -217,7 +217,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="nickName != null and nickName != ''">nick_name,</if>
  			<if test="email != null and email != ''">email,</if>
  			<if test="avatar != null and avatar != ''">avatar,</if>
- 			<if test="phonenumber != null and phonenumber != ''">phonenumber,</if>
+ 			<if test="phoneNumber != null and phoneNumber != ''">phonenumber,</if>
  			<if test="sex != null and sex != ''">sex,</if>
 			<if test="provinceId != null">province_id,</if>
 			<if test="cityId != null">city_id,</if>
@@ -239,7 +239,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="nickName != null and nickName != ''">#{nickName},</if>
  			<if test="email != null and email != ''">#{email},</if>
  			<if test="avatar != null and avatar != ''">#{avatar},</if>
- 			<if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>
+ 			<if test="phoneNumber != null and phoneNumber != ''">#{phoneNumber},</if>
  			<if test="sex != null and sex != ''">#{sex},</if>
 			<if test="provinceId != null">#{provinceId},</if>
 			<if test="cityId != null">#{cityId},</if>

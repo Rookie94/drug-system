@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import com.anji.captcha.service.CaptchaCacheService;
 
+import javax.annotation.Resource;
+
 /**
  * 自定义redis验证码缓存实现类
  *

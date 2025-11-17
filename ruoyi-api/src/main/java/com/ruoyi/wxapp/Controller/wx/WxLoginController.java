@@ -10,6 +10,8 @@ import com.ruoyi.framework.jssms.domain.JsSmsSendResponse;
 import com.ruoyi.framework.jssms.service.IJsSmsService;
 import com.ruoyi.framework.sms.SmsSendDTO;
 import com.ruoyi.framework.web.service.TokenService;
+import com.ruoyi.system.domain.SysArea;
+import com.ruoyi.system.service.ISysAreaService;
 import com.ruoyi.system.service.ISysMiniAppUserService;
 import com.ruoyi.system.service.ISysUserService;
 import org.slf4j.Logger;
@@ -69,6 +71,9 @@ public class WxLoginController  {
     private ISysUserService userService;
 
     @Autowired
+    private ISysAreaService sysAreaService;
+
+    @Autowired
     private SysPermissionService permissionService;
 
     @Autowired
@@ -97,6 +102,15 @@ public class WxLoginController  {
     @PostMapping("/captcha/check")
     public ResponseModel check(@RequestBody CaptchaVO captchaVO) {
         return captchaService.check(captchaVO);
+    }
+
+    @GetMapping("/getarea")
+    public AjaxResult list(SysArea sysArea)
+    {
+        sysArea.setUseDataScope(false);
+        sysArea.setStatus("0");
+        List<SysArea> list = sysAreaService.selectSysAreaList(sysArea);
+        return AjaxResult.success(list);
     }
 
     /**

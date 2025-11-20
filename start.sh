@@ -7,7 +7,7 @@
 AppName=ruoyi-admin.jar
 
 # 1. Jasypt 加密密钥
-JASYPT_ENCRYPTOR_PASSWORD='t8Zr#kP2!mV@wQ5$xH9&nL4*eS7)uF1(+'
+JASYPT_ENCRYPTOR_PASSWORD='t8Zrk@P2F1#'
 
 # 2. JVM 参数：把密钥作为系统属性传入
 JVM_OPTS="-Dname=$AppName \

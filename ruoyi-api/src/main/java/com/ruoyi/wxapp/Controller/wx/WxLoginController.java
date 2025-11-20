@@ -199,29 +199,28 @@ public class WxLoginController  {
      * @return
      */
     @PostMapping("/binding-phone")
-    public AjaxResult bindingPhoneNumber(@RequestBody WxLoginBody wxLoginBody)
-    {
+    public AjaxResult bindingPhoneNumber(@RequestBody WxLoginBody wxLoginBody) {
         logger.info("登录参数：" + JSON.toJSONString(wxLoginBody));
 
         //id
-        Long id= wxLoginBody.getId();
+        Long id = wxLoginBody.getId();
 
         //AppId,AppSecret
-        MiniApp wxApp=appService.selectMiniAppById(id);
-        if(wxApp==null){
+        MiniApp wxApp = appService.selectMiniAppById(id);
+        if (wxApp == null) {
             return AjaxResult.error("手机号绑定失败,小程序配置不存在！");
         }
 
-        String appId=wxApp.getAppid();
-        String appSecret=wxApp.getSecret();
+        String appId = wxApp.getAppid();
+        String appSecret = wxApp.getSecret();
 
         //获取登录凭证 只能用一次
         String code = wxLoginBody.getCode();
 
         //向微信服务器发送请求获取用户信息
-        WxParam wxParam=WeChatUtils.getOpenIdAndSessionKey(appId,appSecret,code);
+        WxParam wxParam = WeChatUtils.getOpenIdAndSessionKey(appId, appSecret, code);
 
-        if(wxParam==null){
+        if (wxParam == null) {
             return AjaxResult.error("手机号绑定失败,获取小程序参数失败！");
         }
 
@@ -236,77 +235,69 @@ public class WxLoginController  {
         //加密数据
         String encryptedData = wxLoginBody.getEncryptedData();
 
-        MiniAppUser miniAppUser=new MiniAppUser();
+        MiniAppUser miniAppUser = new MiniAppUser();
         miniAppUser.setMiniAppId(id);
         miniAppUser.setOpenId(openId);
 
-        List<MiniAppUser> listTemp= miniAppUserService.selectMiniAppUserList(miniAppUser);
+        List<MiniAppUser> listTemp = miniAppUserService.selectMiniAppUserList(miniAppUser);
 
-        if((listTemp==null || listTemp.size()==0) ){
+        if ((listTemp == null || listTemp.size() == 0)) {
+            String phoneNumber = "";
             //新用户
-            if(StringUtils.isEmpty(encryptedIv) || StringUtils.isEmpty(encryptedData)){
-                return AjaxResult.error("手机号绑定失败,获取IV和加密参数失败！");
-            }
-            else{
-
+            if (!StringUtils.isEmpty(encryptedIv) && !StringUtils.isEmpty(encryptedData)) {
                 wxParam = WeChatUtils.parseWxParam(wxParam, sessionKey, phoneCode, encryptedIv, encryptedData);
                 if (wxParam == null) {
                     return AjaxResult.error("手机号绑定失败,参数解析失败！");
                 }
+                phoneNumber = wxParam.getPurePhoneNumber();
 
-                String phoneNumber=wxParam.getPurePhoneNumber();
+            } else {
 
-                if (phoneNumber==null ||phoneNumber==""){
-                    return AjaxResult.error("手机号绑定失败,获取手机号失败！");
-                }
-
-                //记录微信登录信息
-                miniAppUser.setNickName(wxParam.getNickName());
-                miniAppUser.setAvatar(wxParam.getAvatarUrl());
-                miniAppUser.setPhoneNumber(wxParam.getPurePhoneNumber());
-                miniAppUserService.insertMiniAppUser(miniAppUser);
-
-                List<MiniAppUser> list1 = miniAppUserService.selectMiniAppUserList(miniAppUser);
-                if (list1 == null && list1.size() == 0) {
-                    return AjaxResult.error("手机号绑定失败,信息登记失败！");
-                }
-
-                //判断手机号匹配情况
-                SysUser wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
-                if(wUser==null) {
-                    //创建游客用户
-                    miniAppUserService.insertMiniAppGuestUser(miniAppUser);
-                }
-
-                wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
-                if(wUser==null) {
-                    return AjaxResult.error("手机号绑定失败,用户未注册！");
-                }
-                else{
-                    //绑定
-                    wUser.setOpenId(openId);
-                    wUser.setUpdateBy("sys");
-                    wUser.setUpdateTime(DateUtils.getNowDate());
-                    userService.updateUser(wUser);
-                    return AjaxResult.success("手机号绑定成功！");
-                }
-
+                phoneNumber = wxLoginBody.getPhoneNumber();
             }
-        }
-        else{
-            String phoneNumber=listTemp.get(0).getPhoneNumber();
+            if (phoneNumber == null || phoneNumber == "") {
+                return AjaxResult.error("手机号绑定失败,获取手机号失败！");
+            }
+            //记录微信登录信息
+            miniAppUser.setNickName(wxParam.getNickName());
+            miniAppUser.setAvatar(wxParam.getAvatarUrl());
+            miniAppUser.setPhoneNumber(phoneNumber);
+            miniAppUserService.insertMiniAppUser(miniAppUser);
+
+            List<MiniAppUser> list1 = miniAppUserService.selectMiniAppUserList(miniAppUser);
+            if (list1 == null && list1.size() == 0) {
+                return AjaxResult.error("手机号绑定失败,信息登记失败！");
+            }
             //判断手机号匹配情况
             SysUser wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
-            if(wUser==null) {
+            if (wUser == null) {
+                //创建游客用户
+                miniAppUserService.insertMiniAppGuestUser(miniAppUser);
+            }
+            wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
+            if (wUser == null) {
+                return AjaxResult.error("手机号绑定失败,用户未注册！");
+            } else {
+                //绑定
+                wUser.setOpenId(openId);
+                wUser.setUpdateBy("sys");
+                wUser.setUpdateTime(DateUtils.getNowDate());
+                userService.updateUser(wUser);
+                return AjaxResult.success("手机号绑定成功！");
+            }
+        } else {
+            String phoneNumber = listTemp.get(0).getPhoneNumber();
+            //判断手机号匹配情况
+            SysUser wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
+            if (wUser == null) {
                 miniAppUser.setPhoneNumber(phoneNumber);
                 //创建游客用户
                 miniAppUserService.insertMiniAppGuestUser(miniAppUser);
             }
             wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
-            if(wUser==null) {
+            if (wUser == null) {
                 return AjaxResult.error("手机号绑定失败,用户未注册！");
-            }
-            else{
+            } else {
                 //绑定
                 wUser.setOpenId(openId);
                 wUser.setUpdateBy("sys");

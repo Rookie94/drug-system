@@ -17,6 +17,9 @@ public class WxLoginBody {
     /** 加密数据 */
     private String encryptedData;
 
+    /** 角色id */
+    private String roleId;
+
     //用户填写的手机号
     private String phoneNumber;
     //身份证号
@@ -72,6 +75,14 @@ public class WxLoginBody {
 
     public void setEncryptedData(String encryptedData) {
         this.encryptedData = encryptedData;
+    }
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
     }
 
     public String getPhoneNumber() {
@@ -146,6 +157,7 @@ public class WxLoginBody {
                 ", phoneCode='" + phoneCode + '\'' +
                 ", encryptedIv='" + encryptedIv + '\'' +
                 ", encryptedData='" + encryptedData + '\'' +
+                ", roleId='" + roleId + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", idCardNumber='" + idCardNumber + '\'' +
                 ", nickName='" + nickName + '\'' +

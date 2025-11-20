@@ -44,6 +44,7 @@
         <jasypt-spring-boot-starter.version>3.0.5</jasypt-spring-boot-starter.version>
         <okhttp3.version>4.9.1</okhttp3.version>
         <hutool-all.version>5.8.8</hutool-all.version>
+        <jackson.version>2.12.5</jackson.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -195,6 +196,27 @@
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>${commons.collections.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
 
             <!-- 阿里JSON解析器 -->

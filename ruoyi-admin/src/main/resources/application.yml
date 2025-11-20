@@ -90,13 +90,13 @@ spring:
     # 集群地址
     cluster:
       nodes:
-        - 127.0.0.1:6380
-        - 127.0.0.1:6381
-        - 127.0.0.1:6382
+        - 192.168.1.9:6379
+        - 192.168.1.10:6379
+        - 192.168.1.11:6379
     # 数据库索引
     database: 0
     # 密码
-    password: ENC(J4VTLh3Duo8h13+u/By9rzs8/c1lf9loxBX0KAqzsy/HfwHeuDM+Gy+qbW3/j6zU)
+    password: ENC(/iMPpJ7ifGZmxYr945QjJDUnaZbZ3cKzFwiKWmEG6rNfGlLzdoxyV7CWns4oNp1D)
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -108,7 +108,6 @@ spring:
         # 连接池的最大数据库连接数
         max-active: 8
         # #连接池最大阻塞等待时间（使用负值表示没有限制）
-        max-wait: -1ms
 
 # token配置
 token:
@@ -157,16 +156,15 @@ xss:
 # 文件上传
 dromara:
   x-file-storage:
-    default-platform: minio-1        # 必须和下方 platform 一致
+    default-platform: zos-1        # 必须和下方 platform 一致
     thumbnail-suffix: ".min.jpg"
-    minio:
-      - platform: minio-1            # 标识，可自定义
-        enable-storage: true
-        access-key: utOGh5X1fv7d7Kiwbzm5
-        secret-key: ENC(jlCfjlD5uqxdkBOIui+0F5Ad4N8GE25fUtnzcdQTCW3HnY6m78u5yDQV0UaWURc9+8FUPWTbZLym+OqQeIxWiSstjrRzTL6YT0HiybaQorg=)
-        end-point: http://112.86.226.241:9000
-        #end-point: http://192.168.0.100:9000
-        bucket-name: public
+    amazon-s3:
+      - platform: zos-1            # 标识，可自定义
+        enable-storage: false
+        access-key: E1IF7UVG88P2EDHF44GC
+        secret-key: ENC(nJpBlgPta5/C2/Z7VT7h6p3dhgunRD3maaVS/+cuD51xSnsAZaoY107m55R+9sLmgKtj2HaODgkX2gbIUw/Z9MNq9/t+ANw16F4Lr/p/zhc=)
+        end-point: http://100.86.2.1:80
+        bucket-name: shengjieduguanliju
         domain: https://yiti.shunxuan.net.cn:9000/public/   # 直链域名，末尾 /
         base-path:          # 可选虚拟目录
 
@@ -242,8 +240,8 @@ jssms:
   api:
     url: http://30.1.1.124:7000/smsbus/yhyx/sms/comm/mt/data/sendTempEncryptSms
   third: ytlyxxhpt
-  thirdkey: TJJVpy
-  public-key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWmEV9bfGhYkGmdWaPIzWXIsH7PRT1_pxfKOrXWXUG3RQktZav61-7Ea3kFjkiXQU5HSiOxgzHEKQT3SNMUJT8I4dkDQHbbe1bnjRUGTPo8dC7lEIvx2qZfMQT6CVA6tKwwYySHJFy1WMzBwNYkp8C_zfw5a9c0ZfiP2-fXQEb_QIDAQAB
+  thirdkey: ENC(aiNVlK94X2mVm/FGTteluBWCewyD+5/x0ELmxNJGIqxU0usQda3LiXYiYuPryOvN)
+  public-key: ENC(P6UmHBKsIHowrF8QfAdB2rzU6JpTMEJGbPci1jl8y9r4wx1RmPbU3pryjkqP+CCqsMWRK7qbyRozix/JwV/Tmg8UIzsbOBIMt+LQ1OMF68lkc0lRGoI+rE33CTatz0tBeKaEeJq/fhndt7HOOn6gKkM6y0c9oJvVvKcOs9P7O+bUjZfvjmj/korNrrjsqRyLfcaHDrvqwyNYXepMUL/o2VQBgQ9fq7KXYp/P2Aw5jAx79bBja4QUOt5614mgYAOBs83u1JDWgtAG6L4JIq6ZaVovQqWDqAYqX02wGnX/6OV1cE99t15oQ5aWW9GGcK2DatB5BRoCrOKU0BpmDG4BnA==)
   templateId: 02446c8f-a901-4322-b018-4213e64e58e5
 
 jasypt:
@@ -263,16 +261,16 @@ jasypt:
 
 encrypt:
   ## 开关控制
-  enabled: false
+  enabled: true
   ## 密钥，与前端保持一致
-  key: ENC(jQ3yP19TLcTKLvM22w/te5Op8csOkRdhD06L7MoeLs4ToUOwdF2Jvev8erffJsFRaRJ4CZWzecU1ct7Dxatcsjfq8yMMFhoD7mbwEykfGrA=)
+  key: ENC(KGPJCaGjt/aSmheO8b/iu5ulnyqlf/7hB2TI4EMcVtJirIqxkGTelyjDZzxtRdBVt/nWlpWTPOhNsdrF5kNMjryUpGhwqBIqC+NcAoASwS0=)
   ## 忽略url，不做处理
   filterUrls: /common/*,/profile/upload/*,/captchaImage,/captcha/*
 
 external:
   config:
-    base-url: http://127.0.0.1:3030
-    secret-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMxtH3cw4q7l1o//1s0DY02F/fTbf03DiTX1D9WnDNblGTi8P3Jgq4R21UYDLDd1GfYGfA8YIGkSSKcFFLs48gECAwEAAQ==
+    base-url: http://10.60.32.8:3030
+    secret-key: ENC(mscnOtQ5MkHhWyZD6ao46epUAUZABEzekcB//uLPezKe4pkAXLXGhHoeqrW3k4lEs0aAc80L+gKz2YGjXRz11/cNC0/G48QaTLksl8zT3CRhmt4CxuW8mfnYCS/4l44gy3WKutS6/V2q0SYtQEXpJh5Hsv8jJ4cb9f8AlU+WeOJMWZQ/cBnB1daZytzE5TUY1hh97cCurqm2XCRtW5xXqGOXbc1VW/IMAbtrH2Bq7Cg=)
     interfaces:
       GetOrgData: /Mobile/GetOrgData
       PoliceVerify: /Mobile/PoliceVerify

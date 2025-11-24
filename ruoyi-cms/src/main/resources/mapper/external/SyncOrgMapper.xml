@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.external.mapper.SyncOrgMapper">
+
+    <resultMap id="MidOrganizationResult" type="MidOrganization" >
+        <result property="id" column="id"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="levels" column="levels"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <resultMap id="SyncDeptInfoResult" type="SyncDeptInfo" >
+        <id property="deptId" column="dept_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="ancestors" column="ancestors"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="leader" column="leader"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="provinceId" column="province_id"/>
+        <result property="cityId" column="city_id"/>
+        <result property="areaId" column="area_id"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="orgId" column="org_id"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="parentOrgId" column="parent_org_id"/>
+        <result property="levels" column="levels"/>
+    </resultMap>
+
+    <select id="selectBackupTableNames" resultType="string">
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_name LIKE 'sys_dept_bak_%'
+        AND table_schema = current_schema()  <!-- 仅限当前Schema，防止查到其他库 -->
+    </select>
+
+    <update id="dropTable">
+        DROP TABLE IF EXISTS ${tableName}
+    </update>
+
+    <update id="createBackupTable">
+        CREATE TABLE ${backupTableName} AS SELECT * FROM sys_dept
+    </update>
+
+    <update id="dropTableIfExists">
+        DROP TABLE IF EXISTS ${tableName}
+    </update>
+
+    <select id="checkTableExists" resultType="int">
+        SELECT count(1)
+        FROM information_schema.tables
+        WHERE table_name = #{tableName}
+    </select>
+
+    <select id="selectAllMidOrgs" resultMap="MidOrganizationResult">
+        SELECT id, org_name, org_code, parent_id, levels FROM mid_organization
+    </select>
+
+    <select id="selectDeptByOrgId" resultMap="SyncDeptInfoResult">
+        SELECT dept_id, ancestors, org_id FROM sys_dept WHERE org_id = #{orgId}
+    </select>
+
+    <insert id="insertDept" useGeneratedKeys="true" keyProperty="deptId">
+        <selectKey keyProperty="deptId" resultType="long" order="BEFORE">
+            SELECT nextval('sys_dept_dept_id_seq')
+        </selectKey>
+        INSERT INTO sys_dept (
+            dept_id, parent_id, ancestors, dept_name, order_num,
+            status, del_flag, create_time,
+            org_id, org_code, parent_org_id, levels
+        ) VALUES (
+            #{deptId}, 0, '', #{deptName}, 0,
+            '0', '0', now(),
+            #{orgId}, #{orgCode}, #{parentOrgId}, #{levels}
+        )
+    </insert>
+
+    <update id="updateDeptBasic">
+        UPDATE sys_dept SET
+            dept_name = #{deptName},
+            org_code = #{orgCode},
+            parent_org_id = #{parentOrgId},
+            levels = #{levels},
+            update_time = now()
+        WHERE dept_id = #{deptId}
+    </update>
+
+    <update id="updateDeptTreeRelations">
+        UPDATE sys_dept SET
+            parent_id = #{parentId},
+            ancestors = #{ancestors}
+        WHERE dept_id = #{deptId}
+    </update>
+
+    <select id="selectAllSyncedDepts" resultMap="SyncDeptInfoResult">
+        SELECT dept_id, parent_id, org_id, parent_org_id, ancestors
+        FROM sys_dept
+        WHERE org_id IS NOT NULL AND del_flag = '0'
+    </select>
+
+    <update id="softDeleteMissingDepts">
+        UPDATE sys_dept d
+        SET
+        status = '1',
+        del_flag = '2',
+        update_time = now()
+        WHERE d.del_flag = '0'
+          AND d.dept_id &lt;&gt; 133
+        AND NOT EXISTS (
+        SELECT 1
+        FROM mid_organization m
+        WHERE m.id = d.org_id
+        )
+    </update>
+
+</mapper>

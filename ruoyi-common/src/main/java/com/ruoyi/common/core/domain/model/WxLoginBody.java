@@ -17,6 +17,9 @@ public class WxLoginBody {
     /** 加密数据 */
     private String encryptedData;
 
+    //验证码
+    private String verifyCode;
+
     /** 角色id */
     private String roleId;
 
@@ -75,6 +78,14 @@ public class WxLoginBody {
 
     public void setEncryptedData(String encryptedData) {
         this.encryptedData = encryptedData;
+    }
+
+    public String getVerifyCode() {
+        return verifyCode;
+    }
+
+    public void setVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
     }
 
     public String getRoleId() {
@@ -157,6 +168,7 @@ public class WxLoginBody {
                 ", phoneCode='" + phoneCode + '\'' +
                 ", encryptedIv='" + encryptedIv + '\'' +
                 ", encryptedData='" + encryptedData + '\'' +
+                ", verifyCode='" + verifyCode + '\'' +
                 ", roleId='" + roleId + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", idCardNumber='" + idCardNumber + '\'' +

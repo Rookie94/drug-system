@@ -12,6 +12,7 @@ import com.ruoyi.cms.external.domain.Organization;
 import com.ruoyi.cms.external.domain.Police;
 import com.ruoyi.cms.external.domain.response.ExternalApiResponse;
 import com.ruoyi.cms.external.domain.response.ExternalPageResponse;
+import com.ruoyi.framework.utils.MyLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,6 +196,8 @@ public class ExternalApiHttpClient {
 
             log.info("GET响应状态: {}", response.getStatusCode());
             log.debug("GET响应原始数据: {}", response.getBody());
+
+            MyLog.success("荣飞接口",interfaceName,response.toString());
 
             // 手动解析
             return parseResponseSafely(response.getBody(), responseType, interfaceName);

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.external.mapper.SyncCarePersonMapper">
+
+    <!-- 照管对象相关配置 -->
+    <resultMap id="MidCarePersonResult" type="MidCarePerson">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="intoTime" column="into_time"/>
+        <result property="outTime" column="out_time"/>
+        <result property="mobileNumber" column="mobile_number"/>
+        <result property="idNumber" column="id_number"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="orgId" column="org_id"/>
+        <result property="address" column="address"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <resultMap id="SyncUserInfoResult" type="SyncUserInfo">
+        <id property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="userType" column="user_type"/>
+        <result property="birthday" column="birthday"/>
+        <result property="entryDate" column="entry_date"/>
+        <result property="outTime" column="out_time"/>
+        <result property="phonenumber" column="phonenumber"/>
+        <result property="sex" column="sex"/>
+        <result property="idNumber" column="id_number"/>
+        <result property="address" column="address"/>
+        <result property="orgId" column="org_id"/>
+        <result property="password" column="password"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="userGuid" column="user_guid"/>
+    </resultMap>
+
+    <!-- 备份用户表 -->
+    <update id="createUserInfoBackupTable">
+        CREATE TABLE ${backupTableName} AS SELECT * FROM sys_userinfo
+    </update>
+
+    <!-- 查询所有照管对象 -->
+    <select id="selectAllCarePersons" resultMap="MidCarePersonResult">
+        SELECT id, name, sex, birthday, into_time, out_time, mobile_number,
+               id_number, org_name, org_code, org_id, address
+        FROM mid_care_person
+    </select>
+
+    <!-- 根据机构ID和身份证号查询用户 -->
+    <select id="selectUserByOrgIdAndIdNumber" resultMap="SyncUserInfoResult">
+        SELECT user_id, dept_id, user_name, nick_name, user_type, org_id, id_number, user_guid
+        FROM sys_userinfo
+        WHERE org_id = #{orgId} AND id_number = #{idNumber} AND del_flag = '0'
+    </select>
+
+    <!-- 插入用户信息 -->
+    <insert id="insertUserInfo" useGeneratedKeys="true" keyProperty="userId">
+        <selectKey keyProperty="userId" resultType="long" order="BEFORE">
+            SELECT nextval('sys_user_user_id_seq'::regclass)
+        </selectKey>
+        INSERT INTO sys_userinfo (
+        user_id, dept_id, user_name, nick_name, user_type, birthday, entry_date,
+        out_time, phonenumber, sex, id_number, address, org_id, password,
+        status, del_flag, create_time, user_guid
+        ) VALUES (
+        #{userId}, #{deptId}, #{userName}, #{nickName}, #{userType}, #{birthday}, #{entryDate},
+        #{outTime}, #{phonenumber}, #{sex}, #{idNumber}, #{address}, #{orgId}, #{password},
+        #{status}, #{delFlag}, now(), #{userGuid}
+        )
+    </insert>
+
+    <!-- 更新用户信息 -->
+    <update id="updateUserInfo">
+        UPDATE sys_userinfo SET
+                                dept_id = #{deptId},
+                                user_name = #{userName},
+                                nick_name = #{nickName},
+                                user_type = #{userType},
+                                birthday = #{birthday},
+                                entry_date = #{entryDate},
+                                out_time = #{outTime},
+                                phonenumber = #{phonenumber},
+                                sex = #{sex},
+                                id_number = #{idNumber},
+                                address = #{address},
+                                org_id = #{orgId},
+                                user_guid = #{userGuid},
+                                update_time = now()
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 软删除缺失的照管对象 -->
+    <update id="softDeleteMissingCarePersons">
+        UPDATE sys_userinfo u
+        SET
+            status = '1',
+            del_flag = '2',
+            update_time = now()
+        WHERE u.user_type = '11'
+          AND u.del_flag = '0'
+          AND NOT EXISTS (
+            SELECT 1
+            FROM mid_care_person m
+            WHERE m.org_id = u.org_id AND m.id_number = u.id_number
+        )
+    </update>
+
+    <!-- 查询所有部门及其机构ID -->
+    <select id="selectAllDeptsWithOrgId" resultMap="SyncUserInfoResult">
+        SELECT dept_id, org_id
+        FROM sys_dept
+    </select>
+
+</mapper>

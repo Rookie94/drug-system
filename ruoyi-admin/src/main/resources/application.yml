@@ -261,7 +261,7 @@ jasypt:
 
 encrypt:
   ## 开关控制
-  enabled: true
+  enabled: false
   ## 密钥，与前端保持一致
   key: ENC(KGPJCaGjt/aSmheO8b/iu5ulnyqlf/7hB2TI4EMcVtJirIqxkGTelyjDZzxtRdBVt/nWlpWTPOhNsdrF5kNMjryUpGhwqBIqC+NcAoASwS0=)
   ## 忽略url，不做处理
@@ -269,7 +269,7 @@ encrypt:
 
 external:
   config:
-    base-url: http://10.60.32.8:3030
+    base-url: http://127.0.0.1:3030
     secret-key: ENC(mscnOtQ5MkHhWyZD6ao46epUAUZABEzekcB//uLPezKe4pkAXLXGhHoeqrW3k4lEs0aAc80L+gKz2YGjXRz11/cNC0/G48QaTLksl8zT3CRhmt4CxuW8mfnYCS/4l44gy3WKutS6/V2q0SYtQEXpJh5Hsv8jJ4cb9f8AlU+WeOJMWZQ/cBnB1daZytzE5TUY1hh97cCurqm2XCRtW5xXqGOXbc1VW/IMAbtrH2Bq7Cg=)
     interfaces:
       GetOrgData: /Mobile/GetOrgData

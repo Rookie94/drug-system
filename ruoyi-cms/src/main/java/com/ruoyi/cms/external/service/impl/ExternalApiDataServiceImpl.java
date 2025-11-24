@@ -49,14 +49,11 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult syncOrganizations() {
+        List<Organization> orgList = null;
         try {
             log.info("开始全量同步组织机构信息");
 
-            // 清空组织机构表
-            int deletedCount = organizationMapper.deleteAllOrganizations();
-            log.info("清空组织机构表，删除 {} 条记录", deletedCount);
-
-            // 使用 doGetForList 而不是 doGet
+            // 第一步：先获取数据，不进行任何数据操作
             ExternalApiResponse<List<Organization>> response = apiHttpClient.doGetForList("GetOrgData", null, Organization.class);
 
             if (!response.isSuccess()) {
@@ -64,20 +61,37 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 return AjaxResult.error("获取组织机构失败: " + response.getMsg());
             }
 
-            List<Organization> orgList = response.getDecodedData();
-            if (orgList != null && !orgList.isEmpty()) {
-                int savedCount = 0;
-                for (Organization org : orgList) {
-                    savedCount = saveOrganizationRecursive(org, savedCount);
-                }
-                log.info("组织机构全量同步完成，共处理 {} 个组织", savedCount);
-                return AjaxResult.success("组织机构全量同步成功，共处理 " + savedCount + " 个组织");
-            } else {
-                log.warn("未获取到组织机构数据");
-                return AjaxResult.error("未获取到组织机构数据");
+            orgList = response.getDecodedData();
+            if (orgList == null || orgList.isEmpty()) {
+                log.info("未获取到组织机构数据，保持现有数据不变");
+                return AjaxResult.error("未获取到组织机构数据，保持现有数据不变");
             }
+
+            log.info("成功获取到 {} 个组织机构数据，开始同步", orgList.size());
+
+            // 第二步：只有在成功获取数据后才进行数据操作
+            // 清空组织机构表
+            int deletedCount = organizationMapper.deleteAllOrganizations();
+            log.info("清空组织机构表，删除 {} 条记录", deletedCount);
+
+            // 处理组织机构数据
+            int savedCount = 0;
+            for (Organization org : orgList) {
+                savedCount = saveOrganizationRecursive(org, savedCount);
+            }
+
+            log.info("组织机构全量同步完成，共处理 {} 个组织", savedCount);
+            return AjaxResult.success("组织机构全量同步成功，共处理 " + savedCount + " 个组织");
+
         } catch (Exception e) {
             log.error("获取组织机构信息异常", e);
+
+            // 如果已经清空了数据但后续处理失败，记录告警
+            if (orgList != null) {
+                log.error("组织机构同步过程中发生异常，可能导致数据不一致。已获取数据量: {}", orgList.size());
+                // 这里可以发送告警通知管理员
+            }
+
             return AjaxResult.error("组织机构同步异常: " + e.getMessage());
         }
     }
@@ -153,17 +167,17 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
     /**
      * 4. 获取在册警员列表接口 - 全量同步
      */
+    /**
+     * 4. 获取在册警员列表接口 - 全量同步
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult syncPolice() {
+        List<Police> policeList = null;
         try {
             log.info("开始全量同步在册警员列表");
 
-            // 清空警员表
-            int deletedCount = policeMapper.deleteAllPolice();
-            log.info("清空警员表，删除 {} 条记录", deletedCount);
-
-            // 使用类型安全的方法处理列表返回
+            // 第一步：先获取数据，不进行任何数据操作
             ExternalApiResponse<List<Police>> response = apiHttpClient.doGetForList("AllPoliceInfo", null, Police.class);
 
             if (!response.isSuccess()) {
@@ -171,25 +185,40 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 return AjaxResult.error("获取警员列表失败: " + response.getMsg());
             }
 
-            List<Police> policeList = response.getDecodedData();
-            if (policeList != null && !policeList.isEmpty()) {
-                int successCount = processPoliceBatch(policeList);
+            policeList = response.getDecodedData();
+            if (policeList == null || policeList.isEmpty()) {
+                log.info("未获取到警员数据，保持现有数据不变");
+                return AjaxResult.error("未获取到警员数据，保持现有数据不变");
+            }
 
-                String message = String.format("警员信息全量同步完成，总数: %d，成功: %d，失败: %d",
-                        policeList.size(), successCount, policeList.size() - successCount);
-                log.info(message);
+            log.info("成功获取到 {} 条警员数据，开始同步", policeList.size());
 
-                if (successCount < policeList.size()) {
-                    return AjaxResult.warn(message);
-                } else {
-                    return AjaxResult.success(message);
-                }
+            // 第二步：只有在成功获取数据后才进行数据操作
+            // 清空警员表
+            int deletedCount = policeMapper.deleteAllPolice();
+            log.info("清空警员表，删除 {} 条记录", deletedCount);
+
+            // 处理警员数据
+            int successCount = processPoliceBatch(policeList);
+
+            String message = String.format("警员信息全量同步完成，总数: %d，成功: %d，失败: %d",
+                    policeList.size(), successCount, policeList.size() - successCount);
+            log.info(message);
+
+            if (successCount < policeList.size()) {
+                return AjaxResult.warn(message);
             } else {
-                log.info("未获取到警员数据");
-                return AjaxResult.success("未获取到警员数据");
+                return AjaxResult.success(message);
             }
         } catch (Exception e) {
-            log.error("获取警员列表异常", e);
+            log.error("警员信息同步异常", e);
+
+            // 如果已经清空了数据但后续处理失败，这里可以记录告警或采取其他恢复措施
+            if (policeList != null) {
+                log.error("数据同步过程中发生异常，可能导致数据不一致。已获取数据量: {}", policeList.size());
+                // 这里可以发送告警通知管理员
+            }
+
             return AjaxResult.error("警员信息同步异常: " + e.getMessage());
         }
     }
@@ -203,22 +232,16 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
         int pageIndex = 1;
         int pageSize = 500;
         int totalSaved = 0;
-        int totalPages = 0;
-        int totalRecords = 0;
+        boolean hasClearedData = false;
 
         try {
             log.info("开始全量同步在册照管人员列表");
 
-            // 清空照管人员表
-            int deletedCount = carePersonMapper.deleteAllCarePersons();
-            log.info("清空照管人员表，删除 {} 条记录", deletedCount);
-
-            // 先获取第一页数据，了解总记录数 - 使用 doGetForList
+            // 第一步：先获取第一页数据，确认接口可用
             Map<String, Object> firstPageParams = new HashMap<>();
             firstPageParams.put("pageIndex", pageIndex);
             firstPageParams.put("pageSize", pageSize);
 
-            // 修改：使用 doGetForList 而不是 doGet
             ExternalApiResponse<List<CarePerson>> firstResponse = apiHttpClient.doGetForList("AllArchivesInfo", firstPageParams, CarePerson.class);
 
             if (!firstResponse.isSuccess()) {
@@ -228,15 +251,22 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
 
             List<CarePerson> firstPageList = firstResponse.getDecodedData();
             if (firstPageList == null || firstPageList.isEmpty()) {
-                return AjaxResult.error("获取照管人员列表数据为空");
+                log.info("第一页照管人员数据为空，保持现有数据不变");
+                return AjaxResult.error("未获取到照管人员数据，保持现有数据不变");
             }
 
-            // 由于分页接口的特殊性，我们需要通过多次调用来获取总记录数
-            // 这里假设第一页有数据，我们继续获取后续页面直到没有数据
+            log.info("成功获取到第一页数据，共 {} 条记录，开始同步", firstPageList.size());
+
+            // 第二步：只有在确认接口可用后才清空数据
+            int deletedCount = carePersonMapper.deleteAllCarePersons();
+            hasClearedData = true;
+            log.info("清空照管人员表，删除 {} 条记录", deletedCount);
+
+            // 处理第一页数据
             totalSaved += processCarePersonPage(firstPageList);
             log.info("第1页处理完成，本页数量: {}，累计数量: {}", firstPageList.size(), totalSaved);
 
-            // 从第二页开始循环获取所有数据
+            // 第三步：继续获取后续页面数据
             pageIndex = 2;
             boolean hasMoreData = true;
 
@@ -247,14 +277,12 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 pageParams.put("pageIndex", pageIndex);
                 pageParams.put("pageSize", pageSize);
 
-                // 修改：使用 doGetForList 而不是 doGet
                 ExternalApiResponse<List<CarePerson>> response = apiHttpClient.doGetForList("AllArchivesInfo", pageParams, CarePerson.class);
 
                 if (!response.isSuccess()) {
                     log.error("获取照管人员列表第{}页失败: {}", pageIndex, response.getMsg());
-                    // 记录错误但继续处理下一页
-                    pageIndex++;
-                    continue;
+                    // 不再继续处理，抛出异常让事务回滚
+                    throw new RuntimeException("获取第" + pageIndex + "页数据失败: " + response.getMsg());
                 }
 
                 List<CarePerson> pageList = response.getDecodedData();
@@ -271,7 +299,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        break;
+                        throw new RuntimeException("同步过程被中断", e);
                     }
                 } else {
                     log.info("第{}页数据为空，停止获取", pageIndex);
@@ -279,15 +307,19 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 }
             }
 
-            String message = String.format("照管人员信息全量同步完成，实际成功: %d 条", totalSaved);
+            String message = String.format("照管人员信息全量同步完成，共处理 %d 条记录", totalSaved);
             log.info(message);
-
             return AjaxResult.success(message);
 
         } catch (Exception e) {
-            log.error("获取照管人员列表异常", e);
-            String message = String.format("照管人员信息同步异常，已成功: %d 条，错误: %s", totalSaved, e.getMessage());
-            return AjaxResult.error(message);
+            log.error("照管人员同步异常", e);
+
+            // 如果已经清空了数据但后续处理失败，记录告警
+            if (hasClearedData) {
+                log.error("照管人员同步过程中发生异常，已清空数据但未完成同步，事务将回滚");
+            }
+
+            return AjaxResult.error("照管人员信息同步异常: " + e.getMessage());
         }
     }
 

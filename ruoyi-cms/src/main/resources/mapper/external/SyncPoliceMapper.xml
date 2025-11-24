@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.external.mapper.SyncPoliceMapper">
+
+    <resultMap id="MidPoliceResult" type="com.ruoyi.cms.external.domain.MidPolice">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="mobileNumber" column="mobile_number"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="orgId" column="org_id"/>
+        <result property="address" column="address"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <resultMap id="SyncUserInfoResult" type="com.ruoyi.cms.external.domain.SyncUserInfo">
+        <id property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userGuid" column="user_guid"/>
+        <result property="userName" column="user_name"/>
+        <result property="phonenumber" column="phonenumber"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="userType" column="user_type"/>
+        <result property="orgId" column="org_id"/>
+        <result property="address" column="address"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <!-- 备份相关SQL -->
+    <select id="selectBackupTableNames" resultType="string">
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_name LIKE 'sys_userinfo_bak_%'
+          AND table_schema = current_schema()
+    </select>
+
+    <update id="createBackupTable">
+        CREATE TABLE ${backupTableName} AS SELECT * FROM sys_userinfo
+    </update>
+
+    <update id="dropTableIfExists">
+        DROP TABLE IF EXISTS ${tableName}
+    </update>
+
+    <!-- 部门映射相关SQL - 修复返回类型 -->
+    <select id="selectDeptMapping" resultType="java.util.HashMap">
+        SELECT org_id, dept_id
+        FROM sys_dept
+    </select>
+
+    <update id="updateMissingDeptInfo">
+        UPDATE sys_userinfo
+        SET dept_id = 100, update_time = now()
+        WHERE user_type = '00'
+          AND del_flag = '0'
+          AND org_id IS NOT NULL
+          AND dept_id IS NULL
+    </update>
+
+    <!-- 原有业务SQL -->
+    <select id="selectAllMidPolice" resultMap="MidPoliceResult">
+        SELECT id, name, sex, birthday, mobile_number, org_name, org_code, org_id, address
+        FROM mid_police
+    </select>
+
+    <select id="selectUserByUserGuid" resultMap="SyncUserInfoResult">
+        SELECT user_id, dept_id, user_guid, phonenumber, nick_name, sex, birthday, user_type, org_id, address, status, del_flag
+        FROM sys_userinfo
+        WHERE user_guid = #{userGuid} AND user_type = '00'
+    </select>
+
+    <select id="countUserByPhonenumber" resultType="int">
+        SELECT COUNT(1)
+        FROM sys_userinfo
+        WHERE phonenumber = #{phonenumber} AND user_type = '00' AND del_flag = '0'
+    </select>
+
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO sys_userinfo (
+            dept_id, user_name, nick_name, user_type, birthday,
+            phonenumber, sex, password, status, del_flag,
+            create_time, user_guid, org_id, address
+        ) VALUES (
+                     #{deptId}, #{userName}, #{nickName}, '00', #{birthday},
+                     #{phonenumber}, #{sex}, '$2a$10$jQgpnuhj06wld6pMQTYjweLtZhxJFm4phvmns2cj.eSJ5oJpNwvFu', '0', '0',
+                     now(), #{userGuid}, #{orgId}, #{address}
+                 )
+    </insert>
+
+    <update id="updateUser">
+        UPDATE sys_userinfo SET
+                                dept_id = #{deptId},
+                                nick_name = #{nickName},
+                                sex = #{sex},
+                                birthday = #{birthday},
+                                phonenumber = #{phonenumber},
+                                org_id = #{orgId},
+                                address = #{address},
+                                status = '0',
+                                del_flag = '0',
+                                update_time = now()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="softDeleteMissingUsers">
+        UPDATE sys_userinfo
+        SET status = '1', del_flag = '1', update_time = now()
+        WHERE user_type = '00'
+          AND user_id  &lt;&gt; 1
+          AND del_flag = '0'
+          AND (
+            user_guid NOT IN (
+                SELECT
+                    id
+                FROM
+                    mid_police
+                )
+                OR user_guid IS NULL
+            )
+    </update>
+
+</mapper>

@@ -8,6 +8,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.jssms.domain.JsSmsSendResponse;
 import com.ruoyi.framework.jssms.service.IJsSmsService;
+import com.ruoyi.framework.sms.SmsLoginService;
 import com.ruoyi.framework.sms.SmsSendDTO;
 import com.ruoyi.framework.web.service.TokenService;
 import com.ruoyi.system.domain.SysArea;
@@ -78,6 +79,9 @@ public class WxLoginController  {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private SmsLoginService smsLoginService;
 
     /**
      * 获取验证码接口
@@ -230,6 +234,8 @@ public class WxLoginController  {
 
         //phoneCode
         String phoneCode = wxLoginBody.getPhoneCode();
+        //verifyCode
+        String verifyCode= wxLoginBody.getVerifyCode();
         //秘钥
         String encryptedIv = wxLoginBody.getEncryptedIv();
         //加密数据
@@ -252,12 +258,21 @@ public class WxLoginController  {
                 phoneNumber = wxParam.getPurePhoneNumber();
 
             } else {
-
                 phoneNumber = wxLoginBody.getPhoneNumber();
             }
+
             if (phoneNumber == null || phoneNumber == "") {
                 return AjaxResult.error("手机号绑定失败,获取手机号失败！");
             }
+
+            try {
+                smsLoginService.checkMessageCaptcha(phoneNumber,verifyCode);
+            }
+            catch(Exception ex)
+            {
+                return AjaxResult.error("手机验证码不正确！");
+            }
+
             //记录微信登录信息
             miniAppUser.setNickName(wxParam.getNickName());
             miniAppUser.setAvatar(wxParam.getAvatarUrl());

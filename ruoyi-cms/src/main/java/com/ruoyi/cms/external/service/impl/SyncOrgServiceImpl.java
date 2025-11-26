@@ -94,6 +94,8 @@ public class SyncOrgServiceImpl implements ISyncOrgService { // 实现接口
             syncOrgMapper.updateDeptTreeRelations(current.getDeptId(), parentId, ancestors);
         }
 
+        syncOrgMapper.updateOrderNumFromOrgCode();
+
         System.out.println("同步完成，共处理 " + midList.size() + " 个部门，删除 " + deletedCount + " 个缺失部门");
     }
 

@@ -111,7 +111,7 @@
 
     <update id="softDeleteMissingUsers">
         UPDATE sys_userinfo
-        SET status = '1', del_flag = '1', update_time = now()
+        SET status = '1', del_flag = '2', update_time = now()
         WHERE user_type = '00'
           AND user_id  &lt;&gt; 1
           AND del_flag = '0'

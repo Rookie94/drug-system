@@ -2,7 +2,6 @@ package com.ruoyi.cms.external.service.impl;
 
 import com.ruoyi.cms.external.domain.MidPolice;
 import com.ruoyi.cms.external.domain.SyncUserInfo;
-import com.ruoyi.cms.external.mapper.PoliceTableCleanupService;
 import com.ruoyi.cms.external.mapper.SyncPoliceMapper;
 import com.ruoyi.cms.external.service.ISyncPoliceService;
 import org.slf4j.Logger;
@@ -26,7 +25,7 @@ public class SyncPoliceServiceImpl implements ISyncPoliceService {
     private SyncPoliceMapper syncPoliceMapper;
 
     @Autowired
-    private PoliceTableCleanupService policeTableCleanupService;
+    private UserTableCleanupService userTableCleanupService;
 
     /**
      * 备份逻辑
@@ -56,7 +55,7 @@ public class SyncPoliceServiceImpl implements ISyncPoliceService {
         backupSysUserinfo();
 
         // 2. 触发清理旧表
-        policeTableCleanupService.cleanOldBackupsAsync();
+        userTableCleanupService.cleanOldBackupsAsync();
 
         // 3. 获取所有中间表数据
         List<MidPolice> midPoliceList = syncPoliceMapper.selectAllMidPolice();

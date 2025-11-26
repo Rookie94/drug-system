@@ -45,6 +45,8 @@ public interface SyncOrgMapper {
     // 4. 更新部门基础信息
     int updateDeptBasic(SyncDeptInfo dept);
 
+    int  updateOrderNumFromOrgCode();
+
     // 5. 更新部门层级关系 (parent_id, ancestors)
     int updateDeptTreeRelations(@Param("deptId") Long deptId,
                                 @Param("parentId") Long parentId,

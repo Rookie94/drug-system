@@ -245,6 +245,11 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             ExternalApiResponse<List<CarePerson>> firstResponse = apiHttpClient.doGetForList("AllArchivesInfo", firstPageParams, CarePerson.class);
 
             if (!firstResponse.isSuccess()) {
+                // 修改：如果是"未查询到数据"，视为正常情况
+                if ("未查询到数据".equals(firstResponse.getMsg())) {
+                    log.info("第一页未查询到数据，保持现有数据不变");
+                    return AjaxResult.success("未查询到照管人员数据，保持现有数据不变");
+                }
                 log.error("获取照管人员列表失败: {}", firstResponse.getMsg());
                 return AjaxResult.error("获取照管人员列表失败: " + firstResponse.getMsg());
             }
@@ -252,7 +257,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             List<CarePerson> firstPageList = firstResponse.getDecodedData();
             if (firstPageList == null || firstPageList.isEmpty()) {
                 log.info("第一页照管人员数据为空，保持现有数据不变");
-                return AjaxResult.error("未获取到照管人员数据，保持现有数据不变");
+                return AjaxResult.success("未获取到照管人员数据，保持现有数据不变");
             }
 
             log.info("成功获取到第一页数据，共 {} 条记录，开始同步", firstPageList.size());
@@ -280,6 +285,12 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 ExternalApiResponse<List<CarePerson>> response = apiHttpClient.doGetForList("AllArchivesInfo", pageParams, CarePerson.class);
 
                 if (!response.isSuccess()) {
+                    // 修改：如果是"未查询到数据"，视为正常结束
+                    if ("未查询到数据".equals(response.getMsg())) {
+                        log.info("第{}页未查询到数据，同步完成", pageIndex);
+                        hasMoreData = false;
+                        continue;
+                    }
                     log.error("获取照管人员列表第{}页失败: {}", pageIndex, response.getMsg());
                     // 不再继续处理，抛出异常让事务回滚
                     throw new RuntimeException("获取第" + pageIndex + "页数据失败: " + response.getMsg());
@@ -348,10 +359,14 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 params.put("pageIndex", currentPage);
                 params.put("pageSize", pageSize);
 
-                // 修改：使用 doGetForList 而不是 doGet
                 ExternalApiResponse<List<CarePerson>> response = apiHttpClient.doGetForList("AllArchivesInfo", params, CarePerson.class);
 
                 if (!response.isSuccess()) {
+                    // 修改：如果是"未查询到数据"，视为正常结束
+                    if ("未查询到数据".equals(response.getMsg())) {
+                        log.info("第{}页未查询到数据，同步完成", currentPage);
+                        break;
+                    }
                     log.error("获取照管人员列表第{}页失败: {}", currentPage, response.getMsg());
                     break;
                 }

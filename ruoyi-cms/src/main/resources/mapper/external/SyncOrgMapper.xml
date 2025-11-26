@@ -95,6 +95,14 @@
         WHERE dept_id = #{deptId}
     </update>
 
+    <update id="updateOrderNumFromOrgCode">
+        UPDATE sys_dept
+        SET order_num = CAST(LEFT(org_code, 9) AS INTEGER)
+        WHERE org_code IS NOT NULL
+          AND org_code ~ '^[0-9]+$'
+      AND LENGTH(org_code) > 0
+    </update>
+
     <update id="updateDeptTreeRelations">
         UPDATE sys_dept SET
             parent_id = #{parentId},

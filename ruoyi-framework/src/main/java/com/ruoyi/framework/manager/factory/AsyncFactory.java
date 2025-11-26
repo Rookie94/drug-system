@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.TimerTask;
 
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.ip.IpAddrUtils;
 import com.ruoyi.system.domain.SysResLog;
 import com.ruoyi.system.domain.vo.ResVo;
 import com.ruoyi.system.service.ISysResLogService;
@@ -65,7 +66,7 @@ public class AsyncFactory
             @Override
             public void run()
             {
-                String address = AddressUtils.getRealAddressByIP(ip);
+                String address = IpAddrUtils.getRealAddressByIP(ip);
                 StringBuilder s = new StringBuilder();
                 s.append(LogUtils.getBlock(ip));
                 s.append(address);
@@ -115,7 +116,7 @@ public class AsyncFactory
             public void run()
             {
                 // 远程查询操作地点
-                operLog.setOperLocation(AddressUtils.getRealAddressByIP(operLog.getOperIp()));
+                operLog.setOperLocation(IpAddrUtils.getRealAddressByIP(operLog.getOperIp()));
                 SpringUtils.getBean(ISysOperLogService.class).insertOperlog(operLog);
             }
         };
@@ -142,7 +143,7 @@ public class AsyncFactory
                 sysResLog.setResTitle(resVo.getResTitle());
                 sysResLog.setUserName(username);
                 sysResLog.setAccessTime(DateUtils.getNowDate());
-                String address = AddressUtils.getRealAddressByIP(ip);
+                String address = IpAddrUtils.getRealAddressByIP(ip);
                 sysResLog.setOperIp(ip);
                 sysResLog.setOperLocation(address);
                 sysResLog.setStatus(0L);

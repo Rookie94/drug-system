@@ -45,7 +45,8 @@
         <okhttp3.version>4.9.1</okhttp3.version>
         <hutool-all.version>5.8.8</hutool-all.version>
         <jackson.version>2.12.5</jackson.version>
-        <ip2region.version>3.1.0</ip2region.version>
+        <mica-ip2region.version>2.5.6</mica-ip2region.version>
+        <ip2region.version>2.7.0</ip2region.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -278,12 +279,6 @@
                 <version>${x-file-storage-spring.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.lionsoul</groupId>
-                <artifactId>ip2region</artifactId>
-                <version>${ip2region.version}</version>
-            </dependency>
-
             <!-- minio-->
             <dependency>
                 <groupId>io.minio</groupId>
@@ -295,6 +290,17 @@
                         <artifactId>okhttp</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>net.dreamlu</groupId>
+                <artifactId>mica-ip2region</artifactId>
+                <version>${mica-ip2region.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.lionsoul</groupId>
+                <artifactId>ip2region</artifactId>
+                <version>${ip2region.version}</version>
             </dependency>
 
             <dependency>

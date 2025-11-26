@@ -1,17 +1,22 @@
 package com.ruoyi;
 
+import com.ruoyi.common.utils.ip.IpAddrUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.dromara.x.file.storage.spring.EnableFileStorage;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
+
+
 
 /**
  * 启动程序
  * 
  * @author ruoyi
  */
+
 @EnableAsync
 @EnableFileStorage
 @EnableEncryptableProperties // 启用 Jasypt 加密
@@ -32,5 +37,6 @@ public class RuoYiApplication
                 " |  | \\ `'   /|   `-'  /           \n" +
                 " |  |  \\    /  \\      /           \n" +
                 " ''-'   `'-'    `-..-'              ");
+
     }
 }

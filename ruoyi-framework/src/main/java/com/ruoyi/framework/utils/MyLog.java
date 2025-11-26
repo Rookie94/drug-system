@@ -1,6 +1,7 @@
 package com.ruoyi.framework.utils;
 
 import com.ruoyi.common.utils.ip.AddressUtils;
+import com.ruoyi.common.utils.ip.IpAddrUtils;
 import com.ruoyi.common.utils.ip.IpUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.SysCustomLog;
@@ -130,7 +131,7 @@ public class MyLog {
             if (request != null) {
                 String ip = IpUtils.getIpAddr(request);
                 customLog.setOperIp(ip);
-                customLog.setOperLocation(AddressUtils.getRealAddressByIP(ip));
+                customLog.setOperLocation(IpAddrUtils.getRealAddressByIP(ip));
             }
         } catch (Exception e) {
             log.warn("获取IP和位置信息失败", e);

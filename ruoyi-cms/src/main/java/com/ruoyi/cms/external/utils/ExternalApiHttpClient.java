@@ -382,12 +382,36 @@ public class ExternalApiHttpClient {
                 apiResponse.setMsg(jsonNode.get("msg").asText());
             }
             if (jsonNode.has("data")) {
-                if(interfaceName.equals("AllArchivesInfo")){
-                    apiResponse.setData(jsonNode.get("data").get("list").asText());
-                }
-                else{
+                // 修改：对于GetOrgData接口，直接获取data字段的字符串值
+                if ("GetOrgData".equals(interfaceName)) {
+                    apiResponse.setData(jsonNode.get("data").asText());
+                } else if ("AllArchivesInfo".equals(interfaceName)) {
+                    // 修改：处理空数据情况
+                    JsonNode dataNode = jsonNode.get("data");
+                    if (dataNode != null && !dataNode.isNull()) {
+                        if (dataNode.has("list")) {
+                            apiResponse.setData(dataNode.get("list").asText());
+                        } else {
+                            apiResponse.setData(dataNode.asText());
+                        }
+                    } else {
+                        apiResponse.setData("");
+                    }
+                } else {
                     apiResponse.setData(jsonNode.get("data").asText());
                 }
+            }
+
+            // 修改：处理"未查询到数据"的情况，视为成功但数据为空
+            if ("1".equals(apiResponse.getCode()) && "未查询到数据".equals(apiResponse.getMsg())) {
+                log.info("接口 {} 返回未查询到数据，视为正常情况", interfaceName);
+                // 设置空数据
+                if (List.class.isAssignableFrom(responseType)) {
+                    apiResponse.setDecodedData((T) new ArrayList<>());
+                } else {
+                    apiResponse.setDecodedData(null);
+                }
+                return apiResponse;
             }
 
             if (apiResponse.isSuccess() && StrUtil.isNotBlank(apiResponse.getData())) {
@@ -397,14 +421,20 @@ public class ExternalApiHttpClient {
                 // 2. 根据接口类型处理解码后的数据
                 switch (interfaceName) {
                     case "GetOrgData":
-                        // 单个对象解析
-                        JavaType listType = objectMapper.getTypeFactory()
-                                .constructCollectionType(List.class, Organization.class);
-                        List<Organization> orgList = objectMapper.readValue(decodedData, listType);
-                        apiResponse.setDecodedData((T) orgList);
+                        // 解析为单个Organization对象，然后包装成列表
+                        try {
+                            Organization org = objectMapper.readValue(decodedData, Organization.class);
+                            List<Organization> orgList = new ArrayList<>();
+                            orgList.add(org);
+                            apiResponse.setDecodedData((T) orgList);
+                            log.debug("GetOrgData接口解析成功，组织名称: {}", org.getOrgName());
+                        } catch (Exception e) {
+                            log.error("解析GetOrgData接口数据失败，数据: {}", decodedData, e);
+                            throw new RuntimeException("解析组织机构数据失败", e);
+                        }
                         break;
                     case "AllArchivesInfo":
-                        // 分页响应处理 - 现在直接返回列表，因为使用了 doGetForList
+                        // 分页响应处理
                         JavaType carePersonListType = objectMapper.getTypeFactory()
                                 .constructCollectionType(List.class, CarePerson.class);
                         List<CarePerson> carePersonList = objectMapper.readValue(decodedData, carePersonListType);
@@ -427,45 +457,6 @@ public class ExternalApiHttpClient {
         }
     }
 
-    /**
-     * 处理分页响应（针对all-archives-info接口）- 使用 Jackson 替代 JSONUtil
-     */
-    @SuppressWarnings("unchecked")
-    private <T> void handlePageResponse(String decodedData, ExternalApiResponse<T> apiResponse) {
-        try {
-            // 使用 Jackson 解析分页结构
-            JsonNode pageJson = objectMapper.readTree(decodedData);
-            ExternalPageResponse<CarePerson> pageResponse = new ExternalPageResponse<>();
-
-            // 安全地获取字段值
-            if (pageJson.has("total")) {
-                pageResponse.setTotal(pageJson.get("total").asInt());
-            }
-            if (pageJson.has("pageIndex")) {
-                pageResponse.setPageIndex(pageJson.get("pageIndex").asInt());
-            }
-            if (pageJson.has("pageSize")) {
-                pageResponse.setPageSize(pageJson.get("pageSize").asInt());
-            }
-            if (pageJson.has("list")) {
-                pageResponse.setList(pageJson.get("list").asText());
-            }
-
-            // 解码list字段中的Base64数据
-            if (StrUtil.isNotBlank(pageResponse.getList())) {
-                String decodedList = base64Decode(pageResponse.getList());
-                JavaType carePersonListType = objectMapper.getTypeFactory()
-                        .constructCollectionType(List.class, CarePerson.class);
-                List<CarePerson> carePersonList = objectMapper.readValue(decodedList, carePersonListType);
-                pageResponse.setDecodedList(carePersonList);
-            }
-
-            apiResponse.setDecodedData((T) pageResponse);
-        } catch (Exception e) {
-            log.error("解析分页响应失败: {}", decodedData, e);
-            throw new RuntimeException("分页数据解析失败", e);
-        }
-    }
 
     /**
      * 处理数组响应（针对返回数组的接口）- 使用 Jackson 替代 JSONUtil

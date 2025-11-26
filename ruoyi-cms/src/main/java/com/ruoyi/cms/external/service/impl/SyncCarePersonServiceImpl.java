@@ -10,15 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 public class SyncCarePersonServiceImpl implements ISyncCarePersonService {
+
+    @Autowired
+    private UserTableCleanupService userTableCleanupService;
 
     @Autowired
     private SyncCarePersonMapper syncCarePersonMapper;
@@ -47,17 +48,20 @@ public class SyncCarePersonServiceImpl implements ISyncCarePersonService {
         // 1. 备份当前表
         backupSysUserInfo();
 
-        // 2. 获取源数据
+        // 2. 触发清理旧表
+        userTableCleanupService.cleanOldBackupsAsync();
+
+        // 3. 获取源数据
         List<MidCarePerson> carePersonList = syncCarePersonMapper.selectAllCarePersons();
         if (carePersonList.isEmpty()) {
             System.out.println("未找到照管对象数据");
             return;
         }
 
-        // 3. 构建机构ID到部门ID的映射
+        // 4. 构建机构ID到部门ID的映射
         Map<String, Long> orgIdToDeptIdMap = buildOrgIdToDeptIdMap();
 
-        // 4. 第一轮：基础数据落库
+        // 5. 第一轮：基础数据落库
         int insertCount = 0;
         int updateCount = 0;
 
@@ -87,12 +91,12 @@ public class SyncCarePersonServiceImpl implements ISyncCarePersonService {
             userInfo.setPassword(DEFAULT_PASSWORD);
             userInfo.setStatus("0"); // 正常状态
             userInfo.setDelFlag("0"); // 未删除
-            userInfo.setUserGuid(generateUserGuid()); // 生成user_guid
+            userInfo.setUserGuid(carePerson.getId());
 
             if (existingUser != null) {
                 // 更新
                 userInfo.setUserId(existingUser.getUserId());
-                userInfo.setUserGuid(existingUser.getUserGuid()); // 保持原有的user_guid
+                userInfo.setUserGuid(existingUser.getUserGuid());
                 syncCarePersonMapper.updateUserInfo(userInfo);
                 updateCount++;
             } else {
@@ -102,7 +106,7 @@ public class SyncCarePersonServiceImpl implements ISyncCarePersonService {
             }
         }
 
-        // 5. 软删除缺失的照管对象
+        // 6. 软删除缺失的照管对象
         int deletedCount = syncCarePersonMapper.softDeleteMissingCarePersons();
 
         System.out.println("照管对象同步完成: 新增 " + insertCount + " 个，更新 " + updateCount + " 个，删除 " + deletedCount + " 个");
@@ -130,10 +134,4 @@ public class SyncCarePersonServiceImpl implements ISyncCarePersonService {
         }
     }
 
-    /**
-     * 生成用户GUID
-     */
-    private String generateUserGuid() {
-        return UUID.randomUUID().toString();
-    }
 }

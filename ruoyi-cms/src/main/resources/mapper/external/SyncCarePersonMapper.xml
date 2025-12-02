@@ -30,7 +30,7 @@
         <result property="birthday" column="birthday"/>
         <result property="entryDate" column="entry_date"/>
         <result property="outTime" column="out_time"/>
-        <result property="phonenumber" column="phonenumber"/>
+        <result property="phoneNumber" column="phonenumber"/>
         <result property="sex" column="sex"/>
         <result property="idNumber" column="id_number"/>
         <result property="address" column="address"/>
@@ -83,7 +83,7 @@
                                 birthday = #{birthday},
                                 entry_date = #{entryDate},
                                 out_time = #{outTime},
-                                phonenumber = #{phonenumber},
+                                phonenumber = #{phoneNumber},
                                 sex = #{sex},
                                 id_number = #{idNumber},
                                 address = #{address},

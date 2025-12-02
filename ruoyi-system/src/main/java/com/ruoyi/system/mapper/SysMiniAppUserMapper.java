@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.common.core.domain.entity.MiniAppUser;
+import com.ruoyi.common.core.domain.entity.MiniAppUserVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -41,10 +42,10 @@ public interface SysMiniAppUserMapper
     /**
      * 新增小程序游客用户
      *
-     * @param miniAppUser 小程序用户
+     * @param miniAppUserVo 小程序用户
      * @return 结果
      */
-    public int insertMiniAppGuestUser(MiniAppUser miniAppUser);
+    public int insertMiniAppGuestUser(MiniAppUserVo miniAppUserVo);
 
     /**
      * 修改小程序用户

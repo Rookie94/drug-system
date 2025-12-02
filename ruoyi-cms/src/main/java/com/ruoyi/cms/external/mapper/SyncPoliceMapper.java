@@ -37,7 +37,7 @@ public interface SyncPoliceMapper {
     /**
      * 根据手机号查询用户数量（用于检查重复）
      */
-    int countUserByPhonenumber(@Param("phonenumber") String phonenumber);
+    int countUserByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 
     // 新增备份相关方法
     /**

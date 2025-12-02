@@ -22,7 +22,7 @@
         <result property="deptId" column="dept_id"/>
         <result property="userGuid" column="user_guid"/>
         <result property="userName" column="user_name"/>
-        <result property="phonenumber" column="phonenumber"/>
+        <result property="phoneNumber" column="phonenumber"/>
         <result property="nickName" column="nick_name"/>
         <result property="sex" column="sex"/>
         <result property="birthday" column="birthday"/>
@@ -79,7 +79,7 @@
     <select id="countUserByPhonenumber" resultType="int">
         SELECT COUNT(1)
         FROM sys_userinfo
-        WHERE phonenumber = #{phonenumber} AND user_type = '00' AND del_flag = '0'
+        WHERE phonenumber = #{phoneNumber} AND user_type = '00' AND del_flag = '0'
     </select>
 
     <insert id="insertUser" useGeneratedKeys="true" keyProperty="userId">
@@ -89,7 +89,7 @@
             create_time, user_guid, org_id, address
         ) VALUES (
                      #{deptId}, #{userName}, #{nickName}, '00', #{birthday},
-                     #{phonenumber}, #{sex}, '$2a$10$jQgpnuhj06wld6pMQTYjweLtZhxJFm4phvmns2cj.eSJ5oJpNwvFu', '0', '0',
+                     #{phoneNumber}, #{sex}, '$2a$10$jQgpnuhj06wld6pMQTYjweLtZhxJFm4phvmns2cj.eSJ5oJpNwvFu', '0', '0',
                      now(), #{userGuid}, #{orgId}, #{address}
                  )
     </insert>
@@ -100,7 +100,7 @@
                                 nick_name = #{nickName},
                                 sex = #{sex},
                                 birthday = #{birthday},
-                                phonenumber = #{phonenumber},
+                                phonenumber = #{phoneNumber},
                                 org_id = #{orgId},
                                 address = #{address},
                                 status = '0',

@@ -100,13 +100,13 @@ public class SyncPoliceServiceImpl implements ISyncPoliceService {
                     newUser.setNickName(police.getName());
                     newUser.setSex(sexCode);
                     newUser.setBirthday(police.getBirthday());
-                    newUser.setPhonenumber(police.getMobileNumber());
+                    newUser.setPhoneNumber(police.getMobileNumber());
                     newUser.setOrgId(police.getOrgId());
                     newUser.setAddress(police.getAddress());
                     newUser.setDeptId(deptId);
 
                     // 检查手机号是否重复
-                    int phoneCount = syncPoliceMapper.countUserByPhonenumber(police.getMobileNumber());
+                    int phoneCount = syncPoliceMapper.countUserByPhoneNumber(police.getMobileNumber());
                     if (phoneCount > 0) {
                         logger.warn("手机号 {} 已存在，跳过插入用户: {}", police.getMobileNumber(), police.getName());
                         continue;
@@ -120,7 +120,7 @@ public class SyncPoliceServiceImpl implements ISyncPoliceService {
                     existingUser.setNickName(police.getName());
                     existingUser.setSex(sexCode);
                     existingUser.setBirthday(police.getBirthday());
-                    existingUser.setPhonenumber(police.getMobileNumber());
+                    existingUser.setPhoneNumber(police.getMobileNumber());
                     existingUser.setOrgId(police.getOrgId());
                     existingUser.setAddress(police.getAddress());
 

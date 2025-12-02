@@ -114,7 +114,7 @@ public class SysLoginController
     public AjaxResult loginBySms(@Validated @RequestBody SmsLoginBody smsLoginBody) {
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
-        String token = smsLoginService.login(smsLoginBody.getPhonenumber(), smsLoginBody.getCode());
+        String token = smsLoginService.login(smsLoginBody.getPhoneNumber(), smsLoginBody.getCode());
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }

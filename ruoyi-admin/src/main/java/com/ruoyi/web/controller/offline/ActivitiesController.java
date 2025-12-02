@@ -1,10 +1,12 @@
 package com.ruoyi.web.controller.offline;
 
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.cms.job.domain.ResJobinfo;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.system.domain.ResApporParam;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +82,37 @@ public class ActivitiesController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody Activities activities)
     {
+        Date startTime=activities.getStartTime();
+        Date endTime=activities.getEndTime();
+        Date signDeadline=activities.getSignDeadline();
+        if(startTime==null){
+            return error("活动开始时间不能为空");
+        }
+        if(endTime==null){
+            return error("活动结束时间不能为空");
+        }
+        if (!endTime.after(startTime)) {
+            return error("结束时间必须晚于开始时间");
+        }
+        if(activities.getParentActivityId()==0){
+            if(signDeadline==null){
+                return error("报名截止时间不能为空");
+            }
+            // 报名截止时间不能晚于结束时间
+            if (signDeadline.after(endTime)) {
+                return error("报名截止时间不能晚于活动结束时间");
+            }
+
+            // 报名截止时间不能晚于开始时间（通常报名应该在活动开始前截止）
+            //if (!signDeadline.before(startTime)) {
+            //    return error("报名截止时间必须早于活动开始时间");
+            //}
+
+            // 可选：报名截止时间不能早于当前时间（如果这是创建新活动）
+            //if (signDeadline.before(new Date())) {
+            //    return error("报名截止时间不能早于当前时间");
+            //}
+        }
         return toAjax(activitiesService.insertActivities(activities));
     }
 
@@ -91,6 +124,37 @@ public class ActivitiesController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody Activities activities)
     {
+        Date startTime=activities.getStartTime();
+        Date endTime=activities.getEndTime();
+        Date signDeadline=activities.getSignDeadline();
+        if(startTime==null){
+            return error("活动开始时间不能为空");
+        }
+        if(endTime==null){
+            return error("活动结束时间不能为空");
+        }
+        if (!endTime.after(startTime)) {
+            return error("结束时间必须晚于开始时间");
+        }
+        if(activities.getParentActivityId()==0){
+            if(signDeadline==null){
+                return error("报名截止时间不能为空");
+            }
+            // 报名截止时间不能晚于结束时间
+            if (signDeadline.after(endTime)) {
+                return error("报名截止时间不能晚于活动结束时间");
+            }
+
+            // 报名截止时间不能晚于开始时间（通常报名应该在活动开始前截止）
+            //if (!signDeadline.before(startTime)) {
+            //    return error("报名截止时间必须早于活动开始时间");
+            //}
+
+            // 可选：报名截止时间不能早于当前时间（如果这是创建新活动）
+            //if (signDeadline.before(new Date())) {
+            //    return error("报名截止时间不能早于当前时间");
+            //}
+        }
         return toAjax(activitiesService.updateActivities(activities));
     }
 

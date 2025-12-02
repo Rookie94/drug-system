@@ -17,6 +17,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
+    <resultMap type="com.ruoyi.common.core.domain.entity.MiniAppUserVo" id="MiniAppUserVoResult">
+        <result property="userType" column="user_type"  />
+        <result property="nickName"     column="nick_name"    />
+        <result property="email"        column="email"        />
+        <result property="phoneNumber"  column="phonenumber"  />
+        <result property="sex"          column="sex"          />
+        <result property="avatar"       column="avatar"       />
+        <result property="birthday"          column="birthday"          />
+        <result property="entryDate"          column="entry_date"          />
+        <result property="nationId" column="nation_id"  />
+        <result property="idNumber" column="id_number"  />
+        <result property="provinceId" column="province_id"  />
+        <result property="cityId"      column="city_id"     />
+        <result property="areaId"      column="area_id"     />
+        <result property="password"     column="password"     />
+        <result property="status"       column="status"       />
+        <result property="delFlag"      column="del_flag"     />
+        <result property="unionId"       column="union_id"       />
+        <result property="openId"       column="open_id"       />
+        <result property="delFlag"      column="del_flag"     />
+        <result property="loginIp"      column="login_ip"     />
+        <result property="loginDate"    column="login_date"   />
+        <result property="createBy"     column="create_by"    />
+        <result property="createTime"   column="create_time"  />
+        <result property="updateBy"     column="update_by"    />
+        <result property="updateTime"   column="update_time"  />
+        <result property="remark"       column="remark"       />
+    </resultMap>
+
     <sql id="selectMiniAppUserVo">
         select id, nick_name, avatar, open_id,union_id,phonenumber, sex, mini_app_id, remark, create_time, update_time from sys_app_user
     </sql>
@@ -67,7 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <insert id="insertMiniAppGuestUser" parameterType="MiniAppUser" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertMiniAppGuestUser" parameterType="MiniAppUserVo" useGeneratedKeys="true" keyProperty="user_id">
         insert into sys_userinfo
         <trim prefix="(" suffix=")" suffixOverrides=",">
             dept_id,
@@ -75,10 +104,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             nick_name,
             user_type,
             <if test="avatar != null">avatar,</if>
+            <if test="idNumber != null">id_number,</if>
             <if test="phoneNumber != null">phonenumber,</if>
             <if test="openId != null">open_id,</if>
             <if test="unionId != null">union_id,</if>
             <if test="sex != null">sex,</if>
+            <if test="provinceId != null">province_id,</if>
+            <if test="cityId != null">city_id,</if>
+            <if test="areaId != null">area_id,</if>
             password,
             <if test="remark != null">remark,</if>
             <if test="createTime != null">create_time,</if>
@@ -87,13 +120,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             133,
             CONCAT('游客',DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),FLOOR(RAND() * 1000)),
-            '游客',
+            #{nickName},
             '33',
             <if test="avatar != null">#{avatar},</if>
+            <if test="idNumber != null">#{idNumber},</if>
             <if test="phoneNumber != null">#{phoneNumber},</if>
             <if test="openId != null">#{openId},</if>
             <if test="unionId != null">#{unionId},</if>
             <if test="sex != null">#{sex},</if>
+            <if test="provinceId != null">#{provinceId},</if>
+            <if test="cityId != null">#{cityId},</if>
+            <if test="areaId != null">#{areaId},</if>
             '$2a$10$nstPJQqVOBUgonuGIt.LdeDhbMWDZDLHtqCeZkKmuf2R4QOpCRQR.',
             <if test="remark != null">#{remark},</if>
             <if test="createTime != null">#{createTime},</if>

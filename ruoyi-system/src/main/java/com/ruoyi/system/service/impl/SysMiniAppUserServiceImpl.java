@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.core.domain.entity.MiniAppUserVo;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.OSSUtils;
@@ -74,13 +75,13 @@ public class SysMiniAppUserServiceImpl implements ISysMiniAppUserService
     /**
      * 新增小程序游客用户
      *
-     * @param miniAppUser 小程序用户
+     * @param miniAppUserVo 小程序用户
      * @return 结果
      */
-    public int insertMiniAppGuestUser(MiniAppUser miniAppUser)
+    public int insertMiniAppGuestUser(MiniAppUserVo miniAppUserVo)
     {
-        miniAppUser.setCreateTime(DateUtils.getNowDate());
-        return miniAppUserMapper.insertMiniAppGuestUser(miniAppUser);
+        miniAppUserVo.setCreateTime(DateUtils.getNowDate());
+        return miniAppUserMapper.insertMiniAppGuestUser(miniAppUserVo);
     }
 
     /**

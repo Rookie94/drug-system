@@ -165,6 +165,15 @@ public class SysUserServiceImpl implements ISysUserService
     }
 
     /**
+     * 根据身份证号查询用户信息
+     * @param idCardNumber
+     * @return
+     */
+    public SysUser selectWxUserByIdCardNumber(String idCardNumber){
+        return userMapper.selectWxUserByIdCardNumber(idCardNumber);
+    }
+
+    /**
      * 查询用户所属角色组
      * 
      * @param userName 用户名

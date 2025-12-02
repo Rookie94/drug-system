@@ -18,11 +18,11 @@ import com.ruoyi.common.xss.Xss;
 
 /**
  * 用户对象 sys_user
- * 
+ *
  * @author ruoyi
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SysUser extends BaseEntity
+public class MiniAppUserVo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -85,14 +85,18 @@ public class SysUser extends BaseEntity
     /** openId */
     private String openId;
 
+    private String nationId;
+
+    private String idNumber;
+
     /** 省 */
-    private Long provinceId;
+    private String provinceId;
 
     /** 市 */
-    private Long cityId;
+    private String cityId;
 
     /** 区 */
-    private Long areaId;
+    private String areaId;
 
     /** 最后登录IP */
     @Excel(name = "最后登录IP", type = Type.EXPORT)
@@ -104,29 +108,20 @@ public class SysUser extends BaseEntity
 
     /** 部门对象 */
     @Excels({
-        @Excel(name = "部门名称", targetAttr = "deptName", type = Type.EXPORT),
-        @Excel(name = "部门负责人", targetAttr = "leader", type = Type.EXPORT)
+            @Excel(name = "部门名称", targetAttr = "deptName", type = Type.EXPORT),
+            @Excel(name = "部门负责人", targetAttr = "leader", type = Type.EXPORT)
     })
-    private SysDept dept;
 
-    /** 角色对象 */
-    private List<SysRole> roles;
-
-    /** 角色组 */
-    private Long[] roleIds;
-
-    /** 岗位组 */
-    private Long[] postIds;
 
     /** 角色ID */
     private Long roleId;
 
-    public SysUser()
+    public MiniAppUserVo()
     {
 
     }
 
-    public SysUser(Long userId)
+    public MiniAppUserVo(Long userId)
     {
         this.userId = userId;
     }
@@ -233,27 +228,27 @@ public class SysUser extends BaseEntity
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getProvinceId() {
+    public String getProvinceId() {
         return provinceId;
     }
 
-    public void setProvinceId(Long provinceId) {
+    public void setProvinceId(String provinceId) {
         this.provinceId = provinceId;
     }
 
-    public Long getCityId() {
+    public String getCityId() {
         return cityId;
     }
 
-    public void setCityId(Long cityId) {
+    public void setCityId(String cityId) {
         this.cityId = cityId;
     }
 
-    public Long getAreaId() {
+    public String getAreaId() {
         return areaId;
     }
 
-    public void setAreaId(Long areaId) {
+    public void setAreaId(String areaId) {
         this.areaId = areaId;
     }
 
@@ -315,6 +310,22 @@ public class SysUser extends BaseEntity
 
     public void setOpenId(String openId) {this.openId = openId;}
 
+    public String getNationId() {
+        return nationId;
+    }
+
+    public void setNationId(String nationId) {
+        this.nationId = nationId;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
     public String getLoginIp()
     {
         return loginIp;
@@ -335,79 +346,30 @@ public class SysUser extends BaseEntity
         this.loginDate = loginDate;
     }
 
-    public SysDept getDept()
-    {
-        return dept;
-    }
-
-    public void setDept(SysDept dept)
-    {
-        this.dept = dept;
-    }
-
-    public List<SysRole> getRoles()
-    {
-        return roles;
-    }
-
-    public void setRoles(List<SysRole> roles)
-    {
-        this.roles = roles;
-    }
-
-    public Long[] getRoleIds()
-    {
-        return roleIds;
-    }
-
-    public void setRoleIds(Long[] roleIds)
-    {
-        this.roleIds = roleIds;
-    }
-
-    public Long[] getPostIds()
-    {
-        return postIds;
-    }
-
-    public void setPostIds(Long[] postIds)
-    {
-        this.postIds = postIds;
-    }
-
-    public Long getRoleId()
-    {
-        return roleId;
-    }
-
-    public void setRoleId(Long roleId)
-    {
-        this.roleId = roleId;
-    }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("userId", getUserId())
-            .append("deptId", getDeptId())
-            .append("userName", getUserName())
-            .append("userType", getUserType())
-            .append("nickName", getNickName())
-            .append("email", getEmail())
-            .append("phoneNumber", getPhoneNumber())
-            .append("sex", getSex())
-            .append("avatar", getAvatar())
-            .append("password", getPassword())
-            .append("status", getStatus())
-            .append("delFlag", getDelFlag())
-            .append("loginIp", getLoginIp())
-            .append("loginDate", getLoginDate())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("remark", getRemark())
-            .append("dept", getDept())
-            .toString();
+                .append("userId", getUserId())
+                .append("deptId", getDeptId())
+                .append("userName", getUserName())
+                .append("userType", getUserType())
+                .append("nickName", getNickName())
+                .append("email", getEmail())
+                .append("phoneNumber", getPhoneNumber())
+                .append("idNumber", getIdNumber())
+                .append("sex", getSex())
+                .append("avatar", getAvatar())
+                .append("password", getPassword())
+                .append("status", getStatus())
+                .append("delFlag", getDelFlag())
+                .append("loginIp", getLoginIp())
+                .append("loginDate", getLoginDate())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("remark", getRemark())
+                .toString();
     }
 }

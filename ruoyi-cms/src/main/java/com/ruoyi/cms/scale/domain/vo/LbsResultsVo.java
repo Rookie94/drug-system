@@ -67,7 +67,7 @@ public class LbsResultsVo extends BaseEntity
 
     /** 手机号码 */
     @Excel(name = "手机号码")
-    private String phonenumber;
+    private String phoneNumber;
 
     /** 提交时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -215,14 +215,14 @@ public class LbsResultsVo extends BaseEntity
         return birthday;
     }
 
-    public void setPhonenumber(String phonenumber) 
+    public void setPhoneNumber(String phoneNumber) 
     {
-        this.phonenumber = phonenumber;
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getPhonenumber() 
+    public String getPhoneNumber() 
     {
-        return phonenumber;
+        return phoneNumber;
     }
 
     public void setCommitTime(Date commitTime) 
@@ -289,7 +289,7 @@ public class LbsResultsVo extends BaseEntity
             .append("userType", getUserType())
             .append("sex", getSex())
             .append("birthday", getBirthday())
-            .append("phonenumber", getPhonenumber())
+            .append("phoneNumber", getPhoneNumber())
             .append("commitTime", getCommitTime())
             .append("status", getStatus())
             .append("jsonResult", getJsonResult())

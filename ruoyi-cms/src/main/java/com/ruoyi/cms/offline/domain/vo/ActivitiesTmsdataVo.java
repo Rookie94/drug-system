@@ -148,7 +148,7 @@ public class ActivitiesTmsdataVo extends BaseEntity
 
     /** 手机号码 */
     @Excel(name = "手机号码")
-    private String phonenumber;
+    private String phoneNumber;
 
     /** 归属部门 */
     @Excel(name = "归属部门")
@@ -418,14 +418,14 @@ public class ActivitiesTmsdataVo extends BaseEntity
         return nickName;
     }
 
-    public void setPhonenumber(String phonenumber) 
+    public void setPhoneNumber(String phoneNumber) 
     {
-        this.phonenumber = phonenumber;
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getPhonenumber() 
+    public String getPhoneNumber() 
     {
-        return phonenumber;
+        return phoneNumber;
     }
 
     public void setDeptId(Long deptId) 
@@ -479,7 +479,7 @@ public class ActivitiesTmsdataVo extends BaseEntity
             .append("userType", getUserType())
             .append("userName", getUserName())
             .append("nickName", getNickName())
-            .append("phonenumber", getPhonenumber())
+            .append("phoneNumber", getPhoneNumber())
             .append("deptId", getDeptId())
             .append("deptName", getDeptName())
             .append("createBy", getCreateBy())

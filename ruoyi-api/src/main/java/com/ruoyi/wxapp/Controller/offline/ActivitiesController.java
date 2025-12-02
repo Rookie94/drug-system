@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -149,6 +150,14 @@ public class ActivitiesController extends BaseController
         }
         if(sysUser.getUserType().equals("00")){
             return error("学员才能报名!");
+        }
+        Date signDeadline=activity.getSignDeadline();
+        Date now = new Date();
+        if (signDeadline.before(now)) {
+            // 格式化显示具体的截止时间
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+            String deadlineStr = sdf.format(signDeadline);
+            return error(String.format("报名已于 %s 截止", deadlineStr));
         }
         ActivitiesSignUpVo signUpCheck=new ActivitiesSignUpVo();
         signUpCheck.setUserId(sysUser.getUserId());

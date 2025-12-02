@@ -11,7 +11,7 @@ public class SyncUserInfo {
     private Date birthday;
     private Date entryDate;
     private Date outTime;
-    private String phonenumber;
+    private String phoneNumber;
     private String sex;
     private String idNumber;
     private String address;
@@ -46,8 +46,8 @@ public class SyncUserInfo {
     public Date getOutTime() { return outTime; }
     public void setOutTime(Date outTime) { this.outTime = outTime; }
 
-    public String getPhonenumber() { return phonenumber; }
-    public void setPhonenumber(String phonenumber) { this.phonenumber = phonenumber; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
     public String getSex() { return sex; }
     public void setSex(String sex) { this.sex = sex; }

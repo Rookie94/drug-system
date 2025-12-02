@@ -1,20 +1,7 @@
 package com.ruoyi.wxapp.Controller.wx;
 
 import com.alibaba.fastjson2.JSON;
-import com.ruoyi.common.core.domain.entity.MiniAppUser;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.core.domain.model.WxParam;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.framework.jssms.domain.JsSmsSendResponse;
-import com.ruoyi.framework.jssms.service.IJsSmsService;
-import com.ruoyi.framework.sms.SmsLoginService;
-import com.ruoyi.framework.sms.SmsSendDTO;
-import com.ruoyi.framework.web.service.TokenService;
-import com.ruoyi.system.domain.SysArea;
-import com.ruoyi.system.service.ISysAreaService;
-import com.ruoyi.system.service.ISysMiniAppUserService;
-import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.framework.utils.MyLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +23,28 @@ import com.ruoyi.common.core.domain.entity.MiniApp;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.WxLoginBody;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.WeChatUtils;
+import com.ruoyi.common.core.domain.entity.MiniAppUser;
+import com.ruoyi.common.core.domain.entity.MiniAppUserVo;
+import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.core.domain.model.WxParam;
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
+
 import com.ruoyi.framework.web.service.SysLoginService;
 import com.ruoyi.framework.web.service.SysPermissionService;
+import com.ruoyi.framework.jssms.domain.JsSmsSendResponse;
+import com.ruoyi.framework.jssms.service.IJsSmsService;
+import com.ruoyi.framework.sms.SmsLoginService;
+import com.ruoyi.framework.web.service.SysWxLoginService;
+import com.ruoyi.framework.sms.SmsSendDTO;
+import com.ruoyi.framework.web.service.TokenService;
+
 import com.ruoyi.system.service.ISysMiniAppService;
-import com.ruoyi.common.utils.WeChatUtils;
+import com.ruoyi.system.domain.SysArea;
+import com.ruoyi.system.service.ISysAreaService;
+import com.ruoyi.system.service.ISysMiniAppUserService;
+import com.ruoyi.system.service.ISysUserService;
 
 import javax.annotation.Resource;
 
@@ -70,6 +75,9 @@ public class WxLoginController  {
 
     @Autowired
     private ISysUserService userService;
+
+    @Autowired
+    private SysWxLoginService sysWxLoginService;
 
     @Autowired
     private ISysAreaService sysAreaService;
@@ -172,7 +180,7 @@ public class WxLoginController  {
         WxParam wxParam=WeChatUtils.getOpenIdAndSessionKey(appId,appSecret,code);
 
         if(wxParam==null){
-            return AjaxResult.error("检查手机号绑定失败,获取参数失败！");
+            return AjaxResult.error("获取当前微信参数失败！");
         }
 
         //获取session_key和openid
@@ -185,15 +193,10 @@ public class WxLoginController  {
 
         List<MiniAppUser> listTemp= miniAppUserService.selectMiniAppUserList(miniAppUser);
         if((listTemp==null || listTemp.size()==0) ){
-            return new AjaxResult(401,"手机号未绑定");
+            return new AjaxResult(401,"当前微信未绑定");
         }
         else{
-            if(StringUtils.isEmpty(listTemp.get(0).getPhoneNumber())){
-                return new AjaxResult(401,"手机号未绑定");
-            }
-            else{
-                return new AjaxResult(200,"手机号已绑定");
-            }
+            return new AjaxResult(200,"当前微信已绑定");
         }
     }
 
@@ -212,7 +215,7 @@ public class WxLoginController  {
         //AppId,AppSecret
         MiniApp wxApp = appService.selectMiniAppById(id);
         if (wxApp == null) {
-            return AjaxResult.error("手机号绑定失败,小程序配置不存在！");
+            return AjaxResult.error("用户注册失败,小程序配置不存在！");
         }
 
         String appId = wxApp.getAppid();
@@ -225,31 +228,45 @@ public class WxLoginController  {
         WxParam wxParam = WeChatUtils.getOpenIdAndSessionKey(appId, appSecret, code);
 
         if (wxParam == null) {
-            return AjaxResult.error("手机号绑定失败,获取小程序参数失败！");
+            return AjaxResult.error("绑定失败,获取当前微信参数失败！");
         }
 
         //获取session_key和openid
-        String sessionKey = wxParam.getSessionKey();
+        //String sessionKey = wxParam.getSessionKey();
         String openId = wxParam.getOpenId();
 
         //phoneCode
-        String phoneCode = wxLoginBody.getPhoneCode();
+        //String phoneCode = wxLoginBody.getPhoneCode();
         //verifyCode
+
+        //验证码
         String verifyCode= wxLoginBody.getVerifyCode();
+        //角色Id
+        String roleId=wxLoginBody.getRoleId();
+        if(roleId.equals("99")){
+            roleId="33";
+        }
+        //身份证号
+        String idCardNumber=wxLoginBody.getIdCardNumber();
+        //姓名
+        String nickName=wxLoginBody.getNickName();
+        //性别
+        String sex=wxLoginBody.getSex();
+
         //秘钥
-        String encryptedIv = wxLoginBody.getEncryptedIv();
+        //String encryptedIv = wxLoginBody.getEncryptedIv();
         //加密数据
-        String encryptedData = wxLoginBody.getEncryptedData();
+        //String encryptedData = wxLoginBody.getEncryptedData();
 
         MiniAppUser miniAppUser = new MiniAppUser();
         miniAppUser.setMiniAppId(id);
         miniAppUser.setOpenId(openId);
-
         List<MiniAppUser> listTemp = miniAppUserService.selectMiniAppUserList(miniAppUser);
 
         if ((listTemp == null || listTemp.size() == 0)) {
-            String phoneNumber = "";
+            //String phoneNumber = "";
             //新用户
+            /*
             if (!StringUtils.isEmpty(encryptedIv) && !StringUtils.isEmpty(encryptedData)) {
                 wxParam = WeChatUtils.parseWxParam(wxParam, sessionKey, phoneCode, encryptedIv, encryptedData);
                 if (wxParam == null) {
@@ -260,11 +277,27 @@ public class WxLoginController  {
             } else {
                 phoneNumber = wxLoginBody.getPhoneNumber();
             }
-
+            */
+            String phoneNumber = wxLoginBody.getPhoneNumber();
             if (phoneNumber == null || phoneNumber == "") {
-                return AjaxResult.error("手机号绑定失败,获取手机号失败！");
+                return AjaxResult.error("手机号不能为空！");
             }
-
+            if (verifyCode == null || verifyCode == "") {
+                return AjaxResult.error("验证码不能为空！");
+            }
+            if(roleId.equals("11")){
+                if (idCardNumber == null || idCardNumber == "") {
+                    return AjaxResult.error("身份证号不能为空！");
+                }
+            }
+            if(roleId.equals("33")){
+                if (nickName == null || nickName == "") {
+                    return AjaxResult.error("姓名不能为空！");
+                }
+                if (sex == null || sex == "") {
+                    return AjaxResult.error("性别不能为空！");
+                }
+            }
             try {
                 smsLoginService.checkMessageCaptcha(phoneNumber,verifyCode);
             }
@@ -272,54 +305,30 @@ public class WxLoginController  {
             {
                 return AjaxResult.error("手机验证码不正确！");
             }
+            AjaxResult ajaxResult=sysWxLoginService.registerUser(id,openId,wxParam.getNickName(),wxParam.getAvatarUrl(),wxLoginBody);
+            if(!ajaxResult.isSuccess()){
+                StringBuilder sb = new StringBuilder();
+                sb.append("AppId:").append(id);
+                sb.append("OpenId:").append(openId);
+                sb.append("手机号:").append(phoneNumber);
+                sb.append("身份证号:").append(idCardNumber);
+                sb.append("姓名:").append(nickName);
+                String result = sb.toString();
+                MyLog.error("用户注册","wxLogin","失败",result);
+            }
+            return ajaxResult;
 
-            //记录微信登录信息
-            miniAppUser.setNickName(wxParam.getNickName());
-            miniAppUser.setAvatar(wxParam.getAvatarUrl());
-            miniAppUser.setPhoneNumber(phoneNumber);
-            miniAppUserService.insertMiniAppUser(miniAppUser);
-
-            List<MiniAppUser> list1 = miniAppUserService.selectMiniAppUserList(miniAppUser);
-            if (list1 == null && list1.size() == 0) {
-                return AjaxResult.error("手机号绑定失败,信息登记失败！");
-            }
-            //判断手机号匹配情况
-            SysUser wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
-            if (wUser == null) {
-                //创建游客用户
-                miniAppUserService.insertMiniAppGuestUser(miniAppUser);
-            }
-            wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
-            if (wUser == null) {
-                return AjaxResult.error("手机号绑定失败,用户未注册！");
-            } else {
-                //绑定
-                wUser.setOpenId(openId);
-                wUser.setUpdateBy("sys");
-                wUser.setUpdateTime(DateUtils.getNowDate());
-                userService.updateUser(wUser);
-                return AjaxResult.success("手机号绑定成功！");
-            }
         } else {
-            String phoneNumber = listTemp.get(0).getPhoneNumber();
-            //判断手机号匹配情况
-            SysUser wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
-            if (wUser == null) {
-                miniAppUser.setPhoneNumber(phoneNumber);
-                //创建游客用户
-                miniAppUserService.insertMiniAppGuestUser(miniAppUser);
-            }
-            wUser = userService.selectWxUserByPhoneNumber(phoneNumber);
-            if (wUser == null) {
-                return AjaxResult.error("手机号绑定失败,用户未注册！");
-            } else {
-                //绑定
-                wUser.setOpenId(openId);
-                wUser.setUpdateBy("sys");
-                wUser.setUpdateTime(DateUtils.getNowDate());
-                userService.updateUser(wUser);
-                return AjaxResult.success("手机号绑定成功！");
-            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("错误信息:").append("用户在MiniAppUser中已存在,已经注册过,二次注册!");
+            sb.append("AppId:").append(id);
+            sb.append("OpenId:").append(openId);
+            sb.append("手机号:").append(wxLoginBody.getPhoneNumber());
+            sb.append("身份证号:").append(idCardNumber);
+            sb.append("姓名:").append(nickName);
+            String result = sb.toString();
+            MyLog.error("用户注册","wxLogin","失败",result);
+            return AjaxResult.error("用户已注册.如有问题请与系统管理员联系！");
         }
     }
 
@@ -361,19 +370,26 @@ public class WxLoginController  {
 
         SysUser wxUser = userService.selectWxUserByOpenId(openId);
         if (wxUser == null) {
-            return AjaxResult.error("微信登录失败,用户信息不存在！");
-        }
+            //记录日志
+            StringBuilder sb = new StringBuilder();
+            sb.append("错误信息:").append("微信登录失败,用户信息不存在!");
+            sb.append("AppId:").append(id);
+            sb.append("OpenId:").append(openId);
+            sb.append("手机号:").append(wxLoginBody.getPhoneNumber());
+            String result = sb.toString();
+            MyLog.error("用户注册","wxLogin","失败",result);
 
+            return AjaxResult.error("微信登录失败,用户信息不存在！");
+
+        }
         if(!wxUser.getStatus().equals("0")){
             return AjaxResult.error("微信登录失败,用户已禁止登录！");
         }
-
         //获取token
         String token = loginService.wxLogin(openId,wxUser);
         AjaxResult ajax = AjaxResult.success();
         ajax.put(Constants.TOKEN, token);
         return ajax;
-
     }
 
     /**

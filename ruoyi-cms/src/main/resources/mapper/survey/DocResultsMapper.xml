@@ -35,7 +35,7 @@
         <result property="userType"    column="user_type"    />
         <result property="sex"    column="sex"    />
         <result property="birthday"    column="birthday"    />
-        <result property="phonenumber"    column="phonenumber"    />
+        <result property="phoneNumber"    column="phonenumber"    />
         <result property="commitTime"     column="commit_time"    />
         <result property="status"         column="status"         />
         <result property="jsonResult"     column="json_result"    />
@@ -92,7 +92,7 @@
             <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
             <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
             <if test="birthday != null "> and birthday = #{birthday}</if>
-            <if test="phonenumber != null  and phonenumber != ''"> and phonenumber like concat('%', #{phonenumber}, '%')</if>
+            <if test="phoneNumber != null  and phoneNumber != ''"> and phonenumber like concat('%', #{phoneNumber}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="params.beginCommitTime != null and params.beginCommitTime != '' and params.endCommitTime != null and params.endCommitTime != ''"> and t.commit_time between #{params.beginCommitTime} and #{params.endCommitTime}</if>
             <!-- 数据范围过滤 -->

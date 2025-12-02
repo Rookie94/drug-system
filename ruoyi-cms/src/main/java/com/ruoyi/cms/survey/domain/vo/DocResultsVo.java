@@ -63,7 +63,7 @@ public class DocResultsVo extends BaseEntity {
 
     /** 手机号码 */
     @Excel(name = "手机号码")
-    private String phonenumber;
+    private String phoneNumber;
 
     /** 提交时间 */
     @Excel(name = "提交时间")
@@ -185,12 +185,12 @@ public class DocResultsVo extends BaseEntity {
         this.birthday = birthday;
     }
 
-    public String getPhonenumber() {
-        return phonenumber;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Date getCommitTime() {
@@ -256,7 +256,7 @@ public class DocResultsVo extends BaseEntity {
                 .append("userType", getUserType())
                 .append("sex", getSex())
                 .append("birthday", getBirthday())
-                .append("phonenumber", getPhonenumber())
+                .append("phoneNumber", getPhoneNumber())
                 .append("commitTime", getCommitTime())
                 .append("status", getStatus())
                 .append("jsonResult", getJsonResult())

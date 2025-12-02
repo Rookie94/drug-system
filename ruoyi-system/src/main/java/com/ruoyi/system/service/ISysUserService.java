@@ -90,6 +90,13 @@ public interface ISysUserService
     public SysUser selectWxUserByPhoneNumber(String phoneNumber);
 
     /**
+     * 根据身份证号查询用户信息
+     * @param idCardNumber
+     * @return
+     */
+    public SysUser selectWxUserByIdCardNumber(String idCardNumber);
+
+    /**
      * 校验用户名称是否唯一
      * 
      * @param user 用户信息

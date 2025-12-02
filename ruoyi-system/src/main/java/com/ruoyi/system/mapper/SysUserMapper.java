@@ -74,6 +74,13 @@ public interface SysUserMapper
     public SysUser selectWxUserByPhoneNumber(String phoneNumber);
 
     /**
+     * 根据身份证号查询用户信息
+     * @param idCardNumber
+     * @return
+     */
+    public SysUser selectWxUserByIdCardNumber(String idCardNumber);
+
+    /**
      * 新增用户信息
      * 
      * @param user 用户信息
@@ -142,10 +149,10 @@ public interface SysUserMapper
     /**
      * 校验手机号码是否唯一
      *
-     * @param phonenumber 手机号码
+     * @param phoneNumber 手机号码
      * @return 结果
      */
-    public SysUser checkPhoneUnique(String phonenumber);
+    public SysUser checkPhoneUnique(String phoneNumber);
 
     /**
      * 校验email是否唯一

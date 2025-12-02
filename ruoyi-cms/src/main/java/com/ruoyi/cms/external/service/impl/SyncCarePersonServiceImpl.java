@@ -82,7 +82,7 @@ public class SyncCarePersonServiceImpl implements ISyncCarePersonService {
             userInfo.setBirthday(carePerson.getBirthday());
             userInfo.setEntryDate(carePerson.getIntoTime()); // into_time -> entry_date
             userInfo.setOutTime(carePerson.getOutTime());
-            userInfo.setPhonenumber(carePerson.getMobileNumber());
+            userInfo.setPhoneNumber(carePerson.getMobileNumber());
             userInfo.setSex(convertSex(carePerson.getSex()));
             userInfo.setIdNumber(carePerson.getIdNumber());
             userInfo.setAddress(carePerson.getAddress());

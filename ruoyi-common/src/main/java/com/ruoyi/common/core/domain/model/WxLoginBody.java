@@ -34,6 +34,8 @@ public class WxLoginBody {
 
     private String birthDay;
 
+    private String nationId;
+
     private String provinceId;
 
     private String cityId;
@@ -136,6 +138,14 @@ public class WxLoginBody {
         this.birthDay = birthDay;
     }
 
+    public String getNationId() {
+        return nationId;
+    }
+
+    public void setNationId(String nationId) {
+        this.nationId = nationId;
+    }
+
     public String getProvinceId() {
         return provinceId;
     }
@@ -175,6 +185,7 @@ public class WxLoginBody {
                 ", nickName='" + nickName + '\'' +
                 ", Sex='" + Sex + '\'' +
                 ", birthDay='" + birthDay + '\'' +
+                ", nationId='" + nationId + '\'' +
                 ", provinceId='" + provinceId + '\'' +
                 ", cityId='" + cityId + '\'' +
                 ", areaId='" + areaId + '\'' +

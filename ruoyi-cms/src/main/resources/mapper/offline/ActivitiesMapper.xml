@@ -220,6 +220,7 @@
                 <if test="isReview != null and isReview != ''">and is_review = #{isReview}</if>
                 <if test="canReview != null and canReview != ''">and can_review = #{canReview}</if>
             </where>
+            order by X.publish_time desc
     </select>
 
     <insert id="insertActivities" parameterType="Activities" useGeneratedKeys="true" keyProperty="activityId">

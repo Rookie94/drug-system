@@ -82,7 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			AND u.status = #{status}
 		</if>
 		<if test="phoneNumber != null and phoneNumber != ''">
-			AND u.phonenumber= #{phoneNumber}
+			AND u.phonenumber like concat('%', #{phoneNumber}, '%')
 		</if>
 		<if test="unionId != null and unionId != ''">
 			AND u.union_id= #{unionId}
@@ -120,7 +120,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			AND u.status = #{status}
 		</if>
 		<if test="phoneNumber != null and phoneNumber != ''">
-			AND u.phonenumber= #{phoneNumber}
+			AND u.phonenumber like concat('%', #{phoneNumber}, '%')
 		</if>
 		<if test="unionId != null and unionId != ''">
 			AND u.union_id= #{unionId}

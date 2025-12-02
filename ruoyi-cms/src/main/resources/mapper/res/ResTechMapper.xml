@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
-        order by order_num
+        order by publish_time desc
     </select>
     
     <select id="selectResTechByTechId" parameterType="Long" resultMap="ResTechResult">

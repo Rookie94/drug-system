@@ -25,6 +25,10 @@ public class ActivitiesTmsdataVo extends BaseEntity
     @Excel(name = "活动ID")
     private Long activityId;
 
+    /** 活动代码 */
+    @Excel(name = "活动代码")
+    private String activityCode;
+
     /** 活动主题 */
     @Excel(name = "活动主题")
     private String activityName;
@@ -184,6 +188,15 @@ public class ActivitiesTmsdataVo extends BaseEntity
     public Long getActivityId() 
     {
         return activityId;
+    }
+
+
+    public String getActivityCode() {
+        return activityCode;
+    }
+
+    public void setActivityCode(String activityCode) {
+        this.activityCode = activityCode;
     }
 
     public void setActivityName(String activityName) 

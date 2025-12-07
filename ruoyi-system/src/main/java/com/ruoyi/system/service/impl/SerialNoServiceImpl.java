@@ -1,7 +1,9 @@
 package com.ruoyi.system.service.impl;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,12 +57,22 @@ public class SerialNoServiceImpl implements ISerialNoService
     @Override
     public int insertSerialNo(SerialNo serialNo)
     {
-        // 使用规则中的日期格式设置最后重置日期
-        String currentDate = LocalDate.now().format(getDateFormatter(serialNo.getDateFormat()));
-        serialNo.setLastResetDate(currentDate);
-        // 设置初始序列号为0，这样第一次使用会自增为1
-        serialNo.setCurrentSeq(0L);
         serialNo.setCreateTime(DateUtils.getNowDate());
+
+        // 设置 lastResetDate 的默认值
+        if (serialNo.getLastResetDate() == null || serialNo.getLastResetDate().trim().isEmpty()) {
+            // 如果日期格式不为空，使用当前日期；否则为空字符串
+            if (serialNo.getDateFormat() != null && !serialNo.getDateFormat().trim().isEmpty()) {
+                serialNo.setLastResetDate(getCurrentDateString(serialNo.getDateFormat()));
+            } else {
+                serialNo.setLastResetDate("");
+            }
+        }
+        // 确保 currentSeq 有默认值（从0开始）
+        if (serialNo.getCurrentSeq() == null) {
+            serialNo.setCurrentSeq(0L);
+        }
+
         return serialNoMapper.insertSerialNo(serialNo);
     }
 
@@ -101,46 +113,174 @@ public class SerialNoServiceImpl implements ISerialNoService
         return serialNoMapper.deleteSerialNoById(id);
     }
 
+    /**
+     * 检查是否需要重置序列号
+     */
     private boolean needReset(String strategy, String lastDate, String dateFormat) {
-        if (lastDate == null) return true;
+        if (lastDate == null || lastDate.trim().isEmpty()) {
+            return true;
+        }
 
-        LocalDate last = LocalDate.parse(lastDate, getDateFormatter(dateFormat));
-        LocalDate now = LocalDate.now();
+        try {
+            switch (strategy) {
+                case "DAILY":
+                    // 对于每日重置，需要完整的日期
+                    LocalDate lastDay = parseToLocalDate(lastDate, dateFormat);
+                    return lastDay.isBefore(LocalDate.now());
 
-        switch (strategy) {
-            case "DAILY": return last.isBefore(now);
-            case "MONTHLY": return last.getMonthValue() != now.getMonthValue() || last.getYear() != now.getYear();
-            case "YEARLY": return last.getYear() != now.getYear();
-            case "NEVER": return false;
-            default: return false;
+                case "MONTHLY":
+                    // 对于每月重置，只需要年月
+                    YearMonth lastMonth = parseToYearMonth(lastDate, dateFormat);
+                    return lastMonth.isBefore(YearMonth.now());
+
+                case "YEARLY":
+                    // 对于每年重置，只需要年份
+                    int lastYear = parseToYear(lastDate, dateFormat);
+                    return lastYear < LocalDate.now().getYear();
+
+                case "NEVER":
+                    return false;
+
+                default:
+                    return false;
+            }
+        } catch (DateTimeParseException e) {
+            // 如果解析失败，也认为需要重置
+            return true;
         }
     }
 
+    /**
+     * 根据日期格式将字符串解析为LocalDate
+     */
+    private LocalDate parseToLocalDate(String dateStr, String format) {
+        String pattern = format.replace("YYYY", "yyyy").replace("YY", "yy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
+        // 如果格式只有年月（如yyMM），需要添加默认的日
+        if (pattern.equals("yyMM") || pattern.equals("yyyyMM")) {
+            YearMonth yearMonth = YearMonth.parse(dateStr, formatter);
+            return yearMonth.atDay(1);
+        }
+        // 如果格式只有年（如yy），需要添加默认的月日
+        else if (pattern.equals("yy") || pattern.equals("yyyy")) {
+            int year = Integer.parseInt(dateStr);
+            return LocalDate.of(year, 1, 1);
+        }
+        else {
+            return LocalDate.parse(dateStr, formatter);
+        }
+    }
+
+    /**
+     * 根据日期格式将字符串解析为YearMonth
+     */
+    private YearMonth parseToYearMonth(String dateStr, String format) {
+        String pattern = format.replace("YYYY", "yyyy").replace("YY", "yy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
+        // 如果格式只有年月，直接解析
+        if (pattern.equals("yyMM") || pattern.equals("yyyyMM")) {
+            return YearMonth.parse(dateStr, formatter);
+        }
+        // 如果格式是完整日期，提取年月
+        else if (pattern.contains("dd") || pattern.contains("DD")) {
+            LocalDate date = LocalDate.parse(dateStr, formatter);
+            return YearMonth.from(date);
+        }
+        // 如果格式只有年
+        else if (pattern.equals("yy") || pattern.equals("yyyy")) {
+            int year = Integer.parseInt(dateStr);
+            return YearMonth.of(year, 1);
+        }
+        else {
+            // 尝试作为完整日期解析
+            try {
+                LocalDate date = LocalDate.parse(dateStr, formatter);
+                return YearMonth.from(date);
+            } catch (DateTimeParseException e) {
+                // 如果失败，尝试作为年月解析
+                return YearMonth.parse(dateStr, formatter);
+            }
+        }
+    }
+
+    /**
+     * 根据日期格式将字符串解析为年份
+     */
+    private int parseToYear(String dateStr, String format) {
+        String pattern = format.replace("YYYY", "yyyy").replace("YY", "yy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
+        // 如果格式只有年，直接解析
+        if (pattern.equals("yy") || pattern.equals("yyyy")) {
+            return Integer.parseInt(dateStr);
+        }
+        // 如果格式包含年月或完整日期
+        else {
+            try {
+                // 先尝试作为完整日期解析
+                LocalDate date = LocalDate.parse(dateStr, formatter);
+                return date.getYear();
+            } catch (DateTimeParseException e1) {
+                try {
+                    // 再尝试作为年月解析
+                    YearMonth yearMonth = YearMonth.parse(dateStr, formatter);
+                    return yearMonth.getYear();
+                } catch (DateTimeParseException e2) {
+                    // 如果都失败，尝试直接提取年份部分
+                    return Integer.parseInt(dateStr.substring(0, Math.min(dateStr.length(), 4)));
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取当前时间的格式化字符串
+     */
+    private String getCurrentDateString(String dateFormat) {
+        String pattern = dateFormat.replace("YYYY", "yyyy").replace("YY", "yy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
+        // 根据格式决定使用哪种时间类型
+        if (pattern.contains("dd") || pattern.contains("DD")) {
+            return LocalDate.now().format(formatter);
+        } else if (pattern.contains("MM")) {
+            return YearMonth.now().format(formatter);
+        } else if (pattern.equals("yy") || pattern.equals("yyyy")) {
+            return String.valueOf(LocalDate.now().getYear());
+        } else {
+            // 默认使用LocalDate
+            return LocalDate.now().format(formatter);
+        }
+    }
+
+    /**
+     * 检查和重置序列号
+     */
     private void checkAndResetSequence(SerialNo rule) {
-        String currentDate = LocalDate.now().format(getDateFormatter(rule.getDateFormat()));
+        String currentDate = getCurrentDateString(rule.getDateFormat());
 
         // 如果最后重置日期为空或者需要重置
-        if (rule.getLastResetDate() == null || needReset(rule.getResetStrategy(), rule.getLastResetDate(), rule.getDateFormat())) {
+        if (rule.getLastResetDate() == null || rule.getLastResetDate().trim().isEmpty() ||
+                needReset(rule.getResetStrategy(), rule.getLastResetDate(), rule.getDateFormat())) {
             // 重置时设置为0，这样第一次使用时自增为1
             rule.setCurrentSeq(0L);
             rule.setLastResetDate(currentDate);
         }
     }
 
+    /**
+     * 构建流水号
+     */
     private String buildSerialNumber(SerialNo rule) {
         StringBuilder sb = new StringBuilder();
         if (rule.getPrefix() != null) sb.append(rule.getPrefix());
-        sb.append(LocalDate.now().format(getDateFormatter(rule.getDateFormat())));
+        sb.append(getCurrentDateString(rule.getDateFormat()));
         // 使用自增后的序列号生成流水号
         sb.append(String.format("%0" + rule.getSeqLength() + "d", rule.getCurrentSeq()));
         if (rule.getSuffix() != null) sb.append(rule.getSuffix());
         return sb.toString();
-    }
-
-    private DateTimeFormatter getDateFormatter(String format) {
-        // 统一日期格式处理
-        String pattern = format.replace("YYYY", "yyyy").replace("YY", "yy");
-        return DateTimeFormatter.ofPattern(pattern);
     }
 
     /**

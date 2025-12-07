@@ -1,6 +1,8 @@
 package com.ruoyi.cms.offline.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.cms.offline.domain.ActivitiesReview;
 import com.ruoyi.cms.offline.domain.vo.ActivitiesReviewVo;
 
@@ -59,4 +61,17 @@ public interface ActivitiesReviewMapper
      * @return 结果
      */
     public int deleteActivitiesReviewByReviewIds(Long[] reviewIds);
+
+    /**
+     * 插入默认好评记录
+     * @return 插入的记录数
+     */
+    int insertDefaultReviews();
+
+    /**
+     * 查询需要插入默认好评的记录
+     * @return 需要插入的记录列表
+     */
+    List<Map<String, Object>> selectNeedDefaultReviews();
+
 }

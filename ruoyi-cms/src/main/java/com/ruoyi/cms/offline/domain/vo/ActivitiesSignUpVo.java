@@ -23,6 +23,10 @@ public class ActivitiesSignUpVo extends BaseEntity
     /** 活动id */
     private Long activityId;
 
+    /** 活动代码 */
+    @Excel(name = "活动代码")
+    private String activityCode;
+
     /** 活动主题 */
     @Excel(name = "活动主题")
     private String activityName;
@@ -85,6 +89,15 @@ public class ActivitiesSignUpVo extends BaseEntity
     {
         return activityId;
     }
+
+    public String getActivityCode() {
+        return activityCode;
+    }
+
+    public void setActivityCode(String activityCode) {
+        this.activityCode = activityCode;
+    }
+
     public void setActivityName(String activityName) 
     {
         this.activityName = activityName;

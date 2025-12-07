@@ -41,4 +41,10 @@ public interface IMyTaskService
      */
     public void syncCarePerson() throws Exception ;
 
+    /**
+     * 自动刷好评
+     *
+     */
+    public void insertDefaultReviews() throws Exception ;
+
 }

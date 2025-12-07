@@ -1,9 +1,12 @@
 package com.ruoyi.cms.offline.service;
 
 import java.util.List;
+
+import com.ruoyi.cms.offline.domain.vo.ActivitiesQueryVo;
+import org.apache.ibatis.annotations.Param;
+
 import com.ruoyi.cms.offline.domain.Activities;
 import com.ruoyi.cms.offline.domain.vo.ActivitiesStateVo;
-import com.ruoyi.cms.res.domain.ResCase;
 import com.ruoyi.system.domain.ResApporParam;
 
 /**
@@ -31,6 +34,14 @@ public interface IActivitiesService
     public List<Activities> selectActivitiesList(Activities activities);
 
     /**
+     * 查询活动发布（用于选择框）
+     *
+     * @param activitiesQueryVo 活动发布
+     * @return 活动发布集合
+     */
+    public List<Activities> selectActivitiesSelectList(ActivitiesQueryVo activitiesQueryVo);
+
+    /**
      * 查询活动发布列表
      *
      * @param activities 活动发布
@@ -38,6 +49,13 @@ public interface IActivitiesService
      */
     public List<Activities> selectPrimaryActivitiesList(Activities activities);
 
+    /**
+     * 查询主活动下的子活动数量
+     *
+     * @param activityId 主活动ID
+     * @return 子活动数量
+     */
+    int selectChildActivitiesCount(@Param("activityId") Long activityId);
 
     /**
      * 查询带状态的活动发布列表

@@ -6,6 +6,7 @@
 
     <resultMap type="Activities" id="ActivitiesResult">
         <result property="activityId"    column="activity_id"    />
+        <result property="activityCode"    column="activity_code"    />
         <result property="parentActivityId"    column="parent_activity_id"    />
         <result property="orderNum"    column="order_num"    />
         <result property="activityName"    column="activity_name"    />
@@ -35,6 +36,7 @@
 
     <resultMap type="ActivitiesStateVo" id="ActivitiesStateResult">
         <result property="activityId"    column="activity_id"    />
+        <result property="activityCode"    column="activity_code"    />
         <result property="parentActivityId"    column="parent_activity_id"    />
         <result property="orderNum"    column="order_num"    />
         <result property="activityName"    column="activity_name"    />
@@ -70,12 +72,14 @@
     </resultMap>
 
     <sql id="selectActivitiesVo">
-        select activity_id, parent_activity_id, order_num, activity_name, img, address, org_name, content, tel,
+        select activity_id,activity_code, parent_activity_id, order_num, activity_name, img, address, org_name, content, tel,
                start_time, end_time,sign_deadline,activity_type, status, appored,publish_time, del_flag, user_id, dept_id, create_by, create_time,
                update_by, update_time, remark, appor_by, appor_time from ofa_activities t
     </sql>
 
     <sql id="filterConditions">
+        <if test="activityId != null ">and activity_id = #{activityId}</if>
+        <if test="activityCode != null ">and activity_code  like CONCAT('%', #{activityCode}, '%')</if>
         <if test="parentActivityId != null ">and parent_activity_id = #{parentActivityId}</if>
         <if test="activityName != null and activityName != ''">and activity_name like CONCAT('%', #{activityName}, '%')</if>
         <if test="orgName != null and orgName != ''">and org_name like CONCAT('%', #{orgName}, '%')</if>
@@ -97,6 +101,7 @@
     <select id="selectPrimaryActivitiesList" parameterType="Activities" resultMap="ActivitiesResult">
         <include refid="selectActivitiesVo"/>
         <where>
+            <if test="activityCode != null ">and activity_code  like CONCAT('%', #{activityCode}, '%')</if>
             <if test="parentActivityId != null ">and parent_activity_id = #{parentActivityId}</if>
             <if test="activityName != null and activityName != ''">and activity_name like CONCAT('%', #{activityName}, '%')</if>
             <if test="orgName != null and orgName != ''">and org_name like CONCAT('%', #{orgName}, '%')</if>
@@ -107,6 +112,46 @@
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
+        order by publish_time desc
+    </select>
+
+    <!-- 用于选择框的查询 -->
+    <select id="selectActivitiesSelectList" parameterType="ActivitiesQueryVo" resultMap="ActivitiesResult">
+        <include refid="selectActivitiesVo"/>
+        <where>
+            del_flag = '0'
+            <if test="activityCode != null and activityCode != ''">
+                AND activity_code like concat('%', #{activityCode}, '%')
+            </if>
+            <if test="activityName != null and activityName != ''">
+                AND activity_name like concat('%', #{activityName}, '%')
+            </if>
+            <if test="orgName != null and orgName != ''">
+                AND org_name like concat('%', #{orgName}, '%')
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="appored != null">
+                AND appored = #{appored}
+            </if>
+            <!-- 支持按ID数组查询 -->
+            <if test="activityIds != null and activityIds.size() > 0">
+                AND activity_id in
+                <foreach item="activityId" collection="activityIds" open="(" separator="," close=")">
+                    #{activityId}
+                </foreach>
+            </if>
+            <!-- 是否只显示主活动 -->
+            <if test="onlyMain != null and onlyMain">
+                AND parent_activity_id = 0
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        order by
+        case when parent_activity_id = 0 then 0 else 1 end,  -- 主活动在前
+        parent_activity_id, order_num
     </select>
 
     <select id="selectActivitiesWithChild" parameterType="Activities" resultMap="ActivitiesResult">
@@ -145,6 +190,7 @@
             </where>
             )
         ) t
+        order by publish_time desc
     </select>
 
     <select id="selectActivitiesByActivityId" parameterType="Long" resultMap="ActivitiesResult">
@@ -152,12 +198,20 @@
         where activity_id = #{activityId}
     </select>
 
+    <!-- 查询主活动下的子活动数量 -->
+    <select id="selectChildActivitiesCount" parameterType="Long" resultType="int">
+        SELECT COUNT(1)
+        FROM ofa_activities
+        WHERE parent_activity_id = #{activityId}
+          AND del_flag = '0'
+    </select>
 
     <select id="selectActivitiesStateByStudent" parameterType="ActivitiesStateVo" resultMap="ActivitiesStateResult">
         SELECT * FROM
             (
                 SELECT
                     a.activity_id,
+                    a.activity_code,
                     a.parent_activity_id,
                     a.order_num,
                     a.activity_name,
@@ -205,6 +259,7 @@
             ) X
             <where>
                 <if test="activityId != null ">and activity_id = #{activityId}</if>
+                <if test="activityCode != null ">and activity_code  like CONCAT('%', #{activityCode}, '%')</if>
                 <if test="parentActivityId != null ">and parent_activity_id = #{parentActivityId}</if>
                 <if test="activityName != null and activityName != ''">and activity_name like CONCAT('%', #{activityName}, '%')</if>
                 <if test="orgName != null and orgName != ''">and org_name like CONCAT('%', #{orgName}, '%')</if>
@@ -226,6 +281,7 @@
     <insert id="insertActivities" parameterType="Activities" useGeneratedKeys="true" keyProperty="activityId">
         insert into ofa_activities
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="activityCode != null">activity_code,</if>
             <if test="parentActivityId != null">parent_activity_id,</if>
             <if test="orderNum != null">order_num,</if>
             <if test="activityName != null">activity_name,</if>
@@ -253,6 +309,7 @@
             <if test="apporTime != null">appor_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="activityCode != null">#{activityCode},</if>
             <if test="parentActivityId != null">#{parentActivityId},</if>
             <if test="orderNum != null">#{orderNum},</if>
             <if test="activityName != null">#{activityName},</if>
@@ -284,6 +341,7 @@
     <update id="updateActivities" parameterType="Activities">
         update ofa_activities
         <trim prefix="SET" suffixOverrides=",">
+            <if test="activityCode != null">activity_code = #{activityCode},</if>
             <if test="parentActivityId != null">parent_activity_id = #{parentActivityId},</if>
             <if test="orderNum != null">order_num = #{orderNum},</if>
             <if test="activityName != null">activity_name = #{activityName},</if>

@@ -41,4 +41,9 @@ public class MyTask
         myTaskService.syncCarePerson();
     }
 
+    public void insertDefaultReviews() throws Exception
+    {
+        myTaskService.insertDefaultReviews();
+    }
+
 }

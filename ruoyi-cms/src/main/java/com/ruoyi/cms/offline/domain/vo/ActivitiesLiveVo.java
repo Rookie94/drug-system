@@ -26,6 +26,10 @@ public class ActivitiesLiveVo extends BaseEntity
     @Excel(name = "活动ID")
     private Long activityId;
 
+    /** 活动代码 */
+    @Excel(name = "活动代码")
+    private String activityCode;
+
     /** 父活动ID */
     @Excel(name = "父活动ID")
     private Long parentActivityId;
@@ -121,6 +125,14 @@ public class ActivitiesLiveVo extends BaseEntity
     public Long getActivityId() 
     {
         return activityId;
+    }
+
+    public String getActivityCode() {
+        return activityCode;
+    }
+
+    public void setActivityCode(String activityCode) {
+        this.activityCode = activityCode;
     }
 
     public void setParentActivityId(Long parentActivityId) 

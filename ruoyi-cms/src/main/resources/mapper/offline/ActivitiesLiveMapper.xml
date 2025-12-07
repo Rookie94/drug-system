@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="ActivitiesLiveVo" id="ActivitiesLiveResult">
         <result property="liveId"    column="live_id"    />
         <result property="activityId"    column="activity_id"    />
+        <result property="activityCode"    column="activity_code"    />
         <result property="parentActivityId"    column="parent_activity_id"    />
         <result property="activityName"    column="activity_name"    />
         <result property="parentActivityName"    column="parent_activity_name"    />
@@ -37,6 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT
             t.live_id,
             t.activity_id,
+            a.activity_code,
             a.parent_activity_id,
             a.activity_name,
             p.activity_name AS parent_activity_name,
@@ -78,7 +80,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="liveId != null"> and live_id = #{liveId}</if>
             <if test="activityId != null"> and t.activity_id = #{activityId}</if>
-            <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
+            <if test="activityCode != null  and activityCode != ''"> and a.activity_code like concat('%', #{activityCode}, '%')</if>
+            <if test="activityName != null  and activityName != ''"> and a.activity_name like concat('%', #{activityName}, '%')</if>
             <if test="parentActivityName != null  and parentActivityName != ''"> and parent_activity_name like concat('%', #{parentActivityName}, '%')</if>
             <if test="subject != null  and subject != ''"> and subject = #{subject}</if>
             <if test="status != null  and status != ''"> and t.status = #{status}</if>

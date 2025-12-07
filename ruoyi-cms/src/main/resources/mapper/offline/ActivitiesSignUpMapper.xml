@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="ActivitiesSignUpVo" id="SignUpResult">
         <result property="signId"    column="sign_id"    />
         <result property="activityId"    column="activity_id"    />
+        <result property="activityCode"    column="activity_code"    />
         <result property="activityName"    column="activity_name"    />
         <result property="startTime"    column="start_time"    />
         <result property="endTime"    column="end_time"    />
@@ -26,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSignUpVo">
-        select t.sign_id,t.activity_id,b.activity_name,b.start_time,b.end_time,t.sign_time,t.user_id,c.user_type,
+        select t.sign_id,t.activity_id,b.activity_code,b.activity_name,b.start_time,b.end_time,t.sign_time,t.user_id,c.user_type,
                c.user_name,c.nick_name,c.phonenumber,t.dept_id,d.dept_name,t.create_by,t.create_time,t.update_by,
                t.update_time,t.remark from ofa_activities_signup t left join ofa_activities b on t.activity_id=b.activity_id
                    left join sys_userinfo c on t.user_id=c.user_id left join sys_dept d  on t.dept_id=d.dept_id
@@ -36,7 +37,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectSignUpVo"/>
         <where>
             <if test="activityId != null"> and t.activity_id = #{activityId}</if>
-            <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
+            <if test="activityCode != null  and activityCode != ''"> and b.activity_code like concat('%', #{activityCode}, '%')</if>
+            <if test="activityName != null  and activityName != ''"> and b.activity_name like concat('%', #{activityName}, '%')</if>
             <if test="startTime != null "> and start_time = #{startTime}</if>
             <if test="endTime != null "> and end_time = #{endTime}</if>
             <if test="params.beginSignTime != null and params.beginSignTime != '' and params.endSignTime != null and params.endSignTime != ''"> and sign_time between #{params.beginSignTime} and #{params.endSignTime}</if>

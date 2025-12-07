@@ -20,6 +20,10 @@ public class Activities extends TreeEntity
     /** 活动ID */
     private Long activityId;
 
+    /** 活动代码 */
+    @Excel(name = "活动代码")
+    private String activityCode;
+
     /** 子活动ID */
     @Excel(name = "子活动ID")
     private Long parentActivityId;
@@ -115,6 +119,15 @@ public class Activities extends TreeEntity
     {
         return activityId;
     }
+
+    public String getActivityCode() {
+        return activityCode;
+    }
+
+    public void setActivityCode(String activityCode) {
+        this.activityCode = activityCode;
+    }
+
     public void setParentActivityId(Long parentActivityId)
     {
         this.parentActivityId = parentActivityId;
@@ -282,6 +295,7 @@ public class Activities extends TreeEntity
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
                 .append("activityId", getActivityId())
+                .append("activityCode", getActivityCode())
                 .append("parentActivityId", getParentActivityId())
                 .append("orderNum", getOrderNum())
                 .append("activityName", getActivityName())

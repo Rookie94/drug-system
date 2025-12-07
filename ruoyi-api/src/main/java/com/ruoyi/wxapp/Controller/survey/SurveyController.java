@@ -1,9 +1,12 @@
 package com.ruoyi.wxapp.Controller.survey;
 
-import com.alibaba.fastjson.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.ruoyi.cms.survey.domain.Answers;
 import com.ruoyi.cms.survey.domain.DocResults;
 import com.ruoyi.cms.survey.domain.Survey;
@@ -18,8 +21,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 

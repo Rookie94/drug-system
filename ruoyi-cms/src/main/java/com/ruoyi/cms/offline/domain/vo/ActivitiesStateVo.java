@@ -25,6 +25,10 @@ public class ActivitiesStateVo extends TreeEntity
     @Excel(name = "子活动ID")
     private Long parentActivityId;
 
+    /** 活动代码 */
+    @Excel(name = "活动代码")
+    private String activityCode;
+
     /** 活动主题 */
     @Excel(name = "活动主题")
     private String activityName;
@@ -156,6 +160,14 @@ public class ActivitiesStateVo extends TreeEntity
     public void setActivityName(String activityName)
     {
         this.activityName = activityName;
+    }
+
+    public String getActivityCode() {
+        return activityCode;
+    }
+
+    public void setActivityCode(String activityCode) {
+        this.activityCode = activityCode;
     }
 
     public String getActivityName()

@@ -2,6 +2,7 @@ package com.ruoyi.cms.task.service.impl;
 
 import com.ruoyi.cms.external.service.ISyncCarePersonService;
 import com.ruoyi.cms.external.service.ISyncPoliceService;
+import com.ruoyi.cms.offline.service.IActivitiesReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,9 @@ public class MyTaskServiceImpl implements IMyTaskService
 
     @Autowired
     private ISyncCarePersonService syncCarePersonService;
+
+    @Autowired
+    private IActivitiesReviewService activitiesReviewService;
 
     /**
      * 新增技能信息
@@ -97,6 +101,11 @@ public class MyTaskServiceImpl implements IMyTaskService
             String errorMsg = ajaxResult.get("msg") != null ? ajaxResult.get("msg").toString() : "荣飞syncCarePerson接口返回失败，未知错误";
             MyLog.error("荣飞syncCarePerson接口", "定时同步任务", "失败", errorMsg);
         }
+    }
+
+    @Override
+    public void insertDefaultReviews() throws Exception{
+        activitiesReviewService.insertDefaultReviews();
     }
 
 }

@@ -25,6 +25,10 @@ public class ActivitiesCheckinVo extends BaseEntity
     @Excel(name = "活动id")
     private Long activityId;
 
+    /** 活动代码 */
+    @Excel(name = "活动代码")
+    private String activityCode;
+
     /** 活动主题 */
     @Excel(name = "活动主题")
     private String activityName;
@@ -90,6 +94,14 @@ public class ActivitiesCheckinVo extends BaseEntity
     public Long getActivityId() 
     {
         return activityId;
+    }
+
+    public String getActivityCode() {
+        return activityCode;
+    }
+
+    public void setActivityCode(String activityCode) {
+        this.activityCode = activityCode;
     }
 
     public void setActivityName(String activityName) 

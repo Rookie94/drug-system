@@ -1,8 +1,12 @@
 package com.ruoyi.cms.offline.service.impl;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
+
+import com.ruoyi.cms.offline.domain.vo.ActivitiesQueryVo;
+import com.ruoyi.common.utils.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.ruoyi.cms.offline.domain.vo.ActivitiesStateVo;
 import com.ruoyi.cms.res.domain.ResCase;
@@ -10,8 +14,7 @@ import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.ResApporParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.ruoyi.system.service.ISerialNoService;
 import com.ruoyi.cms.offline.mapper.ActivitiesMapper;
 import com.ruoyi.cms.offline.domain.Activities;
 import com.ruoyi.cms.offline.service.IActivitiesService;
@@ -29,6 +32,9 @@ public class ActivitiesServiceImpl implements IActivitiesService
 {
     @Autowired
     private ActivitiesMapper activitiesMapper;
+
+    @Autowired
+    private ISerialNoService serialNoService;
 
     /**
      * 查询活动发布
@@ -94,6 +100,30 @@ public class ActivitiesServiceImpl implements IActivitiesService
     }
 
     /**
+     * 查询活动发布（用于选择框）
+     *
+     * @param activitiesQueryVo 活动发布
+     * @return 活动发布集合
+     */
+    @Override
+    @DataScope(deptAlias = "t", userAlias = "t")
+    public List<Activities> selectActivitiesSelectList(ActivitiesQueryVo activitiesQueryVo)
+    {
+        return activitiesMapper.selectActivitiesSelectList(activitiesQueryVo);
+    }
+
+    /**
+     * 查询主活动下的子活动数量
+     *
+     * @param activityId 主活动ID
+     * @return 子活动数量
+     */
+    @Override
+    public int selectChildActivitiesCount(Long activityId) {
+        return activitiesMapper.selectChildActivitiesCount(activityId);
+    }
+
+    /**
      * 新增活动发布
      *
      * @param activities 活动发布
@@ -102,6 +132,37 @@ public class ActivitiesServiceImpl implements IActivitiesService
     @Override
     public int insertActivities(Activities activities)
     {
+        if(activities.getParentActivityId()==0){
+            if(StringUtils.isEmpty(activities.getActivityCode())){
+                String activityCode=serialNoService.getSerialNumber("ActivityCode");
+                if(activityCode.equals("")){
+                    activityCode=serialNoService.getSerialNumber("ActivityCode");
+                }
+                activities.setActivityCode(activityCode);
+            }
+        }
+        else{
+            Activities parentActivity = activitiesMapper.selectActivitiesByActivityId(activities.getParentActivityId());
+            if (parentActivity != null) {
+                if(StringUtils.isEmpty(activities.getActivityCode())) {
+                    Activities query = new Activities();
+                    query.setParentActivityId(activities.getParentActivityId());
+                    List<Activities> subActivities = activitiesMapper.selectActivitiesList(query);
+                    int subCount = subActivities.size();
+                    String sequence = String.format("%03d", subCount + 1);
+                    String subActivityCode = parentActivity.getActivityCode() + "-" + sequence;
+                    activities.setActivityCode(subActivityCode);
+                }
+            } else {
+                if(StringUtils.isEmpty(activities.getActivityCode())){
+                    String activityCode=serialNoService.getSerialNumber("ActivityCode");
+                    if(activityCode.equals("")){
+                        activityCode=serialNoService.getSerialNumber("ActivityCode");
+                    }
+                    activities.setActivityCode(activityCode);
+                }
+            }
+        }
         activities.setUserId(getUserId());
         activities.setDeptId(getDeptId());
         activities.setCreateBy(getUsername());
@@ -132,6 +193,18 @@ public class ActivitiesServiceImpl implements IActivitiesService
     @Override
     public int deleteActivitiesByActivityIds(Long[] activityIds)
     {
+        // 检查每个要删除的活动
+        for (Long activityId : activityIds) {
+            Activities activity = activitiesMapper.selectActivitiesByActivityId(activityId);
+            if (activity != null && activity.getParentActivityId() == 0) {
+                // 如果是主活动，检查是否有子活动
+                int childCount = activitiesMapper.selectChildActivitiesCount(activityId);
+                if (childCount > 0) {
+                    throw new ServiceException("主活动【" + activity.getActivityName() + "】存在子活动，请先删除子活动");
+                }
+            }
+        }
+
         return activitiesMapper.deleteActivitiesByActivityIds(activityIds);
     }
 
@@ -144,6 +217,15 @@ public class ActivitiesServiceImpl implements IActivitiesService
     @Override
     public int deleteActivitiesByActivityId(Long activityId)
     {
+        Activities activity = activitiesMapper.selectActivitiesByActivityId(activityId);
+        if (activity != null && activity.getParentActivityId() == 0) {
+            // 如果是主活动，检查是否有子活动
+            int childCount = activitiesMapper.selectChildActivitiesCount(activityId);
+            if (childCount > 0) {
+                throw new ServiceException("主活动【" + activity.getActivityName() + "】存在子活动，请先删除子活动");
+            }
+        }
+
         return activitiesMapper.deleteActivitiesByActivityId(activityId);
     }
 

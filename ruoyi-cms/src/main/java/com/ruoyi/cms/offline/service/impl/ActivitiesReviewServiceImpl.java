@@ -1,6 +1,7 @@
 package com.ruoyi.cms.offline.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.cms.offline.domain.vo.ActivitiesReviewVo;
 import com.ruoyi.common.annotation.DataScope;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.cms.offline.mapper.ActivitiesReviewMapper;
 import com.ruoyi.cms.offline.domain.ActivitiesReview;
 import com.ruoyi.cms.offline.service.IActivitiesReviewService;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.ruoyi.common.utils.SecurityUtils.*;
 
@@ -103,4 +105,24 @@ public class ActivitiesReviewServiceImpl implements IActivitiesReviewService
     {
         return activitiesReviewMapper.deleteActivitiesReviewByReviewId(reviewId);
     }
+
+    /**
+     * 查询需要插入默认好评的记录
+     * @return 需要插入的记录列表
+     */
+    @Override
+    public List<Map<String, Object>> selectNeedDefaultReviews(){
+        return activitiesReviewMapper.selectNeedDefaultReviews();
+    }
+
+    /**
+     * 插入默认好评记录
+     * @return 插入的记录数
+     */
+    @Transactional
+    public int insertDefaultReviews() {
+        int count = activitiesReviewMapper.insertDefaultReviews();
+        return count;
+    }
+
 }

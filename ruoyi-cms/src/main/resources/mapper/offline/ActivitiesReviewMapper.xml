@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="ActivitiesReviewVo" id="ActivitiesReviewResult">
         <result property="reviewId"    column="review_id"    />
         <result property="activityId"    column="activity_id"    />
+        <result property="activityCode"    column="activity_code"    />
         <result property="activityName"    column="activity_name"    />
         <result property="startTime"    column="start_time"    />
         <result property="endTime"    column="end_time"    />
@@ -29,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectActivitiesReviewVo">
-        select t.review_id,t.activity_id,b.activity_name,b.start_time,b.end_time,t.rating,t.content,t.pic,t.del_flag,t.user_id,c.user_type,
+        select t.review_id,t.activity_id,b.activity_code,b.activity_name,b.start_time,b.end_time,t.rating,t.content,t.pic,t.del_flag,t.user_id,c.user_type,
                c.user_name,c.nick_name,c.phonenumber,t.dept_id,d.dept_name,t.create_by,t.create_time,t.update_by,
                t.update_time,t.remark from ofa_activities_review t
                     left join ofa_activities b on t.activity_id=b.activity_id
@@ -41,7 +42,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="reviewId != null "> and t.review_id = #{reviewId}</if>
             <if test="activityId != null "> and t.activity_id = #{activityId}</if>
-            <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
+            <if test="activityCode != null  and activityCode != ''"> and b.activity_code like concat('%', #{activityCode}, '%')</if>
+            <if test="activityName != null  and activityName != ''"> and b.activity_name like concat('%', #{activityName}, '%')</if>
             <if test="startTime != null "> and start_time = #{startTime}</if>
             <if test="endTime != null "> and end_time = #{endTime}</if>
             <if test="rating != null  and rating != ''"> and t.rating = #{rating}</if>
@@ -127,4 +129,65 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{reviewId}
         </foreach>
     </delete>
+
+    <!-- 插入默认好评 -->
+    <insert id="insertDefaultReviews">
+        INSERT INTO ofa_activities_review (
+            activity_id,
+            rating,
+            content,
+            pic,
+            del_flag,
+            user_id,
+            dept_id,
+            create_by,
+            create_time,
+            update_by,
+            update_time,
+            appor_by,
+            appor_time,
+            remark
+        )
+        SELECT DISTINCT
+            a.activity_id,
+            1 AS rating,
+            NULL AS content,
+            NULL AS pic,
+            0 AS del_flag,
+            s.user_id,
+            s.dept_id,
+            s.user_id AS create_by,
+            CURRENT_TIMESTAMP AS create_time,
+            NULL AS update_by,
+            NULL AS update_time,
+            NULL AS appor_by,
+            NULL AS appor_time,
+            '系统默认好评' AS remark
+        FROM ofa_activities a
+                 INNER JOIN ofa_activities_signup s ON a.activity_id = s.activity_id
+                 LEFT JOIN ofa_activities_review r ON a.activity_id = r.activity_id AND s.user_id = r.user_id
+        WHERE a.appored = 5
+          AND a.del_flag = 0
+          AND r.review_id IS NULL
+        ORDER BY a.activity_id, s.user_id
+    </insert>
+
+    <!-- 查询需要插入默认好评的记录 -->
+    <select id="selectNeedDefaultReviews" resultType="map">
+        SELECT
+            a.activity_id,
+            a.activity_name,
+            s.user_id,
+            s.dept_id,
+            s.create_time AS signup_time,
+            COUNT(*) OVER() AS total_count
+        FROM ofa_activities a
+                 INNER JOIN ofa_activities_signup s ON a.activity_id = s.activity_id
+                 LEFT JOIN ofa_activities_review r ON a.activity_id = r.activity_id AND s.user_id = r.user_id
+        WHERE a.appored = 5
+          AND a.del_flag = 0
+          AND r.review_id IS NULL
+        ORDER BY a.activity_id, s.user_id
+    </select>
+
 </mapper>

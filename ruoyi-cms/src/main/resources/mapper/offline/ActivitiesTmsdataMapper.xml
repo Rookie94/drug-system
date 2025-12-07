@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="ActivitiesTmsdataVo" id="ActivitiesTmsdataResult">
         <result property="analyzeId"    column="analyze_id"    />
         <result property="activityId"    column="activity_id"    />
+        <result property="activityCode"    column="activity_code"    />
         <result property="activityName"    column="activity_name"    />
         <result property="startTime"    column="start_time"    />
         <result property="endTime"    column="end_time"    />
@@ -46,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectActivitiesTmsdataVo">
-        select t.analyze_id,t.activity_id,b.activity_name,b.start_time,b.end_time,t.pic,t.content,t.name,t.sex,t.age,t.record_no,
+        select t.analyze_id,t.activity_id,b.activity_code,b.activity_name,b.start_time,b.end_time,t.pic,t.content,t.name,t.sex,t.age,t.record_no,
                t.diagnosis,t.targeted_therapy,t.ct_mri,t.number_of_times,t.rate,t.area,t.mt,t.intensity,
                t.num_of_pulses,t.aes,t.doctor,t.rating,t.comment,t.status,t.del_flag,t.user_id,c.user_type, c.user_name,c.nick_name,
                c.phonenumber,t.dept_id,d.dept_name,t.create_by,t.create_time,t.update_by,t.update_time,t.remark
@@ -61,7 +62,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="analyzeId != null "> and analyze_id = #{analyzeId}</if>
             <if test="activityId != null "> and t.activity_id = #{activityId}</if>
-            <if test="activityName != null  and activityName != ''"> and t.activity_name like concat('%', #{activityName}, '%')</if>
+            <if test="activityCode != null  and activityCode != ''"> and b.activity_code like concat('%', #{activityCode}, '%')</if>
+            <if test="activityName != null  and activityName != ''"> and b.activity_name like concat('%', #{activityName}, '%')</if>
             <if test="startTime != null "> and start_time &gt;= #{startTime}</if>
             <if test="endTime != null "> and end_time &lt;= #{endTime}</if>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>

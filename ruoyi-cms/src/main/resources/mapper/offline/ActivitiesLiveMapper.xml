@@ -177,4 +177,61 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{liveId}
         </foreach>
     </delete>
+
+    <select id="selectApporedByIds" parameterType="String" resultType="java.lang.Integer">
+        select live_id from ofa_activities_live where appored in ('1','2') and live_id in
+        <foreach item="liveId" collection="array" open="(" separator="," close=")">
+            #{liveId}
+        </foreach>
+    </select>
+
+    <update id="updateStatus" parameterType="ActivitiesLive">
+        update ofa_activities_live
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where live_id = #{liveId}
+    </update>
+
+    <update id="apporByIds"  parameterType="ResApporParam">
+        update ofa_activities_live
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="flag != null">appored = #{flag},</if>
+            <if test="apporBy != null">appor_by = #{apporBy},</if>
+            <if test="apporTime != null">appor_time = #{apporTime},</if>
+            <if test="publishTime != null">publish_time = #{publishTime}</if>
+            where live_id in
+            <foreach item="id" collection="ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </trim>
+    </update>
+
+    <update id="unApporById" parameterType="Long">
+        update ofa_activities_live
+        <trim prefix="SET" suffixOverrides=",">
+            appored='0',
+            publish_time=NULL,
+            appor_by=NULL,
+            appor_time = NULL,
+        </trim>
+        where live_id = #{liveId}
+    </update>
+
+    <update id="unApporByIds" parameterType="String">
+        update ofa_activities_live
+        <trim prefix="SET" suffixOverrides=",">
+            appored='0',
+            publish_time=NULL,
+            appor_by=NULL,
+            appor_time=NULL
+            where live_id in
+            <foreach item="id" collection="array" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </trim>
+    </update>
+
 </mapper>

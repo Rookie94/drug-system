@@ -3,6 +3,8 @@ package com.ruoyi.cms.offline.mapper;
 import java.util.List;
 import com.ruoyi.cms.offline.domain.ActivitiesLive;
 import com.ruoyi.cms.offline.domain.vo.ActivitiesLiveVo;
+import com.ruoyi.cms.res.domain.ResSlider;
+import com.ruoyi.system.domain.ResApporParam;
 
 /**
  * ActivitiesLiveMapper接口
@@ -59,4 +61,44 @@ public interface ActivitiesLiveMapper
      * @return 结果
      */
     public int deleteActivitiesLiveByLiveIds(Long[] liveIds);
+
+    /**
+     * 修改状态
+     *
+     * @param activitiesLive 处方
+     * @return 结果
+     */
+    public int updateStatus(ActivitiesLive activitiesLive);
+
+    /**
+     * 批量审批
+     *
+     * @param apporParams 批量审批参数
+     * @return 结果
+     */
+    public int apporByIds(ResApporParam apporParams);
+    /**
+     * 反审批
+     *
+     * @param Id 主键
+     * @return 结果
+     */
+    public int unApporById(Long Id);
+
+    /**
+     * 批量反审批
+     *
+     * @param Ids 需要删除的数据主键集合
+     * @return 结果
+     */
+    public int unApporByIds(Long[] Ids);
+
+    /**
+     * 查询已审核的单据清单
+     *
+     * @param Ids 主键
+     * @return 结果
+     */
+    public List<Integer> selectApporedByIds(Long[] Ids);
+
 }

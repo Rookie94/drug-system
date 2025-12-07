@@ -782,7 +782,21 @@ public class ActivitiesController extends BaseController
     }
 
     /**
-     * 现场资讯列表
+     * 现场资讯列表-小程序列表用
+     **/
+    @GetMapping("/getLiveInfo")
+    public TableDataInfo getLiveInfo(ActivitiesLiveVo activitiesLive)
+    {
+        startPage();
+        activitiesLive.setUseDataScope(false);
+        activitiesLive.setStatus("0");
+        activitiesLive.setAppored("2");
+        List<ActivitiesLiveVo> list=activitiesLiveService.selectActivitiesLiveList(activitiesLive);
+        return getDataTable(list);
+    }
+
+    /**
+     * 现场资讯列表-警官用
      **/
     @GetMapping("/getLiveData")
     public TableDataInfo getLiveData(ActivitiesLiveVo activitiesLive)

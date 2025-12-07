@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="avatar"    column="avatar"    />
         <result property="unionId"    column="union_id"    />
         <result property="openId"    column="open_id"    />
+        <result property="phoneNumber"    column="phonenumber"    />
         <result property="sex"    column="sex"    />
         <result property="miniAppId"    column="mini_app_id"    />
         <result property="remark"    column="remark"    />
@@ -178,6 +179,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                mau.avatar,
                mau.union_id,
                mau.open_id,
+               mau.phonenumber,
                mau.sex,
                mau.mini_app_id,
                mau.remark,
@@ -188,7 +190,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
             <if test="avatar != null  and avatar != ''"> and avatar = #{avatar}</if>
-            <if test="phoneNumber != null  and phoneNumber != ''"> and phonenumber = #{phoneNumber}</if>
+            <if test="phoneNumber != null  and phoneNumber != ''"> and phonenumber like concat('%', #{phoneNumber}, '%')</if>
             <if test="unionId != null  and unionId != ''"> and union_id = #{unionId}</if>
             <if test="openId != null  and openId != ''"> and open_id = #{openId}</if>
             <if test="sex != null  and sex != ''"> and sex = #{sex}</if>

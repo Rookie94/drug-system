@@ -27,7 +27,7 @@ public class ActivitiesReview extends BaseEntity
     private Long activityId;
 
     /** 评分：1-差评，2-中评，3-好评 */
-    @Excel(name = "评分：1-差评，2-中评，3-好评")
+    @Excel(name = "评分：1-好评,2-中评,3-差评")
     private String rating;
 
     /** 评价内容 */

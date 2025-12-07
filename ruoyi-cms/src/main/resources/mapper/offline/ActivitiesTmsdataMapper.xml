@@ -27,6 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="numOfPulses"    column="num_of_pulses"    />
         <result property="aes"    column="aes"    />
         <result property="doctor"    column="doctor"    />
+        <result property="rating"    column="rating"    />
+        <result property="comment"    column="comment"    />
         <result property="status"    column="status"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="userId"    column="user_id"    />
@@ -46,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectActivitiesTmsdataVo">
         select t.analyze_id,t.activity_id,b.activity_name,b.start_time,b.end_time,t.pic,t.content,t.name,t.sex,t.age,t.record_no,
                t.diagnosis,t.targeted_therapy,t.ct_mri,t.number_of_times,t.rate,t.area,t.mt,t.intensity,
-               t.num_of_pulses,t.aes,t.doctor,t.status,t.del_flag,t.user_id,c.user_type, c.user_name,c.nick_name,
+               t.num_of_pulses,t.aes,t.doctor,t.rating,t.comment,t.status,t.del_flag,t.user_id,c.user_type, c.user_name,c.nick_name,
                c.phonenumber,t.dept_id,d.dept_name,t.create_by,t.create_time,t.update_by,t.update_time,t.remark
         from ofa_activities_tmsdata t
                  left join ofa_activities b on t.activity_id=b.activity_id
@@ -117,6 +119,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="numOfPulses != null">num_of_pulses,</if>
             <if test="aes != null">aes,</if>
             <if test="doctor != null">doctor,</if>
+            <if test="rating != null">rating,</if>
+            <if test="comment != null">comment,</if>
             <if test="status != null">status,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="userId != null">user_id,</if>
@@ -147,6 +151,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="numOfPulses != null">#{numOfPulses},</if>
             <if test="aes != null">#{aes},</if>
             <if test="doctor != null">#{doctor},</if>
+            <if test="rating != null">#{rating},</if>
+            <if test="comment != null">#{comment},</if>
             <if test="status != null">#{status},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="userId != null">#{userId},</if>
@@ -180,6 +186,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="numOfPulses != null">num_of_pulses = #{numOfPulses},</if>
             <if test="aes != null">aes = #{aes},</if>
             <if test="doctor != null">doctor = #{doctor},</if>
+            <if test="rating != null">rating = #{rating},</if>
+            <if test="comment != null">comment = #{comment},</if>
             <if test="status != null">status = #{status},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="userId != null">user_id = #{userId},</if>

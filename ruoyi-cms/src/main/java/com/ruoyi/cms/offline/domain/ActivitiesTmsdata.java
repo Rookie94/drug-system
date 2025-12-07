@@ -110,6 +110,14 @@ public class ActivitiesTmsdata extends BaseEntity
     @Excel(name = "治疗医师")
     private String doctor;
 
+    /** 评分：1-差评，2-中评，3-好评 */
+    @Excel(name = "评分：1-好评,2-中评,3-差评")
+    private String rating;
+
+    /** 评价内容 */
+    @Excel(name = "评价内容")
+    private String comment;
+
     /** 状态 */
     @Excel(name = "状态")
     private String status;
@@ -295,6 +303,22 @@ public class ActivitiesTmsdata extends BaseEntity
         return doctor;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
     public void setStatus(String status) 
     {
         this.status = status;
@@ -357,6 +381,8 @@ public class ActivitiesTmsdata extends BaseEntity
             .append("numOfPulses", getNumOfPulses())
             .append("aes", getAes())
             .append("doctor", getDoctor())
+            .append("rating", getRating())
+            .append("comment", getComment())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())
             .append("userId", getUserId())

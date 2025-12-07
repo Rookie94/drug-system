@@ -2,6 +2,9 @@ package com.ruoyi.web.controller.offline;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.cms.res.domain.ResSlider;
+import com.ruoyi.system.domain.ResApporParam;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -102,4 +105,51 @@ public class ActivitiesLiveController extends BaseController
     {
         return toAjax(activitiesLiveService.deleteActivitiesLiveByLiveIds(liveIds));
     }
+
+    /**
+     * 查询已审核处方列表
+     */
+    @PreAuthorize("@ss.hasPermi('res:live:list')")
+    @GetMapping("/list/{liveIds}")
+    public List<Integer> list(@PathVariable Long[] liveIds)
+    {
+        startPage();
+        List<Integer> list = activitiesLiveService.selectApporedByIds(liveIds);
+        return list;
+    }
+
+    /**
+     * 状态修改
+     */
+    @PreAuthorize("@ss.hasPermi('res:live:edit')")
+    @Log(title = "现场资讯", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody ActivitiesLive activitiesLive)
+    {
+        return toAjax(activitiesLiveService.updateStatus(activitiesLive));
+    }
+
+    /**
+     * 批量审批
+     */
+    @PreAuthorize("@ss.hasPermi('res:live:appor')")
+    @Log(title = "现场资讯", businessType = BusinessType.UPDATE)
+    @PostMapping("/appor")
+    public AjaxResult appor(@RequestBody ResApporParam apporParams)
+    {
+        return toAjax(activitiesLiveService.apporByIds(apporParams));
+    }
+
+    /**
+     * 反审批
+     */
+    @PreAuthorize("@ss.hasPermi('res:live:unappor')")
+    @Log(title = "现场资讯", businessType = BusinessType.UPDATE)
+    @PostMapping("/unappor/{ids}")
+    public AjaxResult unappor(@PathVariable Long[] ids)
+    {
+        return toAjax(activitiesLiveService.unApporByIds(ids));
+    }
+
+
 }

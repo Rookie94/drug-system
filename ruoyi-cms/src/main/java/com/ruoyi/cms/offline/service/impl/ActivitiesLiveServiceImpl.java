@@ -1,9 +1,12 @@
 package com.ruoyi.cms.offline.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
+import com.ruoyi.cms.res.domain.ResSlider;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.domain.ResApporParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.cms.offline.mapper.ActivitiesLiveMapper;
@@ -103,4 +106,70 @@ public class ActivitiesLiveServiceImpl implements IActivitiesLiveService
     {
         return activitiesLiveMapper.deleteActivitiesLiveByLiveId(liveId);
     }
+
+    /**
+     * 修改状态
+     *
+     * @param activitiesLive VIEW
+     * @return 结果
+     */
+    public int updateStatus(ActivitiesLive activitiesLive)
+    {
+        activitiesLive.setUpdateBy(getUsername());
+        activitiesLive.setUpdateTime(DateUtils.getNowDate());
+        return activitiesLiveMapper.updateStatus(activitiesLive);
+    }
+
+    /**
+     * 批量审批
+     *
+     * @param apporParams 审批参数
+     * @return 结果
+     */
+    @Override
+    public int apporByIds(ResApporParam apporParams)
+    {
+        apporParams.setApporBy(getUsername());
+        apporParams.setApporTime(DateUtils.getNowDate());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(apporParams.flag==2){
+            apporParams.setPublishTime(dateFormat.format(DateUtils.getNowDate()));
+        }
+        return activitiesLiveMapper.apporByIds(apporParams);
+    }
+
+    /**
+     * 反审批VIEW
+     *
+     * @param id VIEW主键
+     * @return 结果
+     */
+    @Override
+    public int unApporById(Long id)
+    {
+        return activitiesLiveMapper.unApporById(id);
+    }
+
+    /**
+     * 批量反审批VIEW
+     *
+     * @param ids 需要删除的VIEW主键
+     * @return 结果
+     */
+    @Override
+    public int unApporByIds(Long[] ids)
+    {
+        return activitiesLiveMapper.unApporByIds(ids);
+    }
+
+    /**
+     * 查询已审核的单据清单
+     *
+     * @param ids VIEW主键
+     * @return 结果
+     */
+    public List<Integer> selectApporedByIds(Long[] ids){
+        return activitiesLiveMapper.selectApporedByIds(ids);
+    }
+
 }

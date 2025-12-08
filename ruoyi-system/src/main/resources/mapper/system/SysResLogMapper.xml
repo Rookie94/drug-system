@@ -54,6 +54,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="optName != null">opt_name,</if>
             <if test="resId != null">res_id,</if>
             <if test="resTitle != null">res_title,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
             <if test="userName != null">user_name,</if>
             <if test="deptName != null">dept_name,</if>
             <if test="accessTime != null">access_time,</if>
@@ -72,6 +74,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="optName != null">#{optName},</if>
             <if test="resId != null">#{resId},</if>
             <if test="resTitle != null">#{resTitle},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
             <if test="userName != null">#{userName},</if>
             <if test="deptName != null">#{deptName},</if>
             <if test="accessTime != null">#{accessTime},</if>

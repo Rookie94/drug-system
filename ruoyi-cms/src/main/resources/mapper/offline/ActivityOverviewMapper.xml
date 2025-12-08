@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.offline.mapper.ActivityOverviewMapper">
+
+    <!-- ActivityOverviewVo结果映射 -->
+    <resultMap id="ActivityOverviewVoResult" type="com.ruoyi.cms.offline.domain.vo.ActivityOverviewVo">
+        <result property="activityId" column="activity_id" />
+        <result property="activityCode" column="activity_code" />
+        <result property="activityName" column="activity_name" />
+        <result property="startTime" column="start_time" />
+        <result property="endTime" column="end_time" />
+        <result property="activityType" column="activity_type" />
+        <result property="activityTypeName" column="activityTypeName" />
+        <result property="appored" column="appored" />
+        <result property="apporedName" column="apporedName" />
+        <result property="signupCount" column="signupCount" />
+        <result property="checkinCount" column="checkinCount" />
+        <result property="liveCount" column="liveCount" />
+        <result property="goodReviewCount" column="goodReviewCount" />
+        <result property="mediumReviewCount" column="mediumReviewCount" />
+        <result property="badReviewCount" column="badReviewCount" />
+        <result property="goodRate" column="goodRate" />
+        <result property="participatedSubActivityCount" column="participatedSubActivityCount" />
+    </resultMap>
+
+    <!-- SubActivityVo结果映射 -->
+    <resultMap id="SubActivityVoResult" type="com.ruoyi.cms.offline.domain.vo.SubActivityVo">
+        <result property="subActivityId" column="subActivityId" />
+        <result property="subActivityCode" column="subActivityCode" />
+        <result property="subActivityName" column="subActivityName" />
+        <result property="subActivityType" column="subActivityType" />
+        <result property="subActivityTypeName" column="subActivityTypeName" />
+        <result property="startTime" column="subStartTime" />
+        <result property="endTime" column="subEndTime" />
+        <result property="appored" column="subAppored" />
+        <result property="apporedName" column="subApporedName" />
+        <result property="rating" column="rating" />
+        <result property="ratingName" column="ratingName" />
+        <result property="participated" column="participated" />
+    </resultMap>
+
+    <!-- 获取活动基本信息 -->
+    <select id="selectActivityBaseInfo" parameterType="Integer" resultMap="ActivityOverviewVoResult">
+        SELECT
+            activity_id,
+            activity_code,
+            activity_name,
+            start_time,
+            end_time,
+            activity_type,
+            appored
+        FROM
+            ofa_activities
+        WHERE
+            activity_id = #{activityId}
+          AND del_flag = '0'
+    </select>
+
+    <!-- 获取子活动列表 -->
+    <select id="selectSubActivities" parameterType="Integer" resultMap="SubActivityVoResult">
+        SELECT
+            a.activity_id as subActivityId,
+            a.activity_code as subActivityCode,
+            a.activity_name as subActivityName,
+            a.activity_type as subActivityType,
+            a.start_time as subStartTime,
+            a.end_time as subEndTime,
+            a.appored as subAppored,
+            CASE a.appored
+                WHEN '0' THEN '待审批'
+                WHEN '1' THEN '发布中'
+                WHEN '2' THEN '已发布报名中'
+                WHEN '3' THEN '活动中'
+                WHEN '4' THEN '已结束'
+                WHEN '5' THEN '已归档'
+                ELSE '未知'
+                END as subApporedName,
+            CASE a.activity_type
+                WHEN '0' THEN '经颅磁技术'
+                WHEN '1' THEN 'VR技术'
+                WHEN '2' THEN '生物反馈技术'
+                WHEN '3' THEN '内观技术'
+                WHEN '9' THEN '其它'
+                ELSE '未知'
+                END as subActivityTypeName,
+            -- 获取子活动的评价等级（取最新的评价）
+            (SELECT rating FROM ofa_activities_review r
+             WHERE r.activity_id = a.activity_id AND r.del_flag = '0'
+             ORDER BY r.create_time DESC LIMIT 1) as rating,
+            -- 判断子活动是否有人参与（有经颅磁数据或技术数据）
+            CASE
+                WHEN EXISTS (SELECT 1 FROM ofa_activities_tmsdata t WHERE t.activity_id = a.activity_id AND t.del_flag = '0')
+                OR EXISTS (SELECT 1 FROM ofa_activities_tech t WHERE t.activity_id = a.activity_id AND t.del_flag = '0')
+                THEN 1
+                ELSE 0
+        END as participated
+        FROM
+            ofa_activities a
+        WHERE
+            a.parent_activity_id = #{parentActivityId}
+        AND a.del_flag = '0'
+        ORDER BY
+        a.order_num
+    </select>
+
+    <!-- 获取报名人数 -->
+    <select id="selectSignupCount" parameterType="Integer" resultType="Integer">
+        SELECT
+            COUNT(DISTINCT user_id) as signupCount
+        FROM
+            ofa_activities_signup
+        WHERE
+            activity_id = #{activityId}
+    </select>
+
+    <!-- 获取签到人数 -->
+    <select id="selectCheckinCount" parameterType="Integer" resultType="Integer">
+        SELECT
+            COUNT(DISTINCT user_id) as checkinCount
+        FROM
+            ofa_activities_checkin
+        WHERE
+            activity_id = #{activityId}
+          AND del_flag = '0'
+    </select>
+
+    <!-- 获取资讯数量 -->
+    <select id="selectLiveCount" parameterType="Integer" resultType="Integer">
+        SELECT
+            COUNT(*) as liveCount
+        FROM
+            ofa_activities_live
+        WHERE
+            activity_id = #{activityId}
+          AND del_flag = '0'
+          AND status = '1'
+    </select>
+
+    <!-- 获取评价统计 -->
+    <select id="selectReviewStats" parameterType="Integer" resultMap="ActivityOverviewVoResult">
+        SELECT
+            COUNT(CASE WHEN rating = '1' THEN 1 END) as goodReviewCount,
+            COUNT(CASE WHEN rating = '2' THEN 1 END) as mediumReviewCount,
+            COUNT(CASE WHEN rating = '3' THEN 1 END) as badReviewCount,
+            CASE
+                WHEN COUNT(*) > 0
+                    THEN ROUND(COUNT(CASE WHEN rating = '1' THEN 1 END) * 100.0 / COUNT(*), 2)
+                ELSE 0.0
+                END as goodRate
+        FROM
+            ofa_activities_review
+        WHERE
+            activity_id = #{activityId}
+          AND del_flag = '0'
+    </select>
+
+    <!-- 获取参与的子活动名称 -->
+    <select id="selectParticipatedSubActivityNames" parameterType="Integer" resultType="String">
+        SELECT DISTINCT
+            CASE
+                WHEN a.activity_type = '0' THEN '经颅磁'
+                WHEN a.activity_type = '1' THEN 'VR技术'
+                WHEN a.activity_type = '2' THEN '生物反馈'
+                WHEN a.activity_type = '3' THEN '内观技术'
+                WHEN a.activity_type = '9' THEN '其它技术'
+                ELSE '未知技术'
+                END
+        FROM
+            ofa_activities a
+        WHERE
+            a.parent_activity_id = #{activityId}
+          AND a.del_flag = '0'
+          AND EXISTS (
+            SELECT 1 FROM ofa_activities_tmsdata t
+            WHERE t.activity_id = a.activity_id AND t.del_flag = '0'
+            UNION ALL
+            SELECT 1 FROM ofa_activities_tech t
+            WHERE t.activity_id = a.activity_id AND t.del_flag = '0'
+        )
+    </select>
+
+    <!-- 获取参与的子活动数量 -->
+    <select id="selectParticipatedSubActivityCount" parameterType="Integer" resultType="Integer">
+        SELECT
+            COUNT(DISTINCT a.activity_id) as participatedSubActivityCount
+        FROM
+            ofa_activities a
+        WHERE
+            a.parent_activity_id = #{activityId}
+          AND a.del_flag = '0'
+          AND EXISTS (
+            SELECT 1 FROM ofa_activities_tmsdata t
+            WHERE t.activity_id = a.activity_id AND t.del_flag = '0'
+            UNION ALL
+            SELECT 1 FROM ofa_activities_tech t
+            WHERE t.activity_id = a.activity_id AND t.del_flag = '0'
+        )
+    </select>
+
+    <!-- 获取完整的活动总览信息 -->
+    <select id="selectActivityOverview" parameterType="Integer" resultMap="ActivityOverviewVoResult">
+        SELECT
+            a.activity_id,
+            a.activity_code,
+            a.activity_name,
+            a.start_time,
+            a.end_time,
+            a.activity_type,
+            CASE a.activity_type
+                WHEN '0' THEN '经颅磁技术'
+                WHEN '1' THEN 'VR技术'
+                WHEN '2' THEN '生物反馈技术'
+                WHEN '3' THEN '内观技术'
+                WHEN '9' THEN '其它'
+                ELSE '未知'
+                END as activityTypeName,
+            a.appored,
+            CASE a.appored
+                WHEN '0' THEN '待审批'
+                WHEN '1' THEN '发布中'
+                WHEN '2' THEN '已发布报名中'
+                WHEN '3' THEN '活动中'
+                WHEN '4' THEN '已结束'
+                WHEN '5' THEN '已归档'
+                ELSE '未知'
+                END as apporedName
+        FROM
+            ofa_activities a
+        WHERE
+            a.activity_id = #{activityId}
+          AND a.del_flag = '0'
+    </select>
+
+</mapper>

@@ -3,6 +3,7 @@ package com.ruoyi.framework.manager.factory;
 import java.util.Map;
 import java.util.TimerTask;
 
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.ip.IpAddrUtils;
 import com.ruoyi.system.domain.SysResLog;
@@ -128,7 +129,7 @@ public class AsyncFactory
      * @param resVo 操作日志信息
      * @return 任务task
      */
-    public static TimerTask recordSysResLog(final String username,final ResVo resVo){
+    public static TimerTask recordSysResLog(final LoginUser loginUser, final ResVo resVo){
         return new TimerTask(){
             final String ip = IpUtils.getIpAddr();
             @Override
@@ -141,7 +142,20 @@ public class AsyncFactory
                 sysResLog.setResId(resVo.getResId());
                 //获取资源标题
                 sysResLog.setResTitle(resVo.getResTitle());
-                sysResLog.setUserName(username);
+                String userName="";
+                if(loginUser==null){
+                    String ip = IpUtils.getIpAddr();
+                    userName="匿名访客" + ip;
+                    sysResLog.setUserName(userName);
+                }
+                else{
+                    sysResLog.setUserName(loginUser.getUsername());
+                    sysResLog.setUserId(loginUser.getUserId());
+                    sysResLog.setDeptId(loginUser.getDeptId());
+                    if(loginUser.getUser()!=null && loginUser.getUser().getDept()!=null){
+                        sysResLog.setDeptName(loginUser.getUser().getDept().getDeptName());
+                    }
+                }
                 sysResLog.setAccessTime(DateUtils.getNowDate());
                 String address = IpAddrUtils.getRealAddressByIP(ip);
                 sysResLog.setOperIp(ip);

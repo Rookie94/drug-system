@@ -34,6 +34,13 @@ public class SysResLog extends BaseEntity
     @Excel(name = "资源标题")
     private String resTitle;
 
+
+    /** userId */
+    private Long userId;
+
+    /** deptId */
+    private Long deptId;
+
     /** 用户名 */
     @Excel(name = "用户名")
     private String userName;
@@ -77,6 +84,22 @@ public class SysResLog extends BaseEntity
     public String getResName() 
     {
         return resName;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Long deptId) {
+        this.deptId = deptId;
     }
 
     public void setOptName(String optName) 

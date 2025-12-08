@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.myboard.mapper.UserStatisticsMapper">
+
+    <!-- 查询用户总数和各类型人数 -->
+    <select id="selectUserCounts" parameterType="UserStatisticsVo" resultType="map">
+        SELECT
+        COUNT(*) as totalUsers,
+        SUM(CASE WHEN user_type = '00' THEN 1 ELSE 0 END) as policeCount,
+        SUM(CASE WHEN user_type = '11' THEN 1 ELSE 0 END) as releasedCount,
+        SUM(CASE WHEN user_type = '22' THEN 1 ELSE 0 END) as rehabCount,
+        SUM(CASE WHEN user_type = '33' THEN 1 ELSE 0 END) as otherCount
+        FROM sys_user u
+        WHERE u.del_flag = '0'
+        <if test="startDate != null and startDate != ''">
+            AND DATE(u.create_time) >= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE(u.create_time) &lt;= #{endDate}
+        </if>
+        <if test="userType != null and userType != ''">
+            AND u.user_type = #{userType}
+        </if>
+        <if test="department != null and department != ''">
+            AND u.department = #{department}
+        </if>
+    </select>
+
+    <!-- 查询用户类型统计 -->
+    <select id="selectUserTypeStatistics" parameterType="UserStatisticsVo" resultType="map">
+        SELECT
+        CASE
+        WHEN user_type = '00' THEN '警官'
+        WHEN user_type = '11' THEN '出所人员'
+        WHEN user_type = '22' THEN '社康社戒人员'
+        WHEN user_type = '33' THEN '游客及其他'
+        ELSE '其他'
+        END as name,
+        COUNT(*) as value
+        FROM sys_user u
+        WHERE u.del_flag = '0'
+        <if test="startDate != null and startDate != ''">
+            AND DATE(u.create_time) >= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE(u.create_time) &lt;= #{endDate}
+        </if>
+        <if test="userType != null and userType != ''">
+            AND u.user_type = #{userType}
+        </if>
+        <if test="department != null and department != ''">
+            AND u.department = #{department}
+        </if>
+        GROUP BY user_type
+        ORDER BY value DESC
+    </select>
+
+    <!-- 查询每日注册统计 -->
+    <select id="selectDailyRegisterStatistics" parameterType="UserStatisticsVo" resultType="map">
+        SELECT
+        DATE_FORMAT(create_time, '%Y-%m-%d') as date,
+        COUNT(*) as count
+        FROM sys_user u
+        WHERE u.del_flag = '0'
+        <if test="startDate != null and startDate != ''">
+            AND DATE(u.create_time) >= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE(u.create_time) &lt;= #{endDate}
+        </if>
+        <if test="userType != null and userType != ''">
+            AND u.user_type = #{userType}
+        </if>
+        <if test="department != null and department != ''">
+            AND u.department = #{department}
+        </if>
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m-%d')
+        ORDER BY date ASC
+    </select>
+
+    <!-- 查询每周注册统计 -->
+    <select id="selectWeeklyRegisterStatistics" parameterType="UserStatisticsVo" resultType="map">
+        SELECT
+        CONCAT('第', WEEK(create_time, 1), '周') as week,
+        COUNT(*) as count
+        FROM sys_user u
+        WHERE u.del_flag = '0'
+        <if test="startDate != null and startDate != ''">
+            AND DATE(u.create_time) >= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE(u.create_time) &lt;= #{endDate}
+        </if>
+        <if test="userType != null and userType != ''">
+            AND u.user_type = #{userType}
+        </if>
+        <if test="department != null and department != ''">
+            AND u.department = #{department}
+        </if>
+        GROUP BY YEARWEEK(create_time, 1)
+        ORDER BY YEARWEEK(create_time, 1) ASC
+    </select>
+
+    <!-- 查询每月注册统计 -->
+    <select id="selectMonthlyRegisterStatistics" parameterType="UserStatisticsVo" resultType="map">
+        SELECT
+        DATE_FORMAT(create_time, '%Y年%m月') as month,
+        COUNT(*) as count
+        FROM sys_user u
+        WHERE u.del_flag = '0'
+        <if test="startDate != null and startDate != ''">
+            AND DATE(u.create_time) >= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE(u.create_time) &lt;= #{endDate}
+        </if>
+        <if test="userType != null and userType != ''">
+            AND u.user_type = #{userType}
+        </if>
+        <if test="department != null and department != ''">
+            AND u.department = #{department}
+        </if>
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m')
+        ORDER BY DATE_FORMAT(create_time, '%Y-%m') ASC
+    </select>
+
+    <!-- 查询每日登录统计 -->
+    <select id="selectDailyLoginStatistics" parameterType="UserStatisticsVo" resultType="map">
+        SELECT
+        DATE_FORMAT(login_date, '%Y-%m-%d') as date,
+        COUNT(DISTINCT user_id) as count
+        FROM sys_login_log
+        WHERE status = '0'  -- 登录成功
+        <if test="startDate != null and startDate != ''">
+            AND DATE(login_date) >= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE(login_date) &lt;= #{endDate}
+        </if>
+        <if test="userType != null and userType != ''">
+            AND user_type = #{userType}
+        </if>
+        <if test="department != null and department != ''">
+            AND department = #{department}
+        </if>
+        GROUP BY DATE_FORMAT(login_date, '%Y-%m-%d')
+        ORDER BY date ASC
+    </select>
+
+</mapper>

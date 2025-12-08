@@ -100,8 +100,6 @@ public class ResController extends BaseController
     @GetMapping("/getpv")
     public AjaxResult getpv(ResVo resVo)
     {
-        String userName="";
-        String deptName="";
         LoginUser loginUser=null;
         try{
             loginUser=getLoginUser();
@@ -109,15 +107,8 @@ public class ResController extends BaseController
         catch(Exception ex){
             //
         }
-        if(loginUser==null){
-            String ip = IpUtils.getIpAddr();
-            userName="匿名访客" + ip;
-        }
-        else{
-            userName=loginUser.getUsername();
-        }
         try{
-            AsyncManager.me().execute(AsyncFactory.recordSysResLog(userName,resVo));
+            AsyncManager.me().execute(AsyncFactory.recordSysResLog(loginUser,resVo));
         }
         catch(Exception ex){
             //

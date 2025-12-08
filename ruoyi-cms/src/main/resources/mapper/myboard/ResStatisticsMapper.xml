@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.myboard.mapper.ResStatisticsMapper">
+
+    <!-- 修正：金仓数据库日期条件（替换MySQL函数为PostgreSQL/金仓语法） -->
+    <sql id="dateWhere">
+        <if test="query.startDate != null and query.startDate != ''">
+            <!-- 开始日期：转成timestamp，匹配access_time类型 -->
+            AND access_time &gt;= to_date(#{query.startDate}, 'YYYY-MM-DD')::timestamp
+        </if>
+        <if test="query.endDate != null and query.endDate != ''">
+            <!-- 结束日期+1天：显式转timestamp，解决类型不匹配 -->
+            AND access_time &lt;  (to_date(#{query.endDate}, 'YYYY-MM-DD') + interval '1 day')::timestamp
+        </if>
+    </sql>
+
+    <!-- 1. 查询访问日志 -->
+    <select id="selectAccessLogs"
+            parameterType="com.ruoyi.cms.myboard.domain.vo.ResStatisticsQueryVO"
+            resultType="com.ruoyi.cms.myboard.domain.vo.AccessLogVO">
+        SELECT
+        log_id,
+        res_name,
+        opt_name,
+        res_id,
+        res_title,
+        user_name,
+        dept_name,
+        access_time,
+        oper_ip,
+        oper_location,
+        status,
+        user_id,
+        dept_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+        FROM sys_res_log
+        WHERE status = '0'
+        <include refid="dateWhere"/>
+        <if test="query.moduleFilter != null and query.moduleFilter != ''">
+            AND res_name = #{query.moduleFilter}
+        </if>
+        ORDER BY access_time DESC
+    </select>
+
+    <!-- 2. 按日期统计访问量 -->
+    <select id="selectDailyAccessData" resultType="java.util.Map">
+        SELECT
+        DATE(access_time) AS date,
+        COUNT(*)          AS count
+        FROM sys_res_log
+        WHERE status = '0'
+        <include refid="dateWhere"/>
+        GROUP BY DATE(access_time)
+        ORDER BY DATE(access_time)
+    </select>
+
+    <!-- 3. 按资源分类统计访问量 -->
+    <select id="selectModuleAccessData" resultType="java.util.Map">
+        SELECT
+        COALESCE(res_name, '其它') AS module_name, -- 金仓推荐用COALESCE替代IFNULL
+        COUNT(*)                 AS count
+        FROM sys_res_log
+        WHERE status = '0'
+        <include refid="dateWhere"/>
+        GROUP BY res_name
+        ORDER BY count DESC
+    </select>
+
+    <!-- 4. 热门文章 Top10 -->
+    <select id="selectTopArticles" resultType="java.util.Map">
+        SELECT
+        res_id,
+        res_title,
+        res_name               AS module,
+        COUNT(*)               AS views,
+        DATE(MIN(access_time)) AS first_date
+        FROM sys_res_log
+        WHERE status = '0'
+        AND res_id IS NOT NULL
+        AND res_title IS NOT NULL
+        <include refid="dateWhere"/>
+        GROUP BY res_id, res_title, res_name
+        ORDER BY views DESC
+        LIMIT 10
+    </select>
+
+    <!-- 5. 时间段分布 -->
+    <select id="selectTimeDistributionData" resultType="java.util.Map">
+        SELECT
+        CASE
+        WHEN EXTRACT(HOUR FROM access_time) BETWEEN 0  AND 2 THEN '00-03'
+        WHEN EXTRACT(HOUR FROM access_time) BETWEEN 3  AND 5 THEN '03-06'
+        WHEN EXTRACT(HOUR FROM access_time) BETWEEN 6  AND 8 THEN '06-09'
+        WHEN EXTRACT(HOUR FROM access_time) BETWEEN 9  AND 11 THEN '09-12'
+        WHEN EXTRACT(HOUR FROM access_time) BETWEEN 12 AND 14 THEN '12-15'
+        WHEN EXTRACT(HOUR FROM access_time) BETWEEN 15 AND 17 THEN '15-18'
+        WHEN EXTRACT(HOUR FROM access_time) BETWEEN 18 AND 20 THEN '18-21'
+        WHEN EXTRACT(HOUR FROM access_time) BETWEEN 21 AND 23 THEN '21-24'
+        END AS time_range,
+        COUNT(*) AS count
+        FROM sys_res_log
+        WHERE status = '0'
+        <include refid="dateWhere"/>
+        GROUP BY time_range
+        ORDER BY time_range
+    </select>
+
+    <!-- 6. 每日活跃用户 -->
+    <select id="selectDailyActiveUsers" resultType="java.util.Map">
+        SELECT
+        DATE(access_time)        AS date,
+        COUNT(DISTINCT user_name) AS active_users
+        FROM sys_res_log
+        WHERE status = '0'
+        AND user_name IS NOT NULL
+        AND user_name != ''
+        <include refid="dateWhere"/>
+        GROUP BY DATE(access_time)
+        ORDER BY DATE(access_time)
+    </select>
+
+</mapper>

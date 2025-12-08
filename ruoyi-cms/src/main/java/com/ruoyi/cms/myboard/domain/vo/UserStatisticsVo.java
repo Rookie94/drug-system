@@ -31,7 +31,7 @@ public class UserStatisticsVo extends BaseEntity
     private String userType;
 
     @ApiModelProperty("归属部门")
-    private String department;
+    private String deptId;
 
     // 统计结果字段
     @ApiModelProperty("用户总数")

@@ -45,11 +45,21 @@ public class UserStatisticsServiceImpl implements IUserStatisticsService
 
         // 1. 获取用户总数和各类型人数
         Map<String, Object> userCounts = userStatisticsMapper.selectUserCounts(userStatisticsVo);
-        result.setTotalUsers((Integer) userCounts.getOrDefault("totalUsers", 0));
-        result.setPoliceCount((Integer) userCounts.getOrDefault("policeCount", 0));
-        result.setReleasedCount((Integer) userCounts.getOrDefault("releasedCount", 0));
-        result.setRehabCount((Integer) userCounts.getOrDefault("rehabCount", 0));
-        result.setOtherCount((Integer) userCounts.getOrDefault("otherCount", 0));
+
+        Long totalUsersLong = (Long) userCounts.getOrDefault("totalUsers", 0L);
+        result.setTotalUsers(totalUsersLong != null ? totalUsersLong.intValue() : 0);
+
+        Long policeCountLong = (Long) userCounts.getOrDefault("policeCount", 0L);
+        result.setPoliceCount(policeCountLong != null ? policeCountLong.intValue() : 0);
+
+        Long releasedCountLong = (Long) userCounts.getOrDefault("releasedCount", 0L);
+        result.setReleasedCount(releasedCountLong != null ? releasedCountLong.intValue() : 0);
+
+        Long rehabCountLong = (Long) userCounts.getOrDefault("rehabCount", 0L);
+        result.setRehabCount(rehabCountLong != null ? rehabCountLong.intValue() : 0);
+
+        Long otherCountLong = (Long) userCounts.getOrDefault("otherCount", 0L);
+        result.setOtherCount(otherCountLong != null ? otherCountLong.intValue() : 0);
 
         // 2. 用户类型占比数据
         List<Map<String, Object>> userTypeList = userStatisticsMapper.selectUserTypeStatistics(userStatisticsVo);

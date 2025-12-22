@@ -82,16 +82,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="activityId != null"> and t.activity_id = #{activityId}</if>
             <if test="activityCode != null  and activityCode != ''"> and a.activity_code like concat('%', #{activityCode}, '%')</if>
             <if test="activityName != null  and activityName != ''"> and a.activity_name like concat('%', #{activityName}, '%')</if>
-            <if test="parentActivityName != null  and parentActivityName != ''"> and parent_activity_name like concat('%', #{parentActivityName}, '%')</if>
+            <if test="parentActivityName != null  and parentActivityName != ''"> and p.activity_name like concat('%', #{parentActivityName}, '%')</if>
             <if test="subject != null  and subject != ''"> and subject = #{subject}</if>
             <if test="status != null  and status != ''"> and t.status = #{status}</if>
-            <if test="address != null  and address != ''"> and address = #{address}</if>
-            <if test="orgName != null  and orgName != ''"> and org_name like concat('%', #{orgName}, '%')</if>
-            <if test="startTime != null "> and start_time &gt;= #{startTime}</if>
-            <if test="endTime != null "> and end_time &lt;= #{endTime}</if>
-            <if test="activityType != null  and activityType != ''"> and t.activity_type = #{activityType}</if>
+            <if test="address != null  and address != ''"> and a.address = #{address}</if>
+            <if test="orgName != null  and orgName != ''"> and a.org_name like concat('%', #{orgName}, '%')</if>
+            <if test="startTime != null "> and a.start_time &gt;= #{startTime}</if>
+            <if test="endTime != null "> and a.end_time &lt;= #{endTime}</if>
+            <if test="activityType != null  and activityType != ''"> and a.activity_type = #{activityType}</if>
             <if test="appored != null  and appored != ''"> and t.appored = #{appored}</if>
-            <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
+            <if test="params.beginPublishTime != null and params.beginPublishTime != '' and params.endPublishTime != null and params.endPublishTime != ''"> and t.publish_time between #{params.beginPublishTime} and #{params.endPublishTime}</if>
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>

@@ -37,7 +37,7 @@
         <spring-security.version>5.7.12</spring-security.version>
         <spring-framework.version>5.3.39</spring-framework.version>
         <jedis.version>3.3.0</jedis.version>
-        <x-file-storage-spring.version>2.2.1</x-file-storage-spring.version>
+        <x-file-storage-spring.version>2.3.0</x-file-storage-spring.version>
         <minio.version>8.2.2</minio.version>
         <esdk-obs-java.version>3.23.3</esdk-obs-java.version>
         <sms4j-spring-boot-starter.version>3.3.5</sms4j-spring-boot-starter.version>

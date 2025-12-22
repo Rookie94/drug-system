@@ -155,14 +155,14 @@ public class SysMiniAppUserServiceImpl implements ISysMiniAppUserService
     public List<MiniAppUser> selectMiniAppUserInnerJoinMiniAppList(MiniAppUser miniAppUser)
     {
         List<MiniAppUser> miniAppUserList = miniAppUserMapper.selectMiniAppUserInnerJoinMiniAppList(miniAppUser);
-        List<MiniAppUser> result = miniAppUserList.stream().peek(user ->
-            {
-            if(!ObjectUtils.isEmpty(user.getAvatar()))
-            {
-                user.setAvatar(ossUtils.getUrl(user.getAvatar(), false));
-            }
-            }).collect(Collectors.toList());
-        return result;
+//        List<MiniAppUser> result = miniAppUserList.stream().peek(user ->
+//            {
+//            if(!ObjectUtils.isEmpty(user.getAvatar()))
+//            {
+//                user.setAvatar(ossUtils.getUrl(user.getAvatar(), false));
+//            }
+//            }).collect(Collectors.toList());
+        return miniAppUserList;
     }
 
 }

@@ -14,6 +14,7 @@ import com.ruoyi.cms.online.mapper.ChatMessageMapper;
 import com.ruoyi.cms.online.service.IChatMessageService;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import static com.ruoyi.common.utils.SecurityUtils.*;
 
@@ -150,6 +151,7 @@ public class ChatMessageServiceImpl implements IChatMessageService
         }
         catch(Exception ex)
         {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return 0;
         }
         //return chatMessageMapper.deleteChatMessageByMessageIds(messageIds);

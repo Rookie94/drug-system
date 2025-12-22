@@ -108,7 +108,7 @@
             <if test="startTime != null">and start_time &gt;= #{startTime}</if>
             <if test="endTime != null">and end_time &lt;= #{endTime}</if>
             <if test="status != null and status != ''">and status = #{status}</if>
-            and appored in ('2','3')
+            and appored in ('2','3','4')
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>

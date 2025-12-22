@@ -31,6 +31,7 @@
         <result property="address" column="address"/>
         <result property="status" column="status"/>
         <result property="delFlag" column="del_flag"/>
+        <result property="refreshType" column="refreshType"/>
     </resultMap>
 
     <!-- 备份相关SQL -->
@@ -71,12 +72,12 @@
     </select>
 
     <select id="selectUserByUserGuid" resultMap="SyncUserInfoResult">
-        SELECT user_id, dept_id, user_guid, phonenumber, nick_name, sex, birthday, user_type, org_id, address, status, del_flag
+        SELECT user_id, dept_id, user_guid, phonenumber, nick_name, sex, birthday, user_type, org_id, address, status, del_flag,refreshType
         FROM sys_userinfo
         WHERE user_guid = #{userGuid} AND user_type = '00'
     </select>
 
-    <select id="countUserByPhonenumber" resultType="int">
+    <select id="countUserByPhoneNumber" resultType="int">
         SELECT COUNT(1)
         FROM sys_userinfo
         WHERE phonenumber = #{phoneNumber} AND user_type = '00' AND del_flag = '0'
@@ -86,11 +87,11 @@
         INSERT INTO sys_userinfo (
             dept_id, user_name, nick_name, user_type, birthday,
             phonenumber, sex, password, status, del_flag,
-            create_time, user_guid, org_id, address
+            create_time, user_guid, org_id, address,refreshType
         ) VALUES (
                      #{deptId}, #{userName}, #{nickName}, '00', #{birthday},
-                     #{phoneNumber}, #{sex}, '$2a$10$jQgpnuhj06wld6pMQTYjweLtZhxJFm4phvmns2cj.eSJ5oJpNwvFu', '0', '0',
-                     now(), #{userGuid}, #{orgId}, #{address}
+                     #{phoneNumber}, #{sex}, '$2a$10$HEx28z0Yg.zAC18qSGyPWegZynrTgO0hOaZgGBQuwSb.93I2Gvq8G', '0', '0',
+                     now(), #{userGuid}, #{orgId}, #{address},'0'
                  )
     </insert>
 
@@ -106,14 +107,15 @@
                                 status = '0',
                                 del_flag = '0',
                                 update_time = now()
-        WHERE user_id = #{userId}
+        WHERE user_id = #{userId} AND refreshType  = '0'
     </update>
 
     <update id="softDeleteMissingUsers">
         UPDATE sys_userinfo
-        SET status = '1', del_flag = '2', update_time = now()
+        SET status = '1', del_flag = '0', update_time = now()
         WHERE user_type = '00'
           AND user_id  &lt;&gt; 1
+          AND refreshType  = '0'
           AND del_flag = '0'
           AND (
             user_guid NOT IN (

@@ -19,7 +19,9 @@ public class SyncUserInfo {
     private String password;
     private String status;
     private String delFlag;
-    private String userGuid; // 新增user_guid字段
+    private String userGuid;
+
+    private String refreshType;
 
     // getters and setters
     public Long getUserId() { return userId; }
@@ -72,4 +74,13 @@ public class SyncUserInfo {
 
     public String getUserGuid() { return userGuid; }
     public void setUserGuid(String userGuid) { this.userGuid = userGuid; }
+
+    public String getRefreshType() {
+        return refreshType;
+    }
+
+    public void setRefreshType(String refreshType) {
+        this.refreshType = refreshType;
+    }
+
 }

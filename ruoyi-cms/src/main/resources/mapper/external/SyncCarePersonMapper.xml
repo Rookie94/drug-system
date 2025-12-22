@@ -39,6 +39,7 @@
         <result property="status" column="status"/>
         <result property="delFlag" column="del_flag"/>
         <result property="userGuid" column="user_guid"/>
+        <result property="refreshType" column="refreshType"/>
     </resultMap>
 
     <!-- 备份用户表 -->
@@ -55,7 +56,7 @@
 
     <!-- 根据机构ID和身份证号查询用户 -->
     <select id="selectUserByOrgIdAndIdNumber" resultMap="SyncUserInfoResult">
-        SELECT user_id, dept_id, user_name, nick_name, user_type, org_id, id_number, user_guid
+        SELECT user_id, dept_id, user_name, nick_name, user_type, org_id, id_number, user_guid,refreshType
         FROM sys_userinfo
         WHERE org_id = #{orgId} AND id_number = #{idNumber}
     </select>
@@ -65,11 +66,11 @@
         INSERT INTO sys_userinfo (
         user_id, dept_id, user_name, nick_name, user_type, birthday, entry_date,
         out_time, phonenumber, sex, id_number, address, org_id, password,
-        status, del_flag, create_time, user_guid
+        status, del_flag, create_time, user_guid,refreshType
         ) VALUES (
         #{userId}, #{deptId}, #{userName}, #{nickName}, #{userType}, #{birthday}, #{entryDate},
-        #{outTime}, #{phonenumber}, #{sex}, #{idNumber}, #{address}, #{orgId}, #{password},
-        #{status}, #{delFlag}, now(), #{userGuid}
+        #{outTime}, #{phoneNumber}, #{sex}, #{idNumber}, #{address}, #{orgId}, #{password},
+        #{status}, #{delFlag}, now(), #{userGuid},'0'
         )
     </insert>
 
@@ -90,7 +91,7 @@
                                 org_id = #{orgId},
                                 user_guid = #{userGuid},
                                 update_time = now()
-        WHERE user_id = #{userId}
+        WHERE user_id = #{userId} AND refreshType  = '0'
     </update>
 
     <!-- 软删除缺失的照管对象 -->
@@ -102,6 +103,7 @@
             update_time = now()
         WHERE u.user_type = '11'
           AND u.del_flag = '0'
+          AND u.refreshType  = '0'
           AND NOT EXISTS (
             SELECT 1
             FROM mid_care_person m

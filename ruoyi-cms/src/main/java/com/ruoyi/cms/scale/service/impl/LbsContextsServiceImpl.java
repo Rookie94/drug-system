@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.cms.scale.mapper.LbsContextsMapper;
 import com.ruoyi.cms.scale.domain.LbsContexts;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import static com.ruoyi.common.utils.SecurityUtils.*;
 
@@ -232,7 +233,7 @@ public class LbsContextsServiceImpl implements ILbsContextsService
             result=1;
         }
         catch(Exception e){
-            //
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return result;
     }

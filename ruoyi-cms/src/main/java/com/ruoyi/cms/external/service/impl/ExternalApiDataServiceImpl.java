@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.*;
 
@@ -91,7 +92,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 log.error("组织机构同步过程中发生异常，可能导致数据不一致。已获取数据量: {}", orgList.size());
                 // 这里可以发送告警通知管理员
             }
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return AjaxResult.error("组织机构同步异常: " + e.getMessage());
         }
     }
@@ -218,7 +219,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
                 log.error("数据同步过程中发生异常，可能导致数据不一致。已获取数据量: {}", policeList.size());
                 // 这里可以发送告警通知管理员
             }
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return AjaxResult.error("警员信息同步异常: " + e.getMessage());
         }
     }
@@ -329,7 +330,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
             if (hasClearedData) {
                 log.error("照管人员同步过程中发生异常，已清空数据但未完成同步，事务将回滚");
             }
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return AjaxResult.error("照管人员信息同步异常: " + e.getMessage());
         }
     }
@@ -399,6 +400,7 @@ public class ExternalApiDataServiceImpl implements IExternalApiDataService {
 
         } catch (Exception e) {
             log.error("分批同步照管人员信息异常", e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return AjaxResult.error("分批同步异常，已成功: " + totalSaved + " 条，错误: " + e.getMessage());
         }
     }

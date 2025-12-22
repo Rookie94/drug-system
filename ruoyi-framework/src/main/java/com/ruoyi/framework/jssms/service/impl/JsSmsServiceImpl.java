@@ -150,8 +150,8 @@ public class JsSmsServiceImpl implements IJsSmsService {
      */
     private String generateAndStoreCode(String phoneNumber) {
         //由于短信验证码不通,默认888888测试
-        //int code = ThreadLocalRandom.current().nextInt(1000, 9999);
-        int code=8888;
+        int code = ThreadLocalRandom.current().nextInt(1000, 9999);
+        //int code=8888;
         String codeStr = String.valueOf(code);
         String key = CacheConstants.CAPTCHA_PHONE_CODE_KEY + phoneNumber;
         redisCache.setCacheObject(key, codeStr, 1, TimeUnit.MINUTES);

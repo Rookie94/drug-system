@@ -121,6 +121,9 @@ public class SysUser extends BaseEntity
     /** 角色ID */
     private Long roleId;
 
+    /** 更新方式 */
+    private String refreshType;
+
     public SysUser()
     {
 
@@ -385,6 +388,14 @@ public class SysUser extends BaseEntity
         this.roleId = roleId;
     }
 
+    public String getRefreshType() {
+        return refreshType;
+    }
+
+    public void setRefreshType(String refreshType) {
+        this.refreshType = refreshType;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -407,6 +418,7 @@ public class SysUser extends BaseEntity
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
+            .append("refreshType", getRefreshType())
             .append("dept", getDept())
             .toString();
     }

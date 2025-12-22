@@ -24,7 +24,7 @@ public class SyncCarePersonServiceImpl implements ISyncCarePersonService {
     @Autowired
     private SyncCarePersonMapper syncCarePersonMapper;
 
-    private static final String DEFAULT_PASSWORD = "$2a$10$jQgpnuhj06wld6pMQTYjweLtZhxJFm4phvmns2cj.eSJ5oJpNwvFu";
+    private static final String DEFAULT_PASSWORD = "$2a$10$HEx28z0Yg.zAC18qSGyPWegZynrTgO0hOaZgGBQuwSb.93I2Gvq8G";
     private static final String USER_TYPE_CARE_PERSON = "11"; // 照管对象类型
 
     /**

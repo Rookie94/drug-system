@@ -84,13 +84,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> {
                     permitAllUrl.getUrls().forEach(url -> req.antMatchers(url).permitAll());
                     req.antMatchers("/login", "/register", "/captchaImage","/getarea",
-                                    "/sendSms", "/smsLogin", "/wxLogin",
-                                    "/check-binding", "/binding-phone",
-                                    "/api/res/**", "/captcha/**").permitAll()
-                            .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html",
-                                    "/**/*.css", "/**/*.js", "/profile/**").permitAll()
-                            .antMatchers("/swagger-ui.html", "/swagger-resources/**",
-                                    "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
+                                    "/sendSms", "/smsLogin", "/wxLogin","/R2F7juVgcS.txt",
+                                    "/check-binding", "/binding-phone","/api/res/**",
+                                    "/captcha/**").permitAll()
+                            //.antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html","/**/*.css", "/**/*.js", "/profile/**").permitAll()
+                            //.antMatchers("/swagger-ui.html", "/swagger-resources/**","/webjars/**", "/*/api-docs", "/druid/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 .logout(lo -> lo.logoutUrl("/logout")

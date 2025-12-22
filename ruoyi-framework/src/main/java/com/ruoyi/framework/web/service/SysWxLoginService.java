@@ -147,7 +147,8 @@ public class SysWxLoginService {
             }
         }
         catch(Exception ex){
-            return AjaxResult.error(ex.getMessage());
+            //return AjaxResult.error(ex.getMessage());
+            throw new RuntimeException(ex.getMessage(), ex);
         }
     }
 

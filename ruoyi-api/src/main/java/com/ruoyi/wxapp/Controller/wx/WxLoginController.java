@@ -58,6 +58,9 @@ public class WxLoginController  {
 
     private static final Logger logger = LoggerFactory.getLogger(WxLoginController.class);
 
+    @Autowired
+    private WeChatUtils weChatUtils;
+
     @Resource
     private CaptchaService captchaService;
 
@@ -177,7 +180,7 @@ public class WxLoginController  {
         String code = wxLoginBody.getCode();
 
         //向微信服务器发送请求获取用户信息
-        WxParam wxParam=WeChatUtils.getOpenIdAndSessionKey(appId,appSecret,code);
+        WxParam wxParam=weChatUtils.getOpenIdAndSessionKey(appId,appSecret,code);
 
         if(wxParam==null){
             return AjaxResult.error("获取当前微信参数失败！");
@@ -225,7 +228,7 @@ public class WxLoginController  {
         String code = wxLoginBody.getCode();
 
         //向微信服务器发送请求获取用户信息
-        WxParam wxParam = WeChatUtils.getOpenIdAndSessionKey(appId, appSecret, code);
+        WxParam wxParam = weChatUtils.getOpenIdAndSessionKey(appId, appSecret, code);
 
         if (wxParam == null) {
             return AjaxResult.error("绑定失败,获取当前微信参数失败！");
@@ -358,7 +361,7 @@ public class WxLoginController  {
         String code = wxLoginBody.getCode();
 
         //向微信服务器发送请求获取用户信息
-        WxParam wxParam=WeChatUtils.getOpenIdAndSessionKey(appId,appSecret,code);
+        WxParam wxParam=weChatUtils.getOpenIdAndSessionKey(appId,appSecret,code);
 
         if(wxParam==null){
             return AjaxResult.error("微信登录失败,获取参数失败！");

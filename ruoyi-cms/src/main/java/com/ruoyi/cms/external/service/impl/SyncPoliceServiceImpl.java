@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -138,6 +139,7 @@ public class SyncPoliceServiceImpl implements ISyncPoliceService {
                             deptChanged ? " (部门已更新)" : "");
                 }
             } catch (Exception e) {
+                //TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 logger.error("处理警察数据失败: {} - {}", police.getId(), police.getName(), e);
             }
         }

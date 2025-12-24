@@ -2,43 +2,67 @@
     <div style="background: white; border-radius: 16px; padding: 25px 20px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); margin: 0 auto; max-width: 400px;">
         <!-- 报告头部 -->
         <div style="text-align: center; margin-bottom: 25px;">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #8e44ad, #9b59b6); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                <span style="color: white; font-size: 24px;">📊</span>
+            <div th:style="'width: 60px; height: 60px; background: ' + ${gradientBg} + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;'">
+                <span style="color: white; font-size: 24px;" th:text="${icon}">😨</span>
             </div>
-            <h1 style="color: #2c3e50; font-size: 20px; font-weight: 600; margin-bottom: 8px;">汉密顿焦虑测评</h1>
-            <p style="color: #7f8c8d; font-size: 14px;">HAMA专业评估报告</p>
+            <h1 style="color: #2c3e50; font-size: 20px; font-weight: 600; margin-bottom: 8px;">汉密顿焦虑测试报告</h1>
+            <p style="color: #7f8c8d; font-size: 14px;">汉密顿焦虑量表(HAMA)</p>
         </div>
 
-        <!-- 综合评分 -->
-        <div style="background: #f4ecf7; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-            <div style="text-align: center; margin-bottom: 15px;">
-                <div style="color: #8e44ad; font-size: 32px; font-weight: 700; margin-bottom: 5px;">18</div>
-                <div style="color: #2c3e50; font-weight: 500;">总分</div>
+        <!-- 测评结果 -->
+        <div th:style="'background: ' + ${levelBgColor} + '; border-radius: 12px; padding: 20px; margin-bottom: 20px;'">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: #2c3e50; font-weight: 500;">HAMA总分</span>
+                <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600; font-size: 18px;'"
+                      th:text="${rawTotalScore} + '分'">24分</span>
             </div>
-            <div style="background: #e8daef; height: 8px; border-radius: 4px; overflow: hidden;">
-                <div style="background: linear-gradient(90deg, #8e44ad, #9b59b6); height: 100%; width: 45%; border-radius: 4px;"></div>
+            <div style="background: #fcf3cf; height: 8px; border-radius: 4px; overflow: hidden;">
+                <div th:style="'background: ' + ${progressGradient} + '; height: 100%; width: ' + ${progressWidth} + '%; border-radius: 4px;'"></div>
             </div>
+            <div th:style="'color: ' + ${borderColor} + '; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500;'"
+                 th:text="${anxietyLevel}">肯定有明显焦虑</div>
         </div>
 
-        <!-- 因子分析 -->
+        <!-- 结果说明 -->
         <div style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
-            <div style="color: #4a90e2; font-weight: 600; margin-bottom: 12px;">因子分析</div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="color: #5a6c7d; font-size: 14px;">精神性焦虑</span>
-                <span style="color: #4a90e2; font-weight: 500;">10分</span>
-            </div>
-            <div style="display: flex; justify-content: space-between;">
-                <span style="color: #5a6c7d; font-size: 14px;">躯体性焦虑</span>
-                <span style="color: #4a90e2; font-weight: 500;">8分</span>
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">结果说明</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <span th:text="${levelDescription}">您的HAMA总分在21-28分之间，存在明显焦虑症状，建议寻求专业治疗。</span>
             </div>
         </div>
 
-        <!-- 临床意义 -->
-        <div style="background: #e8f4fd; border-radius: 10px; padding: 16px;">
-            <div style="color: #4a90e2; font-weight: 600; margin-bottom: 10px;">临床意义</div>
+        <!-- 维度得分 -->
+        <div th:if="${hasDimensions}" style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">维度分析</div>
             <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
-                根据HAMA评分标准，您的得分表明存在轻度焦虑症状，建议定期复查并关注症状变化。
+                <div th:each="entry : ${dimensionScores}"
+                     style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee;">
+                    <span th:text="${entry.key}">精神性焦虑</span>
+                    <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600;'"
+                          th:text="${entry.value} + '分'">14分</span>
+                </div>
             </div>
+        </div>
+
+        <!-- 缓解建议 -->
+        <div th:style="'background: ' + ${suggestionBgColor} + '; border-radius: 10px; padding: 16px;'">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">治疗建议</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <div th:each="suggestion,iterStat : ${suggestionList}">
+                    <span th:text="${iterStat.count} + '. ' + ${suggestion}">1. 强烈建议寻求专业精神科医生帮助</span>
+                    <br th:if="${not iterStat.last}">
+                </div>
+            </div>
+        </div>
+
+        <!-- 分数说明 -->
+        <div style="color: #95a5a6; font-size: 11px; text-align: center; margin-top: 20px; padding: 10px; border-top: 1px solid #eee;">
+            总分范围：0-56分（&lt;7:无焦虑 | 7-13:可能有焦虑 | 14-20:肯定有焦虑 | 21-28:肯定有明显焦虑 | &gt;28:可能有严重焦虑）
+        </div>
+
+        <!-- 免责声明 -->
+        <div style="color: #95a5a6; font-size: 11px; text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;">
+            汉密顿焦虑量表(HAMA)是临床专业评估工具，本结果仅供参考，不能替代专业医疗诊断。如有需要，请及时咨询专业医生。
         </div>
     </div>
 </div>

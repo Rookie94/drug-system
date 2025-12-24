@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.cms.scale.calcdata.strategy.CalcStrategyFactory;
+import com.ruoyi.cms.scale.calcdata.strategy.ICalcStrategy;
 import com.ruoyi.cms.scale.domain.LbsContexts;
 import com.ruoyi.cms.scale.domain.LbsResults;
 import com.ruoyi.cms.scale.domain.vo.AnswerVo;
@@ -17,6 +19,7 @@ import com.ruoyi.cms.survey.domain.vo.DocResultsVo;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.ProcResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -38,7 +42,6 @@ public class ScaleController extends BaseController {
     @Autowired
     private ILbsTopicsService lbsTopicsService;
 
-
     @Autowired
     private ILbsResultsService lbsResultsService;
 
@@ -46,7 +49,7 @@ public class ScaleController extends BaseController {
     private ILbsAnswerService lbsAnswerService;
 
     @Autowired
-    private ILbsCalcService lbsCalcService;
+    private CalcStrategyFactory calcFactory;
 
     @Autowired
     private TemplateStrategyFactory reportFactory;
@@ -104,17 +107,50 @@ public class ScaleController extends BaseController {
 
         lbsResults.setStatus("0");
         int result=lbsResultsService.insertLbsResults(lbsResults);
-        try{
-            Long resultId=lbsResults.getResultId();
-            ContextAnswerVo contextAnswerVo=new ContextAnswerVo();
+        try {
+            Long resultId = lbsResults.getResultId();
+            ContextAnswerVo contextAnswerVo = new ContextAnswerVo();
             contextAnswerVo.setContextId(lbsResults.getContextId());
-            List<AnswerVo> list= JSONArray.parseArray(lbsResults.getJsonResult(),AnswerVo.class);
+            // 解析JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(lbsResults.getJsonResult());
+            JsonNode answersArray = rootNode.get("answers");
+            List<AnswerVo> list = new ArrayList<>();
+            if (answersArray != null && answersArray.isArray()) {
+                for (JsonNode answerNode : answersArray) {
+                    AnswerVo answerVo = new AnswerVo();
+                    // 设置resultId
+                    answerVo.setResultId(resultId);
+                    // 转换topicId为Long
+                    if (answerNode.has("topicId")) {
+                        String topicIdStr = answerNode.get("topicId").asText();
+                        answerVo.setTopicId(Long.parseLong(topicIdStr));
+                    }
+                    // 转换optionId为字符串，直接存储
+                    if (answerNode.has("optionId")) {
+                        String optionIdStr = answerNode.get("optionId").asText();
+                        answerVo.setOptionIds(optionIdStr);
+                    }
+                    // answer字段可能需要从其他地方获取或为空
+                    // answerVo.setAnswer("");
+                    list.add(answerVo);
+                }
+            }
             contextAnswerVo.setAnswers(list);
             lbsAnswerService.deleteAnswerByResultId(resultId);
             lbsAnswerService.batchInsertAnswer(list);
-            lbsCalcService.calcData(contextAnswerVo);
-        }catch (Exception ex){
+
+            ICalcStrategy strategy=calcFactory.getStrategy(contextAnswerVo.getContextId());
+            ProcResult procResult= strategy.calculate(contextAnswerVo);
+            if(procResult.getResult()){
+                LbsResults lb=new LbsResults();
+                lb.setResultId(resultId);
+                lb.setJsonReport(procResult.getData().toString());
+                lbsResultsService.updateLbsResults(lb);
+            }
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
         return toAjax(result);
     }

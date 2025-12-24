@@ -1,9 +1,14 @@
 package com.ruoyi.web.controller.scale;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONArray;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.cms.scale.calcdata.strategy.CalcStrategyFactory;
+import com.ruoyi.cms.scale.calcdata.strategy.ICalcStrategy;
 import com.ruoyi.cms.scale.domain.LbsContexts;
 import com.ruoyi.cms.scale.domain.LbsResults;
 import com.ruoyi.cms.scale.domain.vo.AnswerVo;
@@ -11,9 +16,10 @@ import com.ruoyi.cms.scale.domain.vo.ContextAnswerVo;
 import com.ruoyi.cms.scale.report.ITemplateStrategy;
 import com.ruoyi.cms.scale.report.TemplateStrategyFactory;
 import com.ruoyi.cms.scale.service.ILbsAnswerService;
-import com.ruoyi.cms.scale.service.ILbsCalcService;
 import com.ruoyi.cms.scale.service.ILbsContextsService;
 import com.ruoyi.cms.scale.service.ILbsResultsService;
+import com.ruoyi.cms.scale.service.impl.LbsResultsServiceImpl;
+import com.ruoyi.common.core.domain.ProcResult;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +52,7 @@ public class LbsResultsController extends BaseController
     private ILbsAnswerService lbsAnswerService;
 
     @Autowired
-    private ILbsCalcService lbsCalcService;
+    private CalcStrategyFactory calcFactory;
 
     @Autowired
     private TemplateStrategyFactory reportFactory;
@@ -139,19 +145,58 @@ public class LbsResultsController extends BaseController
 
     @PreAuthorize("@ss.hasPermi('scale:report:edit')")
     @Log(title = "测评报告", businessType = BusinessType.UPDATE)
-    @GetMapping("/refreshResult/{resultIds}")
+    @PutMapping("/refreshResult/{resultIds}")
     public AjaxResult refreshResult(@PathVariable Long[] resultIds)
     {
         try{
             for (Long resultId : resultIds) {
-                LbsResultsVo lbsResults=lbsResultsService.selectLbsResultsByResultId(resultId);
-                ContextAnswerVo contextAnswerVo=new ContextAnswerVo();
-                contextAnswerVo.setContextId(lbsResults.getContextId());
-                List<AnswerVo> list= JSONArray.parseArray(lbsResults.getJsonResult(),AnswerVo.class);
-                contextAnswerVo.setAnswers(list);
-                lbsAnswerService.deleteAnswerByResultId(resultId);
-                lbsAnswerService.batchInsertAnswer(list);
-                lbsCalcService.calcData(contextAnswerVo);
+                try {
+                    LbsResultsVo lbsResults= lbsResultsService.selectLbsResultsByResultId(resultId);
+                    if(lbsResults!=null) {
+                        ContextAnswerVo contextAnswerVo = new ContextAnswerVo();
+                        contextAnswerVo.setContextId(lbsResults.getContextId());
+                        // 解析JSON
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        JsonNode rootNode = objectMapper.readTree(lbsResults.getJsonResult());
+                        JsonNode answersArray = rootNode.get("answers");
+                        List<AnswerVo> list = new ArrayList<>();
+                        if (answersArray != null && answersArray.isArray()) {
+                            for (JsonNode answerNode : answersArray) {
+                                AnswerVo answerVo = new AnswerVo();
+                                // 设置resultId
+                                answerVo.setResultId(resultId);
+                                // 转换topicId为Long
+                                if (answerNode.has("topicId")) {
+                                    String topicIdStr = answerNode.get("topicId").asText();
+                                    answerVo.setTopicId(Long.parseLong(topicIdStr));
+                                }
+                                // 转换optionId为字符串，直接存储
+                                if (answerNode.has("optionId")) {
+                                    String optionIdStr = answerNode.get("optionId").asText();
+                                    answerVo.setOptionIds(optionIdStr);
+                                }
+                                // answer字段可能需要从其他地方获取或为空
+                                // answerVo.setAnswer("");
+                                list.add(answerVo);
+                            }
+                        }
+                        contextAnswerVo.setAnswers(list);
+                        lbsAnswerService.deleteAnswerByResultId(resultId);
+                        lbsAnswerService.batchInsertAnswer(list);
+
+                        ICalcStrategy strategy = calcFactory.getStrategy(contextAnswerVo.getContextId());
+                        ProcResult procResult = strategy.calculate(contextAnswerVo);
+                        if (procResult.getResult()) {
+                            LbsResults lb = new LbsResults();
+                            lb.setResultId(resultId);
+                            lb.setJsonReport(procResult.getData().toString());
+                            lbsResultsService.updateLbsResults(lb);
+                        }
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                    ex.printStackTrace();
+                }
             }
             return success("刷新成功");
         }catch (Exception ex){

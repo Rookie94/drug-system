@@ -3,11 +3,12 @@ package com.ruoyi.cms.scale.report.strategy.pc.family;
 import com.ruoyi.cms.scale.domain.vo.LbsResultsVo;
 import com.ruoyi.cms.scale.report.ITemplateStrategy;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
+@Component
 public class ITSPcStrategy implements ITemplateStrategy {
     @Override
     public String getTemplate(Long contextId, String deviceType, LbsResultsVo lbsResults)

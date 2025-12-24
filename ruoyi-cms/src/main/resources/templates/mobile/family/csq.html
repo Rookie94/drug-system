@@ -2,46 +2,89 @@
     <div style="background: white; border-radius: 16px; padding: 25px 20px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); margin: 0 auto; max-width: 400px;">
         <!-- 报告头部 -->
         <div style="text-align: center; margin-bottom: 25px;">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #e74c3c, #c0392b); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                <span style="color: white; font-size: 24px;">🛡️</span>
+            <div th:style="'width: 60px; height: 60px; background: ' + ${gradientBg} + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;'">
+                <span style="color: white; font-size: 24px;" th:text="${icon}">🌟</span>
             </div>
-            <h1 style="color: #2c3e50; font-size: 20px; font-weight: 600; margin-bottom: 8px;">应付方式分析</h1>
-            <p style="color: #7f8c8d; font-size: 14px;">CSQ问卷测评报告</p>
+            <h1 style="color: #2c3e50; font-size: 20px; font-weight: 600; margin-bottom: 8px;">应付方式问卷测试报告</h1>
+            <p style="color: #7f8c8d; font-size: 14px;">应付方式问卷(CSQ)</p>
         </div>
 
-        <!-- 应对风格 -->
-        <div style="background: #fdedec; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
-            <div style="color: #e74c3c; font-size: 20px; font-weight: 700; margin-bottom: 10px;">积极应对型</div>
-            <div style="color: #2c3e50; font-weight: 500;">主要应对风格</div>
+        <!-- 测评结果 -->
+        <div th:style="'background: ' + ${styleBgColor} + '; border-radius: 12px; padding: 20px; margin-bottom: 20px;'">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: #2c3e50; font-weight: 500;">主要应对方式</span>
+                <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600; font-size: 18px;'"
+                      th:text="${copingStyle}">成熟型</span>
+            </div>
+            <div style="background: #fcf3cf; height: 8px; border-radius: 4px; overflow: hidden;">
+                <div th:style="'background: ' + ${progressGradient} + '; height: 100%; width: ' + ${progressWidth} + '%; border-radius: 4px;'"></div>
+            </div>
+            <div th:style="'color: ' + ${borderColor} + '; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500;'"
+                 th:text="${copingTendency}">成熟应对倾向</div>
         </div>
 
-        <!-- 应对策略分布 -->
+        <!-- 结果说明 -->
         <div style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
-            <div style="color: #4a90e2; font-weight: 600; margin-bottom: 12px;">应对策略分布</div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span style="color: #5a6c7d; font-size: 14px;">解决问题</span>
-                <span style="color: #27ae60; font-weight: 500;">高</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span style="color: #5a6c7d; font-size: 14px;">求助</span>
-                <span style="color: #3498db; font-weight: 500;">中</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span style="color: #5a6c7d; font-size: 14px;">自责</span>
-                <span style="color: #e74c3c; font-weight: 500;">低</span>
-            </div>
-            <div style="display: flex; justify-content: space-between;">
-                <span style="color: #5a6c7d; font-size: 14px;">幻想</span>
-                <span style="color: #f39c12; font-weight: 500;">中</span>
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">结果说明</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <span th:text="${styleDescription}">您倾向于使用成熟的应对策略，善于解决问题和寻求帮助。</span>
             </div>
         </div>
 
-        <!-- 评估结论 -->
-        <div style="background: #e8f4fd; border-radius: 10px; padding: 16px;">
-            <div style="color: #4a90e2; font-weight: 600; margin-bottom: 10px;">评估结论</div>
+        <!-- 各因子得分 -->
+        <div th:if="${hasFactors}" style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">各因子得分</div>
             <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
-                您主要采用积极的问题解决策略，具备良好的心理调适能力，建议继续保持并发展社会支持网络。
+                <div th:each="entry : ${factorScores.entrySet()}"
+                     style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee;">
+                    <span th:text="${entry.key}">解决问题</span>
+                    <div style="text-align: right;">
+                        <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600;'"
+                              th:text="${entry.value} + '分'">10分</span>
+                        <!-- 修复这里：使用正确的条件判断 -->
+                        <span th:if="${factorRatios != null and factorRatios.containsKey(entry.key)}"
+                              style="color: #95a5a6; font-size: 12px; margin-left: 8px;"
+                              th:text="'(' + ${factorRatios.get(entry.key)} + '%)'">(25%)</span>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <!-- 应对方式详情 -->
+        <div th:if="${hasFactorChartData}" style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">应对方式分布</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <div th:each="factor : ${factorChartData}" style="margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span th:text="${factor.name}">解决问题</span>
+                        <span th:text="${factor.score} + '分 (' + ${factor.ratio} + '%)'">10分 (25%)</span>
+                    </div>
+                    <div style="background: #eee; height: 6px; border-radius: 3px; overflow: hidden;">
+                        <div th:style="'background: ' + ${factor.color} + '; height: 100%; width: ' + ${factor.ratio} + '%;'"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 建议措施 -->
+        <div th:style="'background: ' + ${suggestionBgColor} + '; border-radius: 10px; padding: 16px;'">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">建议措施</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <div th:each="suggestion,iterStat : ${suggestionList}">
+                    <span th:text="${iterStat.count} + '. ' + ${suggestion}">1. 学习压力管理技巧</span>
+                    <br th:if="${not iterStat.last}">
+                </div>
+            </div>
+        </div>
+
+        <!-- 分数说明 -->
+        <div style="color: #95a5a6; font-size: 11px; text-align: center; margin-top: 20px; padding: 10px; border-top: 1px solid #eee;">
+            原始总分：<span th:text="${rawTotalScore}">42</span>分
+        </div>
+
+        <!-- 免责声明 -->
+        <div style="color: #95a5a6; font-size: 11px; text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;">
+            本测评结果仅供参考，不能替代专业心理评估。如有需要，请及时咨询专业心理咨询师。
         </div>
     </div>
 </div>

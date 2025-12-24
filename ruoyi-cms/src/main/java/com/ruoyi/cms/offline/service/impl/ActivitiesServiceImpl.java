@@ -3,19 +3,17 @@ package com.ruoyi.cms.offline.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import com.ruoyi.cms.offline.domain.vo.ActivitiesQueryVo;
+import com.ruoyi.cms.offline.domain.vo.*;
+import com.ruoyi.cms.offline.mapper.*;
 import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ruoyi.cms.offline.domain.vo.ActivitiesStateVo;
-import com.ruoyi.cms.res.domain.ResCase;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.ResApporParam;
 import com.ruoyi.system.service.ISerialNoService;
-import com.ruoyi.cms.offline.mapper.ActivitiesMapper;
 import com.ruoyi.cms.offline.domain.Activities;
 import com.ruoyi.cms.offline.service.IActivitiesService;
 
@@ -35,6 +33,25 @@ public class ActivitiesServiceImpl implements IActivitiesService
 
     @Autowired
     private ISerialNoService serialNoService;
+
+    @Autowired
+    private ActivitiesSignUpMapper activitiesSignUpMapper;
+
+    @Autowired
+    private ActivitiesCheckinMapper activitiesCheckinMapper;
+
+    @Autowired
+    private ActivitiesReviewMapper activitiesReviewMapper;
+
+    @Autowired
+    private ActivitiesLiveMapper activitiesLiveMapper;
+
+
+    @Autowired
+    private ActivitiesTmsdataMapper activitiesTmsdataMapper;
+
+    @Autowired
+    private ActivitiesTechMapper activitiesTechMapper;
 
     /**
      * 查询活动发布
@@ -203,6 +220,48 @@ public class ActivitiesServiceImpl implements IActivitiesService
                     throw new ServiceException("主活动【" + activity.getActivityName() + "】存在子活动，请先删除子活动");
                 }
             }
+            //检查报名
+            ActivitiesSignUpVo signUp=new ActivitiesSignUpVo();
+            signUp.setActivityId(activityId);
+            List<ActivitiesSignUpVo> listSignUps=activitiesSignUpMapper.selectSignUpList(signUp);
+            if(listSignUps!=null && listSignUps.size()>0){
+                throw new ServiceException("活动【" + activity.getActivityName() + "】已存在报名数据，请先删除报名数据");
+            }
+            //检查签到
+            ActivitiesCheckinVo checkinVo=new ActivitiesCheckinVo();
+            checkinVo.setActivityId(activityId);
+            List<ActivitiesCheckinVo> listCheckIns=activitiesCheckinMapper.selectActivitiesCheckinList(checkinVo);
+            if(listCheckIns!=null && listCheckIns.size()>0){
+                throw new ServiceException("活动【" + activity.getActivityName() + "】已存在签到数据，请先删除签到数据");
+            }
+            //评价
+            ActivitiesReviewVo reviewVo=new ActivitiesReviewVo();
+            reviewVo.setActivityId(activityId);
+            List<ActivitiesReviewVo> listReviewVos=activitiesReviewMapper.selectActivitiesReviewList(reviewVo);
+            if(listReviewVos!=null && listReviewVos.size()>0){
+                throw new ServiceException("活动【" + activity.getActivityName() + "】已存在评价数据，请先删除评价数据");
+            }
+            //现场
+            ActivitiesLiveVo liveVo=new ActivitiesLiveVo();
+            liveVo.setActivityId(activityId);
+            List<ActivitiesLiveVo> listLiveVos=activitiesLiveMapper.selectActivitiesLiveList(liveVo);
+            if(listLiveVos!=null && listLiveVos.size()>0){
+                throw new ServiceException("活动【" + activity.getActivityName() + "】已存在现场资讯数据，请先删除现场资讯数据");
+            }
+            //经颅磁
+            ActivitiesTmsdataVo tmsVo=new ActivitiesTmsdataVo();
+            tmsVo.setActivityId(activityId);
+            List<ActivitiesTmsdataVo> listTmsVos=activitiesTmsdataMapper.selectActivitiesTmsdataList(tmsVo);
+            if(listTmsVos!=null && listTmsVos.size()>0){
+                throw new ServiceException("活动【" + activity.getActivityName() + "】已存在经颅磁数据，请先删除经颅磁数据");
+            }
+            //其它
+            ActivitiesTechVo techVo=new ActivitiesTechVo();
+            techVo.setActivityId(activityId);
+            List<ActivitiesTechVo> listTechVos=activitiesTechMapper.selectActivitiesTechList(techVo);
+            if(listTechVos!=null && listTechVos.size()>0){
+                throw new ServiceException("活动【" + activity.getActivityName() + "】已存在戒治技术数据，请先删除戒治技术数据");
+            }
         }
 
         return activitiesMapper.deleteActivitiesByActivityIds(activityIds);
@@ -225,7 +284,6 @@ public class ActivitiesServiceImpl implements IActivitiesService
                 throw new ServiceException("主活动【" + activity.getActivityName() + "】存在子活动，请先删除子活动");
             }
         }
-
         return activitiesMapper.deleteActivitiesByActivityId(activityId);
     }
 

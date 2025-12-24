@@ -1,10 +1,11 @@
 package com.ruoyi.cms.scale.domain.vo;
 
-public class AnswerVo {
+import com.ruoyi.common.core.domain.BaseEntity;
 
+public class AnswerVo extends BaseEntity {
     private Long resultId;
     private Long topicId;
-    private int[] optionIds;
+    private String optionIds;  // 改为String类型，存储逗号分隔的字符串
     private String answer;
 
     public Long getResultId() {
@@ -15,7 +16,6 @@ public class AnswerVo {
         this.resultId = resultId;
     }
 
-    // Getters & Setters
     public Long getTopicId() {
         return topicId;
     }
@@ -24,11 +24,11 @@ public class AnswerVo {
         this.topicId = topicId;
     }
 
-    public int[] getOptionIds() {
+    public String getOptionIds() {
         return optionIds;
     }
 
-    public void setOptionIds(int[] optionIds) {
+    public void setOptionIds(String optionIds) {
         this.optionIds = optionIds;
     }
 

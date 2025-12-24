@@ -1,0 +1,79 @@
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; background: #f8f9fa; min-height: 100vh; padding: 20px 15px;">
+    <div style="background: white; border-radius: 16px; padding: 25px 20px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); margin: 0 auto; max-width: 400px;">
+        <!-- 报告头部 -->
+        <div style="text-align: center; margin-bottom: 25px;">
+            <div th:style="'width: 60px; height: 60px; background: ' + ${gradientBg} + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;'">
+                <span style="color: white; font-size: 24px;" th:text="${icon}">😰</span>
+            </div>
+            <h1 style="color: #2c3e50; font-size: 20px; font-weight: 600; margin-bottom: 8px;">青少年生活事件测评报告</h1>
+            <p style="color: #7f8c8d; font-size: 14px;">青少年生活事件量表(ASLEC)</p>
+        </div>
+
+        <!-- 测评结果 -->
+        <div th:style="'background: ' + ${levelBgColor} + '; border-radius: 12px; padding: 20px; margin-bottom: 20px;'">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: #2c3e50; font-weight: 500;">压力总分</span>
+                <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600; font-size: 18px;'"
+                      th:text="${rawTotalScore} + '分'">68分</span>
+            </div>
+            <div style="background: #fcf3cf; height: 8px; border-radius: 4px; overflow: hidden;">
+                <div th:style="'background: ' + ${progressGradient} + '; height: 100%; width: ' + ${progressWidth} + '%; border-radius: 4px;'"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <span style="color: #95a5a6; font-size: 12px;">0分</span>
+                <span style="color: #95a5a6; font-size: 12px;" th:text="${scoreRange}">0-135分</span>
+            </div>
+            <div th:style="'color: ' + ${borderColor} + '; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500;'"
+                 th:text="${stressLevel}">重度压力</div>
+        </div>
+
+        <!-- 结果说明 -->
+        <div style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">结果说明</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <span th:text="${levelDescription}">您的压力水平处于重度状态，建议尽快寻求专业心理帮助。</span>
+            </div>
+        </div>
+
+        <!-- 维度得分 -->
+        <div th:if="${hasDimensions}" style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">维度分析</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <div th:each="entry : ${dimensionScores}"
+                     style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee;">
+                    <span th:text="${entry.key}">人际关系</span>
+                    <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600;'"
+                          th:text="${entry.value} + '分'">25分</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 高压力事件 -->
+        <div th:if="${hasHighStressEvents}" style="background: #fff8e1; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: #ff9800; font-weight: 600; margin-bottom: 10px;'">⚠️ 高压力事件</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <div th:each="event,iterStat : ${highStressEvents}"
+                     style="padding: 4px 0; display: flex; align-items: flex-start;">
+                    <span style="color: #ff9800; margin-right: 6px;">•</span>
+                    <span th:text="${event}">考试失败或不理想（重度影响）</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 应对建议 -->
+        <div th:style="'background: ' + ${suggestionBgColor} + '; border-radius: 10px; padding: 16px;'">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">应对建议</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <div th:each="suggestion,iterStat : ${suggestionList}">
+                    <span th:text="${iterStat.count} + '. ' + ${suggestion}">1. 立即寻求专业心理帮助</span>
+                    <br th:if="${not iterStat.last}">
+                </div>
+            </div>
+        </div>
+
+        <!-- 免责声明 -->
+        <div style="color: #95a5a6; font-size: 11px; text-align: center; margin-top: 20px; padding-top: 10px; border-top: 1px solid #eee;">
+            本测评结果仅供参考，不能替代专业医疗诊断。如有需要，请及时咨询专业心理医生。
+        </div>
+    </div>
+</div>

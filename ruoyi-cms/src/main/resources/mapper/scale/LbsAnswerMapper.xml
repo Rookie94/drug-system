@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.cms.scale.mapper.AnswerMapper">
+<mapper namespace="com.ruoyi.cms.scale.mapper.LbsAnswerMapper">
 
     <resultMap id="AnswerResult" type="AnswerVo">
         <id property="answerId" column="answer_id"/>
@@ -35,9 +35,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertAnswer" parameterType="AnswerVo">
         INSERT INTO lbs_answers
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="answerId != null">answer_id,</if>
             <if test="resultId != null">result_id,</if>
             <if test="topicId != null">topic_id,</if>
+            <if test="optionIds != null">option_ids,</if>
             <if test="answer != null">answer,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -46,9 +46,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="answerId != null">#{answerId},</if>
             <if test="resultId != null">#{resultId},</if>
             <if test="topicId != null">#{topicId},</if>
+            <if test="optionIds != null">#{optionIds},</if>
             <if test="answer != null">#{answer},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -61,9 +61,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="batchInsertAnswer" parameterType="java.util.List">
         INSERT INTO lbs_answers
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="list[0].answerId != null">answer_id,</if>
             <if test="list[0].resultId != null">result_id,</if>
             <if test="list[0].topicId != null">topic_id,</if>
+            <if test="list[0].optionIds != null">option_ids,</if>
             <if test="list[0].answer != null">answer,</if>
             <if test="list[0].createBy != null">create_by,</if>
             <if test="list[0].createTime != null">create_time,</if>
@@ -74,9 +74,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         VALUES
         <foreach collection="list" item="item" separator=",">
             <trim prefix="(" suffix=")" suffixOverrides=",">
-                <if test="item.answerId != null">#{item.answerId},</if>
                 <if test="item.resultId != null">#{item.resultId},</if>
                 <if test="item.topicId != null">#{item.topicId},</if>
+                <if test="item.optionIds != null">#{item.optionIds},</if>
                 <if test="item.answer != null">#{item.answer},</if>
                 <if test="item.createBy != null">#{item.createBy},</if>
                 <if test="item.createTime != null">#{item.createTime},</if>
@@ -93,6 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <set>
             <if test="resultId != null">result_id = #{resultId},</if>
             <if test="topicId != null">topic_id = #{topicId},</if>
+            <if test="optionIds != null">option_ids = #{optionIds},</if>
             <if test="answer != null">answer = #{answer},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             update_time = #{updateTime},

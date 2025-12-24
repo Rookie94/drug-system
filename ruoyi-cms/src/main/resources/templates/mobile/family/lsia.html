@@ -1,50 +1,69 @@
+<!DOCTYPE html>
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; background: #f8f9fa; min-height: 100vh; padding: 20px 15px;">
     <div style="background: white; border-radius: 16px; padding: 25px 20px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); margin: 0 auto; max-width: 400px;">
         <!-- 报告头部 -->
         <div style="text-align: center; margin-bottom: 25px;">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                <span style="color: white; font-size: 24px;">😊</span>
+            <div th:style="'width: 60px; height: 60px; background: ' + ${gradientBg} + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;'">
+                <span style="color: white; font-size: 24px;" th:text="${icon}">😊</span>
             </div>
-            <h1 style="color: #2c3e50; font-size: 20px; font-weight: 600; margin-bottom: 8px;">生活满意度测评</h1>
-            <p style="color: #7f8c8d; font-size: 14px;">LSIA量表分析报告</p>
+            <h1 style="color: #2c3e50; font-size: 20px; font-weight: 600; margin-bottom: 8px;">生活满意度测试报告</h1>
+            <p style="color: #7f8c8d; font-size: 14px;">生活满意度量表(LSIA)</p>
         </div>
 
-        <!-- 满意度指数 -->
-        <div style="background: #fef9e7; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
-            <div style="color: #f39c12; font-size: 32px; font-weight: 700; margin-bottom: 10px;">4.2</div>
-            <div style="color: #2c3e50; font-weight: 500; margin-bottom: 15px;">综合满意度(5分制)</div>
+        <!-- 测评结果 -->
+        <div th:style="'background: ' + ${levelBgColor} + '; border-radius: 12px; padding: 20px; margin-bottom: 20px;'">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: #2c3e50; font-weight: 500;">满意度指数</span>
+                <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600; font-size: 18px;'"
+                      th:text="${standardScore} + '分'">32分</span>
+            </div>
             <div style="background: #fcf3cf; height: 8px; border-radius: 4px; overflow: hidden;">
-                <div style="background: linear-gradient(90deg, #f39c12, #e67e22); height: 100%; width: 84%; border-radius: 4px;"></div>
+                <div th:style="'background: ' + ${progressGradient} + '; height: 100%; width: ' + ${progressWidth} + '%; border-radius: 4px;'"></div>
+            </div>
+            <div th:style="'color: ' + ${borderColor} + '; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500;'"
+                 th:text="${satisfactionLevel}">非常满意</div>
+        </div>
+
+        <!-- 结果说明 -->
+        <div style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">结果说明</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <span th:text="${levelDescription}">您的生活满意度非常高，对过去、现在和未来都持积极态度。</span>
             </div>
         </div>
 
-        <!-- 维度评分 -->
-        <div style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
-            <div style="color: #4a90e2; font-weight: 600; margin-bottom: 12px;">各维度评分</div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span style="color: #5a6c7d; font-size: 14px;">工作学习</span>
-                <span style="color: #4a90e2; font-weight: 500;">4.0</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span style="color: #5a6c7d; font-size: 14px;">人际关系</span>
-                <span style="color: #4a90e2; font-weight: 500;">4.5</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span style="color: #5a6c7d; font-size: 14px;">健康状况</span>
-                <span style="color: #4a90e2; font-weight: 500;">4.3</span>
-            </div>
-            <div style="display: flex; justify-content: space-between;">
-                <span style="color: #5a6c7d; font-size: 14px;">生活环境</span>
-                <span style="color: #4a90e2; font-weight: 500;">4.1</span>
+        <!-- 维度得分 -->
+        <div th:if="${hasDimensions}" style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">维度分析</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <div th:each="entry : ${dimensionScores}"
+                     style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee;">
+                    <span th:text="${entry.key}">过去满意度</span>
+                    <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600;'"
+                          th:text="${entry.value} + '分'">12分</span>
+                </div>
             </div>
         </div>
 
         <!-- 提升建议 -->
-        <div style="background: #e8f4fd; border-radius: 10px; padding: 16px;">
-            <div style="color: #4a90e2; font-weight: 600; margin-bottom: 10px;">提升建议</div>
+        <div th:style="'background: ' + ${suggestionBgColor} + '; border-radius: 10px; padding: 16px;'">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">提升建议</div>
             <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
-                您对生活的整体满意度较高，特别是在人际关系方面表现突出。建议在工作学习方面寻找更多成就感。
+                <div th:each="suggestion,iterStat : ${suggestionList}">
+                    <span th:text="${iterStat.count} + '. ' + ${suggestion}">1. 继续保持积极的生活态度和乐观心态</span>
+                    <br th:if="${not iterStat.last}">
+                </div>
             </div>
+        </div>
+
+        <!-- 分数说明 -->
+        <div style="color: #95a5a6; font-size: 11px; text-align: center; margin-top: 20px; padding: 10px; border-top: 1px solid #eee;">
+            原始总分：<span th:text="${rawTotalScore}">32</span>分（满分40分）
+        </div>
+
+        <!-- 免责声明 -->
+        <div style="color: #95a5a6; font-size: 11px; text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;">
+            本测评结果仅供参考，不能替代专业心理评估。如有需要，请及时咨询专业心理咨询师。
         </div>
     </div>
 </div>

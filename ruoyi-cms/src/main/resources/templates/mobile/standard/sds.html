@@ -2,45 +2,67 @@
     <div style="background: white; border-radius: 16px; padding: 25px 20px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); margin: 0 auto; max-width: 400px;">
         <!-- 报告头部 -->
         <div style="text-align: center; margin-bottom: 25px;">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #6a89cc, #4a69bd); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                <span style="color: white; font-size: 24px;">😔</span>
+            <div th:style="'width: 60px; height: 60px; background: ' + ${gradientBg} + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;'">
+                <span style="color: white; font-size: 24px;" th:text="${icon}">😔</span>
             </div>
             <h1 style="color: #2c3e50; font-size: 20px; font-weight: 600; margin-bottom: 8px;">抑郁自评测试报告</h1>
             <p style="color: #7f8c8d; font-size: 14px;">SDS量表测评结果</p>
         </div>
 
         <!-- 测评结果 -->
-        <div style="background: #f8fbff; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+        <div th:style="'background: ' + ${levelBgColor} + '; border-radius: 12px; padding: 20px; margin-bottom: 20px;'">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <span style="color: #2c3e50; font-weight: 500;">测评得分</span>
-                <span style="color: #4a90e2; font-weight: 600; font-size: 18px;">58分</span>
+                <span style="color: #2c3e50; font-weight: 500;">抑郁指数</span>
+                <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600; font-size: 18px;'"
+                      th:text="${standardScore} + '分'">58分</span>
             </div>
-            <div style="background: #ecf0f1; height: 8px; border-radius: 4px; overflow: hidden;">
-                <div style="background: linear-gradient(90deg, #4a90e2, #6a89cc); height: 100%; width: 58%; border-radius: 4px;"></div>
+            <div style="background: #fcf3cf; height: 8px; border-radius: 4px; overflow: hidden;">
+                <div th:style="'background: ' + ${progressGradient} + '; height: 100%; width: ' + ${progressWidth} + '%; border-radius: 4px;'"></div>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-top: 8px;">
-                <span style="color: #95a5a6; font-size: 12px;">0分</span>
-                <span style="color: #95a5a6; font-size: 12px;">100分</span>
+            <div th:style="'color: ' + ${borderColor} + '; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500;'"
+                 th:text="${depressionLevel}">轻度抑郁</div>
+        </div>
+
+        <!-- 症状表现 -->
+        <div style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">主要表现</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <span th:text="${levelDescription}">您的抑郁症状处于轻度水平，建议关注情绪变化，适当进行心理调适。</span>
             </div>
         </div>
 
-        <!-- 结果解读 -->
-        <div style="background: #fffaf3; border-left: 4px solid #e67e22; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
-            <div style="color: #e67e22; font-weight: 600; margin-bottom: 8px;">结果解读</div>
+        <!-- 维度得分 -->
+        <div th:if="${hasDimensions}" style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">维度详情</div>
             <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
-                您的抑郁症状处于轻度水平，建议关注情绪变化，适当进行心理调适。
+                <div th:each="entry : ${dimensionScores}"
+                     style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee;">
+                    <span th:text="${entry.key}">精神性-情感症状</span>
+                    <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600;'"
+                          th:text="${entry.value} + '分'">18分</span>
+                </div>
             </div>
         </div>
 
-        <!-- 建议 -->
-        <div style="background: #e8f4fd; border-radius: 10px; padding: 16px;">
-            <div style="color: #4a90e2; font-weight: 600; margin-bottom: 10px;">建议措施</div>
+        <!-- 缓解建议 -->
+        <div th:style="'background: ' + ${suggestionBgColor} + '; border-radius: 10px; padding: 16px;'">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">改善建议</div>
             <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
-                1. 保持规律作息<br>
-                2. 适当进行户外活动<br>
-                3. 与亲友保持沟通<br>
-                4. 必要时寻求专业帮助
+                <div th:each="suggestion,iterStat : ${suggestionList}">
+                    <span th:text="${iterStat.count} + '. ' + ${suggestion}">1. 保持规律作息</span>
+                    <br th:if="${not iterStat.last}">
+                </div>
             </div>
+        </div>
+
+        <!-- 分数说明 -->
+        <div style="color: #95a5a6; font-size: 11px; text-align: center; margin-top: 20px; padding: 10px; border-top: 1px solid #eee;">
+            原始总分：<span th:text="${rawTotalScore}">46</span>分
+        </div>
+
+        <!-- 免责声明 -->
+        <div style="color: #95a5a6; font-size: 11px; text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;">
+            本测评结果仅供参考，不能替代专业医疗诊断。如有需要，请及时咨询专业医生。
         </div>
     </div>
 </div>

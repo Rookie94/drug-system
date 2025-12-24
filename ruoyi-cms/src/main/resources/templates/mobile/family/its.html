@@ -2,45 +2,83 @@
     <div style="background: white; border-radius: 16px; padding: 25px 20px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); margin: 0 auto; max-width: 400px;">
         <!-- 报告头部 -->
         <div style="text-align: center; margin-bottom: 25px;">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #27ae60, #2ecc71); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                <span style="color: white; font-size: 24px;">🤝</span>
+            <div th:style="'width: 60px; height: 60px; background: ' + ${gradientBg} + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;'">
+                <span style="color: white; font-size: 24px;" th:text="${icon}">🤝</span>
             </div>
-            <h1 style="color: #2c3e50; font-size: 20px; font-weight: 600; margin-bottom: 8px;">信任水平测评</h1>
-            <p style="color: #7f8c8d; font-size: 14px;">ITS信任量表分析</p>
+            <h1 style="color: #2c3e50; font-size: 20px; font-weight: 600; margin-bottom: 8px;">人际信任测评报告</h1>
+            <p style="color: #7f8c8d; font-size: 14px;">信任量表(ITS)</p>
         </div>
 
-        <!-- 信任指数 -->
-        <div style="background: #eafaf1; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
-            <div style="color: #27ae60; font-size: 36px; font-weight: 700; margin-bottom: 10px;">78%</div>
-            <div style="color: #2c3e50; font-weight: 500; margin-bottom: 15px;">总体信任水平</div>
-            <div style="background: #d5f5e3; height: 8px; border-radius: 4px; overflow: hidden;">
-                <div style="background: linear-gradient(90deg, #27ae60, #2ecc71); height: 100%; width: 78%; border-radius: 4px;"></div>
+        <!-- 测评结果 -->
+        <div th:style="'background: ' + ${levelBgColor} + '; border-radius: 12px; padding: 20px; margin-bottom: 20px;'">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: #2c3e50; font-weight: 500;">信任指数</span>
+                <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600; font-size: 18px;'"
+                      th:text="${standardScore} + '分'">75分</span>
             </div>
+            <div style="background: #fcf3cf; height: 8px; border-radius: 4px; overflow: hidden;">
+                <div th:style="'background: ' + ${progressGradient} + '; height: 100%; width: ' + ${progressWidth} + '%; border-radius: 4px;'"></div>
+            </div>
+            <div th:style="'color: ' + ${borderColor} + '; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500;'"
+                 th:text="${trustLevel}">较高信任</div>
         </div>
 
-        <!-- 信任维度 -->
+        <!-- 详细分数 -->
         <div style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
-            <div style="color: #4a90e2; font-weight: 600; margin-bottom: 12px;">信任维度分析</div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span style="color: #5a6c7d; font-size: 14px;">人际信任</span>
-                <span style="color: #4a90e2; font-weight: 500;">82%</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="color: #5a6c7d; font-size: 14px;">原始总分</span>
+                <span style="color: #2c3e50; font-weight: 600;" th:text="${rawTotalScore} + '分'">108分</span>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span style="color: #5a6c7d; font-size: 14px;">社会信任</span>
-                <span style="color: #4a90e2; font-weight: 500;">75%</span>
-            </div>
-            <div style="display: flex; justify-content: space-between;">
-                <span style="color: #5a6c7d; font-size: 14px;">制度信任</span>
-                <span style="color: #4a90e2; font-weight: 500;">70%</span>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #5a6c7d; font-size: 14px;">平均分</span>
+                <span style="color: #2c3e50; font-weight: 600;" th:text="${averageScore} + '分'">6.0分</span>
             </div>
         </div>
 
-        <!-- 个性特点 -->
-        <div style="background: #e8f4fd; border-radius: 10px; padding: 16px;">
-            <div style="color: #4a90e2; font-weight: 600; margin-bottom: 10px;">个性特点</div>
+        <!-- 结果说明 -->
+        <div style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">结果说明</div>
             <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
-                您展现出较高的信任水平，能够建立良好的人际关系，但在制度信任方面还有提升空间。
+                <span th:text="${levelDescription}">信任平均分6.0分，信任程度较高。表明有良好的信任基础。</span>
             </div>
+        </div>
+
+        <!-- 维度得分 -->
+        <div th:if="${hasDimensions}" style="background: #f8fbff; border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">信任维度</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <div th:each="entry : ${dimensionScores}"
+                     style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee;">
+                    <span th:text="${entry.key}">可靠性</span>
+                    <span th:style="'color: ' + ${scoreColor} + '; font-weight: 600;'"
+                          th:text="${entry.value} + '分'">24分</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 改善建议 -->
+        <div th:style="'background: ' + ${suggestionBgColor} + '; border-radius: 10px; padding: 16px;'">
+            <div th:style="'color: ' + ${borderColor} + '; font-weight: 600; margin-bottom: 10px;'">关系建议</div>
+            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.5;">
+                <div th:each="suggestion,iterStat : ${suggestionList}">
+                    <span th:text="${iterStat.count} + '. ' + ${suggestion}">1. 维持并深化现有的信任关系</span>
+                    <br th:if="${not iterStat.last}">
+                </div>
+            </div>
+        </div>
+
+        <!-- 分数说明 -->
+        <div style="color: #95a5a6; font-size: 11px; text-align: center; margin-top: 20px; padding: 10px; border-top: 1px solid #eee;">
+            评分标准：1-7分制（1=完全不同意，7=完全同意）
+            <br>
+            <span style="font-size: 10px;">
+                平均分≤2.5:非常低信任 | 2.6-3.5:较低信任 | 3.6-5.0:中等信任 | 5.1-6.0:较高信任 | ≥6.1:非常高信任
+            </span>
+        </div>
+
+        <!-- 免责声明 -->
+        <div style="color: #95a5a6; font-size: 11px; text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;">
+            信任量表(ITS)是评估人际信任的工具，本结果仅供参考。信任关系是动态发展的，建议通过持续沟通来维护和提升信任。
         </div>
     </div>
 </div>

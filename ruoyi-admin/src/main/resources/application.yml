@@ -161,11 +161,11 @@ dromara:
     minio:
       - platform: minio-1            # 标识，可自定义
         enable-storage: true
-        access-key: E1IF7UVG88P2EDHF44GC
-        secret-key: ENC(+fT4zilIVReny7TVY61v8ZfN7i9CBhqK6/LDzMwLrEDSbD7dkoY2Xc318js+aU+VzLMqt1RGL2cpCbrRtLmhtfHMOq5v90pT3KtLfcz8BQo=)
-        end-point: https://ytly.shunxuan.net.cn:9000
+        access-key: utOGh5X1fv7d7Kiwbzm5
+        secret-key: ENC(1vPC8Gt/3/qkC7xo+tyxXgRMkQq0MmQgEz0I4jvn4qLWg3ViC4pvxJLcCpaHe4J/pb/983kwJvug6MWE2AIvGGCUsKcOo2VEmTIATM7VKIs=)
+        end-point: http://116.147.34.38:9000
         bucket-name: public
-        domain: https://ytly.shunxuan.net.cn:9000/public/   # 直链域名，末尾 /
+        domain: https://yiti.shunxuan.net.cn:9000/public/   # 直链域名，末尾 /
         base-path:          # 可选虚拟目录
 
 zos:

@@ -11,7 +11,7 @@
         </if>
         <if test="query.endDate != null and query.endDate != ''">
             <!-- 结束日期+1天：显式转timestamp，解决类型不匹配 -->
-            AND access_time &lt;  (to_date(#{query.endDate}, 'YYYY-MM-DD') + interval '1 day')::timestamp
+            AND access_time &lt;  (to_date(#{query.endDate}, 'YYYY-MM-DD') + interval '1' day)::timestamp
         </if>
     </sql>
 

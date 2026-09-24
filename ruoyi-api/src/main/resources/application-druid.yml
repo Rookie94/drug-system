@@ -4,18 +4,12 @@ spring:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.cj.jdbc.Driver
         druid:
-            # 主库数据源
-            # master:
-            #    url: jdbc:mysql://192.168.0.100:3306/dtcare?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-            #    username: root
-            #    password: Szsolid.com2005
-
-            # 主库数据源
+            # 本地 MySQL 主库
             master:
-                driver-class-name: com.kingbase8.Driver
-                url: jdbc:kingbase8://127.0.0.1:54321/dtcare?currentSchema=public&allowEncodingChanges=true&clientEncoding=UTF8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
-                username: system
-                password: ENC(q7rRRxFrPznb0b7fEpzlqaOQAP+SVX9u4BXGsM8fLp8Ixdzb6ffVbyZiuhQJMWLe)
+                driver-class-name: com.mysql.cj.jdbc.Driver
+                url: jdbc:mysql://localhost:3306/dtcare?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true
+                username: root
+                password: ENC(p0LgEQ6aRldCs24CoUuITJl9WDPZnwOUA4KhNwyAbtxE+QWsGJQZr/3Vo4cbUW0t)
 
             # 从库数据源
             slave:
@@ -43,7 +37,7 @@ spring:
             # 配置一个连接在池中最大生存的时间，单位是毫秒
             maxEvictableIdleTimeMillis: 900000
             # 配置检测连接是否有效
-            validationQuery: SELECT 1 FROM DUAL
+            validationQuery: SELECT 1
             testWhileIdle: true
             testOnBorrow: false
             testOnReturn: false

@@ -84,7 +84,7 @@ spring:
     #模式single或cluster
     mode: single
     # 单机地址
-    host: 127.0.0.1
+    host: localhost
     # 端口，默认为6379
     port: 6379
     # 集群地址
@@ -96,7 +96,7 @@ spring:
     # 数据库索引
     database: 0
     # 密码
-    password: ENC(/iMPpJ7ifGZmxYr945QjJDUnaZbZ3cKzFwiKWmEG6rNfGlLzdoxyV7CWns4oNp1D)
+    password: ENC(6hqYkKsCtdbgY53o7aoxVnZqXOWqWoYQT7ReY+IBkMkKmgQpOt6kHnfJeH/7vvLt)
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -123,7 +123,7 @@ token:
 mybatis:
   # 数据库类型 mysql,kingbase
   configuration:
-    database-id: kingbase
+    database-id: mysql
   # 搜索指定包别名
   typeAliasesPackage: com.ruoyi.**.domain
   # 配置mapper的扫描，找到所有的mapper.xml映射文件

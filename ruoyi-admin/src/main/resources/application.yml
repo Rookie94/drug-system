@@ -51,6 +51,17 @@ logging:
     org.springframework: warn
 
 # 用户配置
+ca:
+  # Windows 联调时通过环境变量配置 SAP2000 的真实服务地址和分配的应用 ID
+  wsdl-url: ${CA_WSDL_URL:}
+  app-server-id: ${CA_APP_SERVER_ID:}
+  server-ip: ${CA_SERVER_IP:}
+  server-port: ${CA_SERVER_PORT:9021}
+  # 厂商结果 XML 中 result 的成功值，以 Windows 联调结果为准
+  success-results: ${CA_SUCCESS_RESULTS:0,success,true}
+  # Mac 联调时模拟同一把虚拟 UKey；仍须在用户管理里手动绑定到用户
+  mock-enabled: ${CA_MOCK_ENABLED:true}
+
 user:
   password:
     # 密码最大错误次数

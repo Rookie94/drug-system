@@ -83,7 +83,7 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
                     permitAllUrl.getUrls().forEach(url -> req.antMatchers(url).permitAll());
-                    req.antMatchers("/login", "/register", "/captchaImage","/getarea",
+                    req.antMatchers("/login", "/ca/challenge", "/ca/login", "/register", "/captchaImage","/getarea",
                                     "/sendSms", "/smsLogin", "/wxLogin","/R2F7juVgcS.txt",
                                     "/check-binding", "/binding-phone","/api/res/**",
                                     "/captcha/**").permitAll()

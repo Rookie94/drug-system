@@ -16,6 +16,14 @@
     </description>
 
     <dependencies>
+        <!-- SAP2000 提供的 Java 8 WebService 客户端 -->
+        <dependency>
+            <groupId>com.ideabank.sap</groupId>
+            <artifactId>webservice-client</artifactId>
+            <version>2.1.5</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/webservice_client.jar</systemPath>
+        </dependency>
 
         <!-- spring-boot-devtools -->
         <dependency>
@@ -118,6 +126,7 @@
                 <version>2.5.15</version>
                 <configuration>
                     <fork>true</fork> <!-- 如果没有该配置，devtools不会生效 -->
+                    <includeSystemScope>true</includeSystemScope>
                 </configuration>
                 <executions>
                     <execution>

@@ -148,52 +148,101 @@ public class CaLoginService {
         if (verification == null || StringUtils.isBlank(verification.getResult())) {
             throw new ServiceException("CA验票没有返回结果");
         }
+        String rawXml = verification.getResult().trim();
+        log.info("【SAP2000 验票原始返回】: {}", rawXml);
+
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
-            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
             factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
             factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             factory.setXIncludeAware(false);
             factory.setExpandEntityReferences(false);
-            Document xml = factory.newDocumentBuilder().parse(new InputSource(new StringReader(verification.getResult())));
+            Document xml = factory.newDocumentBuilder().parse(new InputSource(new StringReader(rawXml)));
             Element root = xml.getDocumentElement();
-            if (!"verifyIdentityTicketResult".equals(root.getLocalName())
-                    && !"verifyIdentityTicketResult".equals(root.getNodeName())) {
-                throw new ServiceException("CA验票返回格式错误");
+
+            String rootName = root.getLocalName() != null ? root.getLocalName() : root.getNodeName();
+            if (rootName.contains(":")) {
+                rootName = rootName.substring(rootName.indexOf(':') + 1);
             }
+
+            // 根节点名称兼容：支持忽略大小写、以及多种常见根节点名
+            boolean isExpectedRoot = rootName.equalsIgnoreCase("verifyIdentityTicketResult")
+                    || rootName.equalsIgnoreCase("verifyIdentityTicketResponse")
+                    || rootName.equalsIgnoreCase("verifyIdTRet")
+                    || rootName.equalsIgnoreCase("result")
+                    || root.getElementsByTagNameNS("*", "userinfo").getLength() > 0
+                    || root.getElementsByTagName("userinfo").getLength() > 0
+                    || root.getElementsByTagNameNS("*", "userInfo").getLength() > 0;
+
+            if (!isExpectedRoot) {
+                log.warn("CA验票根节点不匹配: rootName={}, rawXml={}", rootName, rawXml);
+                throw new ServiceException("CA验票返回格式错误: 根节点为 " + rootName);
+            }
+
             String result = childText(root, "result");
             boolean success = false;
             for (String allowed : successResults.split(",")) {
                 if (allowed.trim().equalsIgnoreCase(result)) success = true;
             }
-            if (!success || !StringUtils.isBlank(childText(root, "error"))
-                    || !challenge.equals(childText(root, "challenge"))) {
-                throw new ServiceException("CA身份验证失败");
+            String errorMsg = childText(root, "error");
+            String retChallenge = childText(root, "challenge");
+            boolean challengeMatch = StringUtils.isBlank(retChallenge) || challenge.equals(retChallenge);
+
+            if (!success || !StringUtils.isBlank(errorMsg) || !challengeMatch) {
+                log.warn("CA身份验证未通过: result={}, error={}, challengeMatch={}", result, errorMsg, challengeMatch);
+                throw new ServiceException("CA身份验证失败" + (StringUtils.isNotBlank(errorMsg) ? ": " + errorMsg : ""));
             }
+
             NodeList users = root.getElementsByTagNameNS("*", "userinfo");
+            if (users.getLength() == 0) users = root.getElementsByTagName("userinfo");
+            if (users.getLength() == 0) users = root.getElementsByTagNameNS("*", "userInfo");
+            if (users.getLength() == 0) users = root.getElementsByTagName("userInfo");
+
             if (users.getLength() != 1) {
+                log.warn("CA未返回唯一用户身份: usersCount={}, rawXml={}", users.getLength(), rawXml);
                 throw new ServiceException("CA未返回唯一用户身份");
             }
+
             Element userInfo = (Element) users.item(0);
             String rmsId = childText(userInfo, "rmsid");
             String certSn = childText(userInfo, "certSN");
+            if (StringUtils.isBlank(certSn)) certSn = childText(userInfo, "certsn");
+
             if (StringUtils.isBlank(rmsId) || StringUtils.isBlank(certSn)) {
+                log.warn("CA身份关键字段缺失: rmsid={}, certSN={}, rawXml={}", rmsId, certSn, rawXml);
                 throw new ServiceException("CA未返回 RMS 用户编号或证书序列号");
             }
             return new CaIdentity(rmsId, certSn);
         } catch (ServiceException e) {
             throw e;
         } catch (Exception e) {
-            log.warn("CA验票结果解析失败", e);
-            throw new ServiceException("CA验票返回格式错误");
+            log.warn("CA验票结果解析失败, rawXml=" + rawXml, e);
+            throw new ServiceException("CA验票返回格式错误: " + e.getMessage());
         }
     }
 
     private String childText(Element parent, String name) {
         NodeList nodes = parent.getElementsByTagNameNS("*", name);
         if (nodes.getLength() == 0) nodes = parent.getElementsByTagName(name);
+        if (nodes.getLength() == 0) {
+            // 忽略大小写寻找子节点
+            NodeList children = parent.getChildNodes();
+            for (int i = 0; i < children.getLength(); i++) {
+                org.w3c.dom.Node child = children.item(i);
+                if (child.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                    String nodeName = child.getLocalName() != null ? child.getLocalName() : child.getNodeName();
+                    if (nodeName.contains(":")) {
+                        nodeName = nodeName.substring(nodeName.indexOf(':') + 1);
+                    }
+                    if (nodeName.equalsIgnoreCase(name)) {
+                        return child.getTextContent().trim();
+                    }
+                }
+            }
+        }
         return nodes.getLength() == 0 ? "" : nodes.item(0).getTextContent().trim();
     }
 

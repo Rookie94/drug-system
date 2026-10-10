@@ -6,7 +6,7 @@ spring:
             # 本地 MySQL 主库
             master:
                 driver-class-name: com.mysql.cj.jdbc.Driver
-                url: jdbc:mysql://localhost:3306/dtcare?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true
+                url: jdbc:mysql://localhost:3307/dtcare?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true
                 username: root
                 password: ENC(p0LgEQ6aRldCs24CoUuITJl9WDPZnwOUA4KhNwyAbtxE+QWsGJQZr/3Vo4cbUW0t)
 

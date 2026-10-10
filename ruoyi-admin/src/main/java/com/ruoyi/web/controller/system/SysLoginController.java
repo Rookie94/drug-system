@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysMenu;
@@ -60,6 +65,9 @@ public class SysLoginController
 
     @Autowired
     private SmsLoginService smsLoginService;
+
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 登录方法
@@ -156,5 +164,38 @@ public class SysLoginController
         Long userId = SecurityUtils.getUserId();
         List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId);
         return AjaxResult.success(menuService.buildMenus(menus));
+    }
+
+    /**
+     * 签发 SSO 跳转授权码（需已登录态）
+     */
+    @GetMapping("/sso/createCode")
+    public AjaxResult createSsoCode()
+    {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        SysUser user = loginUser.getUser();
+
+        // 生成一次性授权码
+        String code = IdUtils.fastUUID();
+        String codeKey = "sso_code:" + code;
+
+        // 打包用户信息，供 qData 自动开户与匹配
+            Map<String, Object> codeData = new HashMap<>();
+            codeData.put("username", user.getUserName());
+            codeData.put("nickName", StringUtils.isNotEmpty(user.getNickName()) ? user.getNickName() : user.getUserName());
+            codeData.put("phonenumber", user.getPhoneNumber());
+            codeData.put("email", user.getEmail());
+            codeData.put("sex", user.getSex());
+            codeData.put("sourceUserId", String.valueOf(user.getUserId()));
+            codeData.put("source", "yitiliangyi");
+            codeData.put("timestamp", System.currentTimeMillis());
+
+        // 存入共享 Redis，设置 60 秒有效期
+        redisCache.setCacheObject(codeKey, codeData, 60, TimeUnit.SECONDS);
+
+        AjaxResult ajax = AjaxResult.success();
+        ajax.put("ssoCode", code);
+        ajax.put("data", code);
+        return ajax;
     }
 }

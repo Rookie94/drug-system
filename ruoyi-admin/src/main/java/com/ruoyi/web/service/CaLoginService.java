@@ -63,14 +63,24 @@ public class CaLoginService {
     public static class CaIdentity {
         private final String rmsId;
         private final String certSn;
+        private final String idCard;
+        private final String name;
 
         public CaIdentity(String rmsId, String certSn) {
+            this(rmsId, certSn, null, null);
+        }
+
+        public CaIdentity(String rmsId, String certSn, String idCard, String name) {
             this.rmsId = rmsId;
             this.certSn = certSn;
+            this.idCard = idCard;
+            this.name = name;
         }
 
         public String getRmsId() { return rmsId; }
         public String getCertSn() { return certSn; }
+        public String getIdCard() { return idCard; }
+        public String getName() { return name; }
     }
 
     public Map<String, Object> challenge() {
@@ -207,15 +217,21 @@ public class CaLoginService {
             }
 
             Element userInfo = (Element) users.item(0);
-            String rmsId = childText(userInfo, "rmsid");
+            String rmsId = childText(userInfo, "rsmsid");
+            if (StringUtils.isBlank(rmsId)) rmsId = childText(userInfo, "rmsid");
             String certSn = childText(userInfo, "certSN");
             if (StringUtils.isBlank(certSn)) certSn = childText(userInfo, "certsn");
+            String idCard = childText(userInfo, "account");
+            if (StringUtils.isBlank(idCard)) idCard = childText(userInfo, "cardid");
+            String name = childText(userInfo, "name");
 
             if (StringUtils.isBlank(rmsId) || StringUtils.isBlank(certSn)) {
-                log.warn("CA身份关键字段缺失: rmsid={}, certSN={}, rawXml={}", rmsId, certSn, rawXml);
+                log.warn("CA身份关键字段缺失: rmsid={}, rsmsid={}, certSN={}, rawXml={}",
+                        childText(userInfo, "rmsid"), childText(userInfo, "rsmsid"), certSn, rawXml);
                 throw new ServiceException("CA未返回 RMS 用户编号或证书序列号");
             }
-            return new CaIdentity(rmsId, certSn);
+            log.info("CA验票成功解析身份: rmsId={}, certSN={}, name={}, idCard={}", rmsId, certSn, name, idCard);
+            return new CaIdentity(rmsId, certSn, idCard, name);
         } catch (ServiceException e) {
             throw e;
         } catch (Exception e) {

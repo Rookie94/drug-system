@@ -66,4 +66,24 @@ public class LoginBody
     {
         this.uuid = uuid;
     }
+
+    // ============= UKey 双重验证附加字段 =============
+    private String challengeId;
+    private String identityTicket;
+
+    public String getChallengeId() {
+        return challengeId;
+    }
+
+    public void setChallengeId(String challengeId) {
+        this.challengeId = challengeId;
+    }
+
+    public String getIdentityTicket() {
+        return identityTicket;
+    }
+
+    public void setIdentityTicket(String identityTicket) {
+        this.identityTicket = identityTicket;
+    }
 }

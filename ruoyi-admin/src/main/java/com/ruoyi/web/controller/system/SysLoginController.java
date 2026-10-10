@@ -7,8 +7,12 @@ import java.util.Set;
 import com.anji.captcha.model.common.ResponseModel;
 import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.framework.jssms.domain.JsSmsSendResponse;
 import com.ruoyi.framework.sms.SmsSendDTO;
+import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.web.service.CaBindingService;
+import com.ruoyi.web.service.CaLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,6 +73,15 @@ public class SysLoginController
     @Autowired
     private RedisCache redisCache;
 
+    @Autowired
+    private CaLoginService caLoginService;
+
+    @Autowired
+    private CaBindingService caBindingService;
+    
+    @Autowired
+    private ISysUserService userService;
+
     /**
      * 登录方法
      * 
@@ -79,9 +92,45 @@ public class SysLoginController
     public AjaxResult login(@RequestBody LoginBody loginBody)
     {
         AjaxResult ajax = AjaxResult.success();
-        // 生成令牌
+        // 1. 常规账号密码及图形验证码校验（通过后生成 token，若密码错误内部会抛异常直接中断）
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
                 loginBody.getUuid());
+        
+        // 2. UKey 强双因子校验（策略 B：所有人必须插入 UKey，首次自动绑定）
+        if (StringUtils.isEmpty(loginBody.getChallengeId()) || StringUtils.isEmpty(loginBody.getIdentityTicket())) {
+            throw new ServiceException("安全策略要求：必须插入 UKey 进行二次认证");
+        }
+        
+        SysUser user = userService.selectUserByUserName(loginBody.getUsername());
+        Long userId = user.getUserId();
+        
+        // 调底层硬件验票，提取身份证信息
+        CaLoginService.CaIdentity identity = caLoginService.verifyIdentity(loginBody.getChallengeId(), loginBody.getIdentityTicket());
+        
+        // 检查这把插入的 UKey 之前是否被绑定过
+        Long boundUserId = caBindingService.findUserId(identity);
+        
+        if (boundUserId == null) {
+            // 这是一把尚未被任何人绑定过的全新 UKey
+            // 检查该账号是否已经绑定了其他的 UKey
+            Map<String, Object> bindInfo = caBindingService.getByUserId(userId);
+            boolean hasBoundCa = (Boolean) bindInfo.get("bound");
+            if (hasBoundCa) {
+                throw new ServiceException("该账号已绑定其他 UKey，请插入正确的 UKey。若遗失请联系管理员解绑。");
+            } else {
+                // 该账号是白身，UKey 也是白身 -> 触发首次自动绑定！
+                caBindingService.bind(userId, identity, loginBody.getUsername());
+            }
+        } else {
+            // 这把 UKey 已经被绑定过了
+            if (!boundUserId.equals(userId)) {
+                SysUser boundUser = userService.selectUserById(boundUserId);
+                String boundUserName = (boundUser != null) ? boundUser.getUserName() : String.valueOf(boundUserId);
+                throw new ServiceException("当前插入的 UKey 已被账号【" + boundUserName + "】绑定，请使用您自己的 UKey！");
+            }
+            // 匹配成功，放行
+        }
+
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }

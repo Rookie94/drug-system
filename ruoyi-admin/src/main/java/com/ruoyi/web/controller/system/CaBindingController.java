@@ -47,6 +47,25 @@ public class CaBindingController {
             throw new ServiceException("只能给有效用户绑定 UKey");
         }
         CaLoginService.CaIdentity identity = caLoginService.verifyIdentity(body.getChallengeId(), body.getIdentityTicket());
+        
+        // 检查该 UKey 是否已被占用
+        Long boundUserId = caBindingService.findUserId(identity);
+        if (boundUserId != null) {
+            if (boundUserId.equals(userId)) {
+                throw new ServiceException("当前 UKey 已经绑定给了本账号，无需重复操作。");
+            } else {
+                SysUser boundUser = userService.selectUserById(boundUserId);
+                String boundUserName = (boundUser != null) ? boundUser.getUserName() : String.valueOf(boundUserId);
+                throw new ServiceException("绑定失败！当前 UKey 已被账号【" + boundUserName + "】占用。请先去解绑该账号，或更换一把新的 UKey。");
+            }
+        }
+        
+        // 检查本账号是否已经绑定过别的 UKey
+        java.util.Map<String, Object> bindInfo = caBindingService.getByUserId(userId);
+        if (bindInfo != null && Boolean.TRUE.equals(bindInfo.get("bound"))) {
+            throw new ServiceException("绑定失败！该账号已绑定了其他的 UKey。请先解除原有绑定。");
+        }
+
         caBindingService.bind(userId, identity, SecurityUtils.getUsername());
         return AjaxResult.success("UKey 绑定成功");
     }
